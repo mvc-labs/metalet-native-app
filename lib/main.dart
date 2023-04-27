@@ -98,30 +98,28 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                     flex: 1,
-                    child:SizedBox(
+                    child: SizedBox(
                       height: 44,
                       child: ElevatedButton(
                           onPressed: () {},
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   const Color(SimColor.deaful_txt_color))),
-                          child: const Text("Request",style: TextStyle(fontSize: 16))),
-                    )
-                ),
+                          child: const Text("Request",
+                              style: TextStyle(fontSize: 16))),
+                    )),
                 const SizedBox(width: 20),
                 Expanded(
                     flex: 1,
                     child: SizedBox(
                         height: 44,
-                        child:ElevatedButton(
+                        child: ElevatedButton(
                           onPressed: () {},
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color(SimColor.color_button_blue))),
-                          child: const Text("Send",style: TextStyle(fontSize: 16)),
-                        )
-                    )
-                )
+                          style: ButtonStyle(backgroundColor: MaterialStateProperty.all(
+                                 const Color(SimColor.color_button_blue))),
+                          child: const Text("Send",
+                              style: TextStyle(fontSize: 16)),
+                        )))
               ],
             ),
           )
