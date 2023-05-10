@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <script src="./metaContract.iife.js"></script>
+</head>
+
+
+
+<body>
+<script>
+
+<!--定义方法-->
+function one() {
+ flutterControl.postMessage('one');
+ }
+
+function version() {
+    metaInitCallBack.postMessage(metaContract.mvc.version);
+}
+
+<!--调用-->
+setTimeout(() => {
+    version();
+}, 3000);
+
+function initMetaWallet(mnemonic,path){
+setTimeout(() => {
+   const wallet =metaContract.Wallet.fromMnemonic({
+       mnemonic:mnemonic,
+       network:'testnet',
+       feeb:1,
+       path:"m/44'/10001'/0'/0/0",
+     });
+    metaInitCallBack.postMessage(wallet.address);
+}, 3000);
+}
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+
+</html>
