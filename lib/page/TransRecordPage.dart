@@ -1,7 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:common_utils/common_utils.dart';
+import 'package:decimal/decimal.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
+import 'package:mvcwallet/bean/TransRecordResponse.dart';
+import 'package:mvcwallet/main.dart';
+import '../utils/Constants.dart';
 import '../utils/SimColor.dart';
 import '../utils/SimStytle.dart';
 import 'RequestPage.dart';
@@ -39,6 +47,16 @@ class TransRecordContent extends StatefulWidget {
 }
 
 class _TransRecordContentState extends State<TransRecordContent> {
+
+  List<TransRecordResponse> recordList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+      getRecordList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -77,9 +95,9 @@ class _TransRecordContentState extends State<TransRecordContent> {
                             ),
                             const SizedBox(height: 5),
                             Row(
-                              children: const [
-                                Text("3234.485u89 Space",
-                                    style: TextStyle(
+                              children: [
+                                Text(spaceBalance,
+                                    style: const TextStyle(
                                         color: Color(SimColor.deaful_txt_color),
                                         fontSize: 18))
                               ],
@@ -95,455 +113,95 @@ class _TransRecordContentState extends State<TransRecordContent> {
           Container(
             width: double.infinity,
             height: 600,
-            child: ListView(
-            shrinkWrap: true,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "2023-04-29",
-                    style: getDefaultTextStyle(),
-                  ),
-                  SizedBox(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(children: [
-                        Text("+100 Space", style: getDefaultTextStyle()),
-                        const SizedBox(width: 5),
-                        Image.asset("images/icon_link.png",
-                            width: 20, height: 20),
-                      ]),
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-            ],
-          ),
+            child: ListView.builder(
+              itemCount: recordList.length,
+              itemBuilder: getListViewItemLayout,
+            ),
           )
         ],
       ),
     );
   }
+
+  Widget getListViewItemLayout(BuildContext context, int index) {
+    TransRecordResponse record = recordList[index];
+    DateTime dateTime = DateUtil.getDateTimeByMs(int.parse(record.time.toString()));
+    String showTime =DateUtil.formatDate(dateTime,format: "yyyy-MM-dd HH:mm");
+    String showMoney="";
+    bool isInCome=true;
+    if(record.income!>0){
+      var value = double.parse(record.income.toString()) / 100000000;
+      // var valueRe = Decimal.parse(value.toString()).toStringAsFixed(8);
+      showMoney="+${value.toStringAsFixed(8)} Space";
+      // showMoney="+$valueRe Space";
+      isInCome=true;
+    }else{
+      var value = double.parse(record.outcome.toString()) / 100000000;
+      // var valueRe = Decimal.parse(value.toString()).toStringAsFixed(8);
+      showMoney="-${value.toStringAsFixed(8)} Space";
+      isInCome=false;
+      // showMoney="-$valueRe Space";
+    }
+
+
+    return Column(
+      children: [
+          InkWell(
+            onTap: (){
+              ClipboardData data =   ClipboardData(text:record.txid);
+              Clipboard.setData(data);
+              showToast("Copy transaction ID");
+            },
+            child:  Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  showTime,
+                  style: getDefaultTextStyle(),
+                ),
+                SizedBox(
+                  child: TextButton(
+                    onPressed: () {
+                      ClipboardData data =   ClipboardData(text:record.txid);
+                      Clipboard.setData(data);
+                      showToast("Copy transaction ID");
+                    },
+                    child: Row(children: [
+                      Text(showMoney, style: TextStyle(
+                          fontSize: 15,
+                          color: Color(isInCome?SimColor.color_button_blue:SimColor.deaful_txt_color),
+                          decoration: TextDecoration.none),),
+                      const SizedBox(width: 5),
+                      Image.asset("images/icon_link.png", width: 20, height: 20),
+                    ]),
+                  ),
+                )
+              ],
+            ),
+          ),
+        const Divider(height: 20),
+      ],
+    );
+  }
+
+  getRecordList() async {
+    final dio = Dio();
+    final response = await dio
+        .get("https://mainnet.mvcapi.com/address/${myWallet.address}/tx");
+    if (response.statusCode == HttpStatus.ok) {
+      // String stationsJson = jsonDecode(response.data);
+      List<TransRecordResponse> items = [];
+      final List<dynamic> stationsJson = response.data;
+      items = List<TransRecordResponse>.from(
+          stationsJson.map((e) => TransRecordResponse.fromJson(e)));
+      setState(() {
+        recordList=items;
+      });
+      print("recordList" + recordList.toString());
+    }
+  }
+
 }
+
+
+

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/RequestPage.dart';
 
 import '../utils/SimColor.dart';
@@ -73,9 +74,9 @@ class _SendPageContentState extends State<SendPageContent> {
                           ),
                           const SizedBox(height: 5),
                           Row(
-                            children: const [
-                              Text("3234.485u89 Space",
-                                  style: TextStyle(
+                            children:  [
+                              Text(spaceBalance,
+                                  style: const TextStyle(
                                       color: Color(SimColor.deaful_txt_color),
                                       fontSize: 18))
                             ],

@@ -15,6 +15,13 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+
+  void  refreshData(){
+    if(myWalletList.isEmpty){
+      deleteWallet();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // return Scaffold(
@@ -57,12 +64,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ],
                     )),
-                const Expanded(
+                 Expanded(
                     flex: 1,
                     child: Center(
                       child: Text(
-                        "Wallet 1",
-                        style: TextStyle(
+                        myWallet.name,
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Color(SimColor.deaful_txt_color),
                         ),
@@ -72,10 +79,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     width: 44,
                     height: 44,
                     child: TextButton(
-                        onPressed: () {
-                          showDialog(context: context, builder: (context){
+                        onPressed:  () async {
+                          await showDialog(context: context, builder: (context){
                             return const DeleteWalletDialog();
-                          });
+                          }).then((value) => refreshData());
                         },
                         child: Image.asset("images/mvc_wallet_delete_icon.png",
                             width: 22, height: 22))),
@@ -84,7 +91,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   height: 44,
                   width: 44,
                   child: TextButton(
-                      onPressed: () => print("设置"),
+                      onPressed: () {
+                        showDialog(context: context, builder: (context){
+                          return const EditWalletDialog();
+                        });
+                      },
                       child: Image.asset("images/mvc_edit_icon.png",
                           width: 22, height: 22)),
                 )
@@ -105,6 +116,29 @@ class SettingsContent extends StatefulWidget {
 }
 
 class _SettingsContentState extends State<SettingsContent> {
+
+  String notice="USD";
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(isUst){
+      notice="USD";
+    }else{
+      notice="CNY";
+    }
+  }
+
+  void  setData(){
+    if(isUst){
+      notice="USD";
+    }else{
+      notice="CNY";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -113,9 +147,13 @@ class _SettingsContentState extends State<SettingsContent> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           InkWell(
-            onTap: (){
-              showDialog(context: context, builder: (context){
-                return  UrrencyUnitDialog(isUsdt: true,);
+            onTap: () async {
+             await showDialog(context: context, builder: (context){
+                return  UrrencyUnitDialog(isUsdt: isUst,);
+              }).then((value){
+                setState(() {
+                  setData();
+                });
               });
             },
             child:   Row(
@@ -127,9 +165,18 @@ class _SettingsContentState extends State<SettingsContent> {
                 ),
                 SizedBox(
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await showDialog(context: context, builder: (context){
+                        return  UrrencyUnitDialog(isUsdt: isUst,);
+                      }).then((value){
+                        setState(() {
+                          setData();
+                        });
+                      });
+                    },
                     child: Row(children: [
-                      Text("USD", style: getDefaultTextStyle()),
+                      // Text(isUst?"USD":"CNY", style: getDefaultTextStyle()),
+                      Text(notice, style: getDefaultTextStyle()),
                       const SizedBox(width: 5),
                       Image.asset("images/mvc_wallet_more_icon.png",
                           width: 10, height: 10),

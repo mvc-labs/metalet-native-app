@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvcwallet/page/ScanResultPage.dart';
@@ -76,7 +75,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
             CupertinoPageRoute(builder: (BuildContext context) {
               // return  ScanPage2();
               // return const ScanResultPage(validateInput(result?.code));
-              return  ScanResultPage( result: validateInput(result?.code), );
+              return  ScanResultPage( result: validateInput(result?.code), isScan: true,);
             }));
 
 

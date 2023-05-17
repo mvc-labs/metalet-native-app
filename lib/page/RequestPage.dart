@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/utils/Constants.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
 import '../utils/SimColor.dart';
 import '../utils/SimStytle.dart';
 
@@ -43,11 +42,11 @@ class _SimQrWidgitState extends State<SimQrWidgit> {
     return Column(
       children: [
         const SizedBox(height: 30),
-        QrImage(size: 225, data: "1FQnMBn9okdZ6uDFtGuqVu3eFpJVrL8vam"),
+        QrImage(size: 225, data: myWallet.address),
         const SizedBox(height: 30),
         TextButton(
           onPressed: () {
-            ClipboardData data =  const ClipboardData(text:"1FQnMBn9okdZ6uDFtGuqVu3eFpJVrL8vam");
+            ClipboardData data =   ClipboardData(text:myWallet.address);
             Clipboard.setData(data);
             showToast("Copy Address");
           },
@@ -57,7 +56,7 @@ class _SimQrWidgitState extends State<SimQrWidgit> {
                 flex: 1,
                 child: Text(""),
               ),
-              Text("1FQnMBn9okdZ6uDFtGuqVu3eFpJVrL8vam", style: getDefaultTextStyle()),
+              Text(myWallet.address, style: getDefaultTextStyle()),
               const SizedBox(width: 5),
               Image.asset("images/add_icon_copy.png", width: 18, height: 20),
               const Expanded(
@@ -93,7 +92,7 @@ class _TitleBackState extends State<TitleBack> {
                 Navigator.of(context)
                     .pop(CupertinoPageRoute(builder: (BuildContext context) {
                   // return const SettingsPage();
-                  return const HomePage();
+                  return  HomePage();
                 }));
               },
               child: Row(

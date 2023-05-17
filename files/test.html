@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
     <script src="./metaContract.iife.js"></script>
 </head>
-
-
-
 <body>
 <script>
+
 
 <!--定义方法-->
 function one() {
@@ -21,29 +17,59 @@ function version() {
 }
 
 <!--调用-->
-setTimeout(() => {
-    version();
-}, 3000);
+var wallet;
 
-function initMetaWallet(mnemonic,path){
-setTimeout(() => {
-   const wallet =metaContract.Wallet.fromMnemonic({
+<!--first auto init -->
+<!--setTimeout(() => {-->
+<!--    version();-->
+<!--    wallet =metaContract.Wallet.fromMnemonic({-->
+<!--       mnemonic:mnemonic,-->
+<!--       network:'mainnet',-->
+<!--       feeb:1,-->
+<!--       path:path,-->
+<!--     });-->
+<!--}, 3000);-->
+
+
+function initMetaWallet(mnemonic,path,id,name){
+
+    wallet =metaContract.Wallet.fromMnemonic({
        mnemonic:mnemonic,
-       network:'testnet',
+       network:'mainnet',
        feeb:1,
-       path:"m/44'/10001'/0'/0/0",
+       path:path,
      });
-    metaInitCallBack.postMessage(wallet.address);
-}, 3000);
+
+   wallet.getBalance().then((res) => {
+    var userInfo= {
+    mnemonic: mnemonic,
+    path: path,
+    address:wallet.address.toString(),
+    balance:res.toString(),
+    id:id,
+    name:name,
+    };
+
+   metaInitCallBack.postMessage(JSON.stringify(userInfo));
+        metaBalance.postMessage(res.toString());
+   });
 }
 
 
+function getBalance(){
+setTimeout(() => {
+wallet.getBalance().then((res) => {
+        metaBalance.postMessage(res.toString());
+});
+}, 5000);
+}
 
 
-
-
-
-
+function send(address,amount){
+wallet.send(address,amount).then((res) =>{
+  metaSend.postMessage(res.toString());
+});
+}
 
 
 

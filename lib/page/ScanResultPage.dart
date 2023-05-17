@@ -1,7 +1,7 @@
 // ignore_for_file: no_logic_in_create_state
 
 import 'dart:ffi';
-
+import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,8 +15,10 @@ import 'ScanPage.dart';
 
 class ScanResultPage extends StatefulWidget {
   final String result;
+  bool isScan;
 
-  const ScanResultPage({Key? key, required this.result}) : super(key: key);
+
+   ScanResultPage({Key? key, required this.result,required this.isScan}) : super(key: key);
 
   @override
   State<ScanResultPage> createState() => _SettingsPageState(result);
@@ -33,13 +35,54 @@ class _SettingsPageState extends State<ScanResultPage> {
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 40, 10, 10),
+        // child: Column(
+        //   children: [
+        //     TitleBack2(
+        //       "Send",
+        //       onPressed: () {
+        //         // Navigator.pushAndRemoveUntil(context,
+        //         //     CupertinoPageRoute(builder: (BuildContext context) {
+        //         //       return const HomePage();
+        //         //     }), (route) => true);
+        //
+        //         Navigator.of(context)
+        //           ..pop()
+        //           ..pop();
+        //
+        //         // if(widget.isScan){
+        //         //   // double 次返回
+        //         //   Navigator.of(context)
+        //         //     ..pop()
+        //         //     ..pop();
+        //         // }else{
+        //         //   Navigator.of(context)
+        //         //     .pop();
+        //         // }
+        //         //事件总线的使用
+        //         // EventBusUtils.instance.fire(StringContentEvent(sResult));
+        //       },
+        //     ),
+        //     ScanResultContent(
+        //       lastResult: sResult,
+        //     )
+        //   ],
+        // ),
         //响应物理按键
         child: WillPopScope(
           onWillPop: () async {
-            Navigator.pushAndRemoveUntil(context,
-                CupertinoPageRoute(builder: (BuildContext context) {
-              return const HomePage();
-            }), (route) => false);
+            // Navigator.pushAndRemoveUntil(context,
+            //     CupertinoPageRoute(builder: (BuildContext context) {
+            //   return const HomePage();
+            // }), (route) => false);
+
+            if(widget.isScan){
+                      Navigator.of(context)
+                        ..pop()
+                        ..pop();
+                    }else{
+                      Navigator.of(context)
+                        .pop();
+                    }
             return false;
           },
           child: Column(
@@ -47,16 +90,14 @@ class _SettingsPageState extends State<ScanResultPage> {
               TitleBack2(
                 "Send",
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(context,
-                      CupertinoPageRoute(builder: (BuildContext context) {
-                    return const HomePage();
-                  }), (route) => false);
-                  // double 次返回
-                  // Navigator.of(context)
-                  //   ..pop()
-                  //   ..pop();
-                  //事件总线的使用
-                  // EventBusUtils.instance.fire(StringContentEvent(sResult));
+                  if(widget.isScan){
+                    Navigator.of(context)
+                      ..pop()
+                      ..pop();
+                  }else{
+                    Navigator.of(context)
+                        .pop();
+                  }
                 },
               ),
               ScanResultContent(
@@ -170,9 +211,9 @@ class _ScanResultContentState extends State<ScanResultContent> {
                               ),
                               const SizedBox(height: 5),
                               Row(
-                                children: const [
-                                  Text("3234.485u89 Space",
-                                      style: TextStyle(
+                                children:  [
+                                  Text(spaceBalance,
+                                      style: const TextStyle(
                                           color:
                                               Color(SimColor.deaful_txt_color),
                                           fontSize: 18))
@@ -307,7 +348,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
               width: double.infinity,
               child: ElevatedButton(
                   onPressed: () {
-                    send(widget.amount.toString());
+                    send(widget.addressController.text,widget.amountController.text);
                   },
                   style: ButtonStyle(
                     backgroundColor:
@@ -322,7 +363,13 @@ class _ScanResultContentState extends State<ScanResultContent> {
   }
 
 
-  send(String amount){
-    webViewController.runJavaScript("initMetaWallet('Send 发送交易的金额 ： $amount')");
+  void send(String address,String amount){
+    double sendAmount=double.parse(amount)*100000000;
+    var valueRe = Decimal.parse(sendAmount.toString()).toStringAsFixed(0);
+    print("address $address");
+    print("sendAmount $valueRe");
+    webViewController.runJavaScript("send('$address','$valueRe')");
   }
+
+
 }

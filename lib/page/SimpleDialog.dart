@@ -3,92 +3,109 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mvcwallet/data/Indo.dart';
+import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/utils/SimStytle.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../utils/Constants.dart';
+import '../utils/EventBusUtils.dart';
 import '../utils/SimColor.dart';
 import 'Test.dart';
 
 ///页面弹框部分//////////////////////////////////
-///
 // ignore: must_be_immutable
-class MyWalletDialog extends Dialog {
-  void Function()? onConfirm;
-  bool isVisibility;
-
-  MyWalletDialog(
-      {super.key, required this.onConfirm, required this.isVisibility});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Center(
-        child: Container(
-            margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
-            width: double.infinity,
-            height: 400,
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  const DialogTitleLayout(title: "Add/RestoreWallet"),
-                  const SizedBox(height: 30),
-                  Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("images/input.png"),
-                            fit: BoxFit.fill)),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                          hintText: "Wallet 2", border: InputBorder.none),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    height: 130,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("images/input_large_bg.png"),
-                            fit: BoxFit.fill)),
-                    child: const TextField(
-                      maxLines: 10,
-                      decoration: InputDecoration(
-                        hintText: "mnemonicp hrase",
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("images/input.png"),
-                            fit: BoxFit.fill)),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                          hintText: "m/44'/10001'/0'",
-                          border: InputBorder.none),
-                    ),
-                  ),
-                  //这里写2个 Button
-                  DialogBottomLayout(
-                      onConfirm: onConfirm, isVisibility: isVisibility)
-                ],
-              ),
-            )),
-      ),
-    );
-  }
-}
+// class MyWalletDialog extends Dialog {
+//   void Function()? onConfirm;
+//   bool isVisibility;
+//
+//
+//   late TextEditingController walletNameController;
+//   late TextEditingController walletMnemoniController;
+//   late TextEditingController walletPathController;
+//
+//   MyWalletDialog({super.key, required this.onConfirm, required this.isVisibility}){
+//     walletNameController=TextEditingController();
+//     walletMnemoniController=TextEditingController();
+//     walletPathController=TextEditingController();
+//
+//   }
+//
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Material(
+//       type: MaterialType.transparency,
+//       child: Center(
+//         child: Container(
+//             margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+//             width: double.infinity,
+//             height: 400,
+//             decoration: const BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.all(Radius.circular(10))),
+//             child: Padding(
+//               padding: const EdgeInsets.all(20),
+//               child: Column(
+//                 children: [
+//                   const DialogTitleLayout(title: "Add/RestoreWallet"),
+//                   const SizedBox(height: 30),
+//                   Container(
+//                     height: 50,
+//                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+//                     decoration: const BoxDecoration(
+//                         image: DecorationImage(
+//                             image: AssetImage("images/input.png"),
+//                             fit: BoxFit.fill)),
+//                     child:  TextField(
+//                       decoration: const InputDecoration(
+//                           hintText: "Wallet 2", border: InputBorder.none),
+//                       controller: walletNameController,
+//                     ),
+//                   ),
+//                   const SizedBox(height: 10),
+//                   Container(
+//                     height: 130,
+//                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+//                     decoration: const BoxDecoration(
+//                         image: DecorationImage(
+//                             image: AssetImage("images/input_large_bg.png"),
+//                             fit: BoxFit.fill)),
+//                     child:  TextField(
+//                       maxLines: 10,
+//                       decoration: const InputDecoration(
+//                         hintText: "mnemonicp hrase",
+//                         border: InputBorder.none,
+//                       ),
+//                       controller: walletMnemoniController,
+//                     ),
+//                   ),
+//                   const SizedBox(height: 10),
+//                   Container(
+//                     height: 50,
+//                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+//                     decoration: const BoxDecoration(
+//                         image: DecorationImage(
+//                             image: AssetImage("images/input.png"),
+//                             fit: BoxFit.fill)),
+//                     child:  TextField(
+//                       decoration: const InputDecoration(
+//                           // hintText: "m/44'/10001'/0'",
+//                           hintText: "10001",
+//                           border: InputBorder.none),
+//                       controller: walletPathController,
+//                     ),
+//                   ),
+//                   //这里写2个 Button
+//                   DialogBottomLayout(
+//                       onConfirm: onConfirm, isVisibility: isVisibility)
+//                 ],
+//               ),
+//             )),
+//       ),
+//     );
+//   }
+// }
 
 //Delete Wallet
 class DeleteWalletDialog extends StatefulWidget {
@@ -112,7 +129,6 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
     return Material(
       type: MaterialType.transparency,
       child: Center(
-        child: Expanded(
           child: Container(
             margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
             width: double.infinity,
@@ -131,7 +147,7 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
                           const Divider(height: 35),
                           const SizedBox(height: 15),
                           Text(
-                            "Are you sure you want to delete this wallet 1? Please ensure that you have backed up the mnemonic phrase for this wallet before deleting.",
+                            "Are you sure you want to delete this ${myWallet.name}? Please ensure that you have backed up the mnemonic phrase for this wallet before deleting.",
                             style: getDefaultTextStyle(),
                           ),
                           const SizedBox(height: 30),
@@ -168,7 +184,14 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
                                       child: TextButton(
                                         onPressed: () {
                                           if (isOK) {
-                                            Navigator.pop(context);
+                                            Navigator.of(context)..pop()..pop();
+                                            showToast("Delete Success");
+                                            setState(() {
+                                              isLogin=false;
+                                              deleteWallet();
+                                              EventBusUtils.instance
+                                                  .fire(DeleteWallet());
+                                            });
                                           }
                                         },
                                         child: handleText(),
@@ -182,7 +205,6 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
               ],
             ),
           ),
-        ),
       ),
     );
   }
@@ -235,7 +257,7 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
 class UrrencyUnitDialog extends StatefulWidget {
   bool isUsdt;
 
-  UrrencyUnitDialog({Key? key, required this.isUsdt}) : super(key: key);
+  UrrencyUnitDialog({Key? key,required this.isUsdt}) : super(key: key);
 
   @override
   State<UrrencyUnitDialog> createState() => _UrrencyUnitDialogState();
@@ -247,7 +269,6 @@ class _UrrencyUnitDialogState extends State<UrrencyUnitDialog> {
     return Material(
       type: MaterialType.transparency,
       child: Center(
-        child: Expanded(
           child: Container(
             margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
             width: double.infinity,
@@ -265,41 +286,60 @@ class _UrrencyUnitDialogState extends State<UrrencyUnitDialog> {
                           const DialogTitleLayout(title: "Urrency Unit"),
                           const Divider(height: 35),
                           const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "USD",
-                                style: getDefaultTextStyleTitle(),
-                              ),
-                              Visibility(
-                                  visible: widget.isUsdt,
-                                  child: Image.asset(
-                                      "images/mvc_unit_select.png",
-                                      width: 15,
-                                      height: 15))
-                            ],
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                widget.isUsdt=true;
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "USD",
+                                  style: getDefaultTextStyleTitle(),
+                                ),
+                                Visibility(
+                                    visible: widget.isUsdt,
+                                    child: Image.asset(
+                                        "images/mvc_unit_select.png",
+                                        width: 15,
+                                        height: 15))
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 30),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "CNY",
-                                style: getDefaultTextStyleTitle(),
-                              ),
-                              Visibility(
-                                  visible: !widget.isUsdt,
-                                  child: Image.asset(
-                                      "images/mvc_unit_select.png",
-                                      width: 15,
-                                      height: 15))
-                            ],
-                          ),
+                          InkWell(
+                              onTap: () {
+                                setState(() {
+                                  widget.isUsdt=false;
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "CNY",
+                                    style: getDefaultTextStyleTitle(),
+                                  ),
+                                  Visibility(
+                                      visible: !widget.isUsdt,
+                                      child: Image.asset(
+                                          "images/mvc_unit_select.png",
+                                          width: 15,
+                                          height: 15))
+                                ],
+                              )),
                           const SizedBox(height: 20),
                           DialogBottomLayout(
                               onConfirm: () {
                                 Navigator.pop(context);
+                                setState(() {
+                                  isUst = widget.isUsdt;
+                                  SharedPreferencesUtils.setBool(
+                                      "isUst_key", isUst);
+                                });
                               },
                               isVisibility: false),
                         ],
@@ -309,7 +349,6 @@ class _UrrencyUnitDialogState extends State<UrrencyUnitDialog> {
               ],
             ),
           ),
-        ),
       ),
     );
   }
@@ -324,7 +363,6 @@ class BackUpWalletDialog extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: Center(
-        child: Expanded(
           child: Container(
             margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
             width: double.infinity,
@@ -370,7 +408,7 @@ class BackUpWalletDialog extends StatelessWidget {
                           const SizedBox(height: 10),
                           Row(
                             children: [
-                              Text("m/44'/10001'/0'",
+                              Text("m/44'/${myWallet.path}'/0'",
                                   style: getDefaultTextStyle())
                             ],
                           ),
@@ -387,7 +425,6 @@ class BackUpWalletDialog extends StatelessWidget {
               ],
             ),
           ),
-        ),
       ),
     );
   }
@@ -402,7 +439,6 @@ class DisclaimerDialog extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: Center(
-        child: Expanded(
           child: Container(
             margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
             width: double.infinity,
@@ -411,13 +447,13 @@ class DisclaimerDialog extends StatelessWidget {
             //     borderRadius: BorderRadius.all(Radius.circular(10))),
             child: Column(
               children: [
-                Expanded(flex: 1, child: SizedBox()),
+                const Expanded(flex: 1, child: SizedBox()),
                 Container(
                     decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     child: Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
                           const DialogTitleLayout(title: "Disclaimer"),
@@ -454,7 +490,110 @@ class DisclaimerDialog extends StatelessWidget {
                         ],
                       ),
                     )),
-                Expanded(flex: 1, child: SizedBox()),
+                const Expanded(flex: 1, child: SizedBox()),
+              ],
+            ),
+          ),
+      ),
+    );
+  }
+}
+
+class ProgressDialog extends StatefulWidget {
+  bool isShow;
+
+  ProgressDialog({Key? key, required this.isShow}) : super(key: key);
+
+  @override
+  State<ProgressDialog> createState() => _ProgressDialogState();
+}
+
+class _ProgressDialogState extends State<ProgressDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+        visible: widget.isShow,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Center(
+            child: Container(
+              width: 100,
+              height: 100,
+              child: const CircularProgressIndicator(
+                  // backgroundColor: Colors.white,
+                  // valueColor:  new AlwaysStoppedAnimation<Color>(Color(SimColor.color_button_blue)),
+                  ),
+            ),
+          ),
+        ));
+  }
+}
+
+class EditWalletDialog extends StatefulWidget {
+  const EditWalletDialog({Key? key}) : super(key: key);
+
+  @override
+  State<EditWalletDialog> createState() => _EditWalletDialogState();
+}
+
+class _EditWalletDialogState extends State<EditWalletDialog> {
+  TextEditingController walletNameController=TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Expanded(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+            width: double.infinity,
+            child: Column(
+              children: [
+                const Expanded(flex: 1, child: SizedBox()),
+                Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          const DialogTitleLayout(title: "Edit Wallet"),
+                          const SizedBox(height: 20),
+                          Container(
+                            height: 50,
+                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage("images/input.png"),
+                                    fit: BoxFit.fill)),
+                            child: TextField(
+                              decoration:  InputDecoration(
+                                  // hintText: "m/44'/10001'/0'",
+                                  hintText: myWallet.name,
+                                  border: InputBorder.none),
+                              controller: walletNameController,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          //这里写2个 Button
+                          DialogBottomLayout(
+                              onConfirm: () {
+                                Navigator.pop(context);
+                                setState(() {
+                                  if(walletNameController.text.isNotEmpty){
+                                    myWallet.name=walletNameController.text;
+                                    showToast("Success");
+                                    changeWalletInfo(myWallet);
+                                  }
+                                });
+                              },
+                              isVisibility: false),
+                        ],
+                      ),
+                    )),
+                const Expanded(flex: 1, child: SizedBox()),
               ],
             ),
           ),
@@ -464,48 +603,20 @@ class DisclaimerDialog extends StatelessWidget {
   }
 }
 
-class ProgressDialog extends StatefulWidget {
-  const ProgressDialog({Key? key}) : super(key: key);
-
-  @override
-  State<ProgressDialog> createState() => _ProgressDialogState();
-}
-
-class _ProgressDialogState extends State<ProgressDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Center(
-        child:  Container(
-          width: 100,
-          height: 100,
-          child: const CircularProgressIndicator(
-            // backgroundColor: Colors.white,
-            // valueColor:  new AlwaysStoppedAnimation<Color>(Color(SimColor.color_button_blue)),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
 
 
 //flutter 中加载webView 并和JS 进行交互
 class SimWebView extends StatefulWidget {
-   final WebViewController webViewController;
-  const SimWebView(this.webViewController,{Key? key}) : super(key: key);
+  final WebViewController webViewController;
+
+  const SimWebView(this.webViewController, {Key? key}) : super(key: key);
 
   @override
   State<SimWebView> createState() => _SimWebViewState(webViewController);
 }
 
 class _SimWebViewState extends State<SimWebView> {
-
-  late WebViewController _webViewController;
-
+  final WebViewController _webViewController;
 
   _SimWebViewState(this._webViewController);
 
@@ -539,39 +650,39 @@ class _SimWebViewState extends State<SimWebView> {
     //     showToast("接收 JS: "+message.message);
     //     // _webViewController.runJavaScriptReturningResult("initMetaWallet('消息来至flutter 调用 JS 的传入参数')").then((value) =>   showToast(value.toString()));
     //   });
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Visibility(
-        visible: false,
-        child: SizedBox(
-          width: 100,
-          height: 100,
-          child: WebViewWidget(
-              controller: _webViewController
-          ),
-        ),
-      );
+    return Visibility(
+      visible: false,
+      child: SizedBox(
+        width: 100,
+        height: 100,
+        child: WebViewWidget(controller: _webViewController),
+      ),
+    );
   }
 
   _loadHtmlFromAssets() async {
+
+    // String url = "";
+    // if (Platform.isAndroid) {
+    //   url = "file:///android_asset/flutter_assets/files/test.html";
+    // } else if (Platform.isIOS) {
+    //   url = "file://Frameworks/App.framework/flutter_assets/files/test.html";
+    // }
+    // String fileHtmlContent = await rootBundle.loadString(url);
+
     String fileHtmlContent = await rootBundle.loadString("files/test.html");
+    // showToast(fileHtmlContent);
     _webViewController?.loadHtmlString(fileHtmlContent);
-    String jsContent = await rootBundle.loadString("files/metaContract.iife.js");
+    // _webViewController?.loadHtmlString(htmlString);
+    String jsContent =
+        await rootBundle.loadString("files/metaContract.iife.js");
     _webViewController.runJavaScript(jsContent);
   }
-
 }
-
-
-
-
-
-
-
 
 //公共的头部控件
 class DialogTitleLayout extends StatelessWidget {
