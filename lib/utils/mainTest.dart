@@ -36,29 +36,24 @@ List myWalletList = [];
 bool isUst = true;
 bool isShowLoadingDialog = false;
 bool isAddWallet = false;
-bool isSwitchWallet = false;
-bool   isLogin = false;
+bool isLogin = false;
 bool isCreate = false;
 // BuildContext? context;
 final navKey = GlobalKey<NavigatorState>();
 String success = "Success";
 String error = "error";
-String walletName = "Wallet";
 bool isSendFinish = false;
-Timer? balanceTimer;
-
 
 WebViewController webViewController = WebViewController();
 
-// by now main
-void main() {
-  runApp(const MyApp());
-  if (Platform.isAndroid) {
-    SystemUiOverlayStyle systemUiOverlayStyle =
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-  }
-}
+// void main() {
+//   runApp(const MyApp());
+//   if (Platform.isAndroid) {
+//     SystemUiOverlayStyle systemUiOverlayStyle =
+//         const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+//     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+//   }
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -99,8 +94,7 @@ class _HomePageState extends State<HomePage> implements Indo {
         // spaceBalance="$value Space";
         spaceBalance = event.spaceBalance;
         walletBalance = event.walletBalance;
-        print(" 更新余额信息  $spaceBalance");
-        print(" 更新余额信息法币  $walletBalance");
+        print(" $spaceBalance");
       });
     });
 
@@ -112,74 +106,11 @@ class _HomePageState extends State<HomePage> implements Indo {
         isLogin = false;
         spaceBalance = "0.0 Space";
         walletBalance = "\$ 0.0";
-        walletName="Wallet";
-        print("11111");
-        SqWallet sqWallet = SqWallet();
-        Future<List<Wallet>> list = sqWallet.getAllWallet();
-        list.then((value) {
-          setState(() {
-            if (value.isNotEmpty) {
-              print("22222");
-              Wallet vWallet=value[0];
-              vWallet.isChoose=1;
-              myWallet = vWallet;
-              isLogin = true;
-              walletName=myWallet.name;
-              print("44444"+myWallet.balance);
-              dioRate(myWallet.balance);
-              sqWallet.updateDefaultData(myWallet);
-              switchWallet(myWallet);
-
-            } else {
-              print("33333");
-              isLogin = false;
-              spaceBalance = "0.0 Space";
-              walletBalance = "\$ 0.0";
-              walletName="Wallet";
-            }
-          });
-        });
       });
     });
 
     setState(() {
-      // initLocalWallet();
-      // initLocalWalletBySql();
-
-      SqWallet sqWallet = SqWallet();
-      Future<List<Wallet>> list = sqWallet.getAllWallet();
-      list.then((value) {
-        if (value.isNotEmpty) {
-          print("获取的缓存数据："+value.toString());
-          for (var wallet in value) {
-            // ignore: unrelated_type_equality_checks
-            if(wallet.isChoose==1){
-              myWallet = wallet;
-              isLogin = true;
-              walletName=myWallet.name;
-              dioRate(myWallet.balance);
-            }
-          }
-        } else {
-          print("Wallet Null");
-        }
-      });
-      SharedPreferencesUtils.getBool("isUst_key", true)
-          .then((value) => isUst = value);
-
-      Timer.periodic(const Duration(seconds: 1), (timer) {
-        timeCount -= 1;
-        if (timeCount <= 0) {
-          String editMnem = myWallet.mnemonic;
-          String mne = myWallet.path;
-          var seInt = id.toString();
-          if (mne.isNotEmpty) {
-            webViewController.runJavaScript(
-                "initMetaWallet('$editMnem','$mne','$seInt','${myWallet.name}')");
-          }
-          timer.cancel();
-        }
-      });
+      initLocalWallet();
     });
 
     webViewController
@@ -190,55 +121,20 @@ class _HomePageState extends State<HomePage> implements Indo {
           Navigator.of(navKey.currentState!.overlay!.context).pop();
         }
         if (isNoEmpty(message.message)) {
-          print("初始化完成接受的数据："+message.message);
           myWallet = Wallet.fromJson(json.decode(message.message));
-
-
           print("：${myWallet.mnemonic}");
           if (isAddWallet) {
+            showToast(success);
+            isLogin = true;
+            isAddWallet = false;
             id = int.parse(myWallet.id);
             SharedPreferencesUtils.setValue("id_key", id);
             myWalletList.add(myWallet);
             String cacheWallet = json.encode(myWalletList);
             SharedPreferencesUtils.setValue("mvc_wallet", cacheWallet);
 
-
-            showToast(success);
-            isLogin = true;
-            setState(() {
-              walletName=myWallet.name;
-              dioRate(myWallet.balance);
-            });
-            if(isSwitchWallet==false){
-              SqWallet sqWallet = SqWallet();
-              bool isInset=true;
-              sqWallet.refreshDefaultData(isInset,myWallet);
-            }else{
-              isSwitchWallet=false;
-            }
-            isAddWallet = false;
-
-            if(balanceTimer!=null){
-              balanceTimer!.cancel();
-              balanceTimer=null;
-            }
-
-            // Future<List<Wallet>> list = sqWallet.getAllWallet();
-            // list.then((value) {
-            //   if (value.isNotEmpty) {
-            //     print("获取的缓存数据："+value.toString());
-            //     for (var wallet in value) {
-            //       // ignore: unrelated_type_equality_checks
-            //       wallet.isChoose=0;
-            //       sqWallet.insert(wallet);
-            //     }
-            //   } else {
-            //     print("Wallet Null");
-            //   }
-            // });
-
-
-
+            SqWallet sqWallet = SqWallet();
+            sqWallet.insert(myWallet);
             // sqWallet.id=myWallet.id;
             // sqWallet.name=myWallet.name;
             // sqWallet.mnemonic=myWallet.mnemonic;
@@ -255,9 +151,10 @@ class _HomePageState extends State<HomePage> implements Indo {
         showToast(" JS : " + message.message);
       })
       ..addJavaScriptChannel("metaBalance", onMessageReceived: (message) {
-        print("接受的余额  "+message.message);
-        getBalanceTimer();
-        dioRate(message.message);
+        if (isLogin) {
+          webViewController.runJavaScript("getBalance()");
+          dioRate(message.message);
+        }
       })
       ..addJavaScriptChannel("metaSend", onMessageReceived: (message) {
         isSendFinish = true;
@@ -287,23 +184,6 @@ class _HomePageState extends State<HomePage> implements Indo {
     super.initState();
   }
 
-
-  getBalanceTimer(){
-    balanceTimer ??= Timer.periodic(const Duration(seconds: 5), (timer) {
-        // timeCount -= 1;
-        if(isLogin){
-          // if (timeCount <= 0) {
-          //   timeCount = 5;
-          webViewController.runJavaScript("getBalance()");
-          // dioRate(message);
-          // }
-        } else{
-          timer.cancel();
-        }
-      });
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -317,31 +197,16 @@ class _HomePageState extends State<HomePage> implements Indo {
           children: [
             TextButton(
                 onPressed: () {
-                  SqWallet sqWallet=SqWallet();
-                  sqWallet.getAllWallet().then((value) {
-                    if(value.isNotEmpty){
-                      showDialog(context: context, builder: (context){
-                        return MyWalletsDialog(indo: this,walletList: value,);
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return CreateWalletDialog(indo: this);
                       });
-
-                      // showDialog(
-                      //     context: context,
-                      //     builder: (context) {
-                      //       return MyWalletListDialog(indo: this,isVisibility: true,walletList: value,);
-                      //     });
-                    }else{
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return CreateWalletDialog(indo: this);
-                          });
-                    }
-                  });
                 },
                 child: Row(
                   children: [
                     Text(
-                      walletName,
+                      myWallet.name,
                       style: const TextStyle(
                           fontSize: 15,
                           color: Color(SimColor.deaful_txt_color)),
@@ -560,19 +425,8 @@ class _HomePageState extends State<HomePage> implements Indo {
   }
 
   @override
-  void switchWallet(Wallet? wallet) {
-    if(wallet!=null){
-      showDialog(
-        context: context,
-        builder: (context) {
-          return ProgressDialog(isShow: true);
-        });
-    isShowLoadingDialog = true;
-    isAddWallet = true;
-    isSwitchWallet=true;
-    webViewController.runJavaScript(
-        "initMetaWallet('${wallet.mnemonic}','${wallet.path}','${wallet.id}','${wallet.name}')");
-    }
+  void switchWallet(Wallet? w) {
+    // TODO: implement switchWallet
   }
 }
 

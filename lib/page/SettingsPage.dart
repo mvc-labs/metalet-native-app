@@ -68,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     flex: 1,
                     child: Center(
                       child: Text(
-                        myWallet.name,
+                        walletName,
                         style: const TextStyle(
                           fontSize: 16,
                           color: Color(SimColor.deaful_txt_color),
@@ -94,6 +94,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       onPressed: () {
                         showDialog(context: context, builder: (context){
                           return const EditWalletDialog();
+                        }).then((value){
+                          setState(() {
+                           walletName=myWallet.name;
+                          });
                         });
                       },
                       child: Image.asset("images/mvc_edit_icon.png",

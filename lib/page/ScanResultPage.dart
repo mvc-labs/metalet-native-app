@@ -1,5 +1,6 @@
 // ignore_for_file: no_logic_in_create_state
 
+import 'dart:async';
 import 'dart:ffi';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ import '../utils/EventBusUtils.dart';
 import '../utils/SimColor.dart';
 import '../utils/SimStytle.dart';
 import 'ScanPage.dart';
+import 'SimpleDialog.dart';
 
 class ScanResultPage extends StatefulWidget {
   final String result;
@@ -364,11 +366,37 @@ class _ScanResultContentState extends State<ScanResultContent> {
 
 
   void send(String address,String amount){
-    double sendAmount=double.parse(amount)*100000000;
-    var valueRe = Decimal.parse(sendAmount.toString()).toStringAsFixed(0);
-    print("address $address");
-    print("sendAmount $valueRe");
-    webViewController.runJavaScript("send('$address','$valueRe')");
+    if(address.isNotEmpty&&amount.isNotEmpty){
+
+      double sendAmount=double.parse(amount)*100000000;
+
+      if(sendAmount<double.parse(myWallet.balance)){
+        FocusScope.of(context).unfocus();
+        var valueRe = Decimal.parse(sendAmount.toString()).toStringAsFixed(0);
+        print("address $address");
+        print("sendAmount $valueRe");
+        showDialog(
+            context: context,
+            builder: (context) {
+              return ProgressDialog(isShow: true);
+            });
+        isSendFinish=false;
+        webViewController.runJavaScript("send('$address','$valueRe')");
+
+        Future.delayed(const Duration(seconds: 6),(){
+          if(isSendFinish==false){
+            Navigator.of(context).pop();
+            showToast("Send failed Please check the address");
+          }
+          isSendFinish=true;
+        });
+
+      }else{
+        showToast("Insufficient transfer balance");
+      }
+
+
+    }
   }
 
 

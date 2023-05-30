@@ -7,7 +7,6 @@
 <script>
 
 
-<!--定义方法-->
 function one() {
  flutterControl.postMessage('one');
  }
@@ -16,7 +15,6 @@ function version() {
     metaInitCallBack.postMessage(metaContract.mvc.version);
 }
 
-<!--调用-->
 var wallet;
 
 <!--first auto init -->
@@ -32,7 +30,7 @@ var wallet;
 
 
 function initMetaWallet(mnemonic,path,id,name){
-
+try{
     wallet =metaContract.Wallet.fromMnemonic({
        mnemonic:mnemonic,
        network:'mainnet',
@@ -48,30 +46,54 @@ function initMetaWallet(mnemonic,path,id,name){
     balance:res.toString(),
     id:id,
     name:name,
+    isChoose:1,
     };
 
    metaInitCallBack.postMessage(JSON.stringify(userInfo));
         metaBalance.postMessage(res.toString());
    });
+}catch(e){
+ metaInitCallBack.postMessage('');
+}
+
+
+
 }
 
 
 function getBalance(){
-setTimeout(() => {
 wallet.getBalance().then((res) => {
         metaBalance.postMessage(res.toString());
 });
-}, 5000);
 }
 
 
 function send(address,amount){
+try{
 wallet.send(address,amount).then((res) =>{
-  metaSend.postMessage(res.toString());
+  const txId = res.txId;
+  metaSend.postMessage(txId);
 });
+}catch(e){
+metaSend.postMessage('');
+}
+}
+
+function generateMnemonic(){
+try{
+const mne = metaContract.Wallet.generateMnemonic();
+  metaCreateWallet.postMessage(mne);
+}catch(e){
+metaCreateWallet.postMessage(e.toString());
+}
 }
 
 
+<!--setTimeout(() => {-->
+<!--wallet.getBalance().then((res) => {-->
+<!--        metaBalance.postMessage(res.toString());-->
+<!--});-->
+<!--}, 5000);-->
 
 </script>
 </body>

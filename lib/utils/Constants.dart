@@ -1,14 +1,17 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/main.dart';
+import 'package:mvcwallet/sqlite/SqWallet.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../dialog/MyWalletDialog.dart';
+import '../page/SimpleDialog.dart';
 
 void showToast(String content) {
   Fluttertoast.showToast(
@@ -53,7 +56,7 @@ void changeWalletInfo(Wallet wallet) {
 void deleteWallet() {
   myWalletList.clear();
   SharedPreferencesUtils.setValue("mvc_wallet", "");
-  myWallet = Wallet("", "", "", "0.0", "0", "Wallet");
+  myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0);
   // webViewController.runJavaScript("initMetaWallet('','','','')");
   wallets = "";
   spaceBalance = "0.0 Space";
@@ -62,7 +65,7 @@ void deleteWallet() {
 
 void initLocalWallet() {
   SharedPreferencesUtils.getString("mvc_wallet", "")
-      .then((value) => print("获取报错的钱包： " + value.toString()));
+      .then((value) => print("Wallet： " + value.toString()));
   SharedPreferencesUtils.getString("mvc_wallet", "").then((value) {
     wallets = value;
     SharedPreferencesUtils.getInt("id_key", id).then((value) {
@@ -72,13 +75,13 @@ void initLocalWallet() {
         selectIndex = value;
         if (wallets.isNotEmpty) {
           myWalletList = json.decode(wallets);
-          print("当前的 selectInde$selectIndex");
-          print("解析的数组是：" + myWalletList.toString());
+          print(" selectInde$selectIndex");
+          print("：" + myWalletList.toString());
           myWallet = Wallet.fromJson(myWalletList[selectIndex]);
-          isLogin=true;
+          isLogin = true;
           dioRate(myWallet.balance);
         } else {
-          print("获取的缓存钱包为空");
+          print("Wallet Null");
         }
       });
     });
@@ -93,15 +96,70 @@ void initLocalWallet() {
       String editMnem = myWallet.mnemonic;
       String mne = myWallet.path;
       var seInt = id.toString();
-      webViewController
-          .runJavaScript("initMetaWallet('$editMnem','$mne','$seInt','${myWallet.name}')");
+      if (mne.isNotEmpty) {
+        webViewController.runJavaScript(
+            "initMetaWallet('$editMnem','$mne','$seInt','${myWallet.name}')");
+      }
       timer.cancel();
     }
   });
 }
 
+void initLocalWalletBySql() {
 
-void hasNoLogin(Indo indo){
+  SqWallet sqWallet = SqWallet();
+  Future<List<Wallet>> list = sqWallet.getAllWallet();
+  list.then((value) {
+    if (value.isNotEmpty) {
+      print("获取的缓存数据："+value.toString());
+      for (var wallet in value) {
+        // ignore: unrelated_type_equality_checks
+        if(wallet.isChoose==1){
+          myWallet = wallet;
+          isLogin = true;
+          dioRate(myWallet.balance);
+        }
+      }
+    } else {
+      print("Wallet Null");
+    }
+  });
+  
+  
+
+
+  SharedPreferencesUtils.getBool("isUst_key", true)
+      .then((value) => isUst = value);
+
+  Timer.periodic(const Duration(seconds: 1), (timer) {
+    timeCount -= 1;
+    if (timeCount <= 0) {
+      String editMnem = myWallet.mnemonic;
+      String mne = myWallet.path;
+      var seInt = id.toString();
+      if (mne.isNotEmpty) {
+        webViewController.runJavaScript(
+            "initMetaWallet('$editMnem','$mne','$seInt','${myWallet.name}')");
+      }
+      timer.cancel();
+    }
+  });
+}
+
+void hasNoLogin(Indo indo) {
+  // showDialog(
+  //     context: navKey.currentState!.overlay!.context,
+  //     builder: (context) {
+  //       return MyWalletDialog(indo: indo, isVisibility: true);
+  //     });
+  showDialog(
+      context: navKey.currentState!.overlay!.context,
+      builder: (context) {
+        return CreateWalletDialog(indo: indo);
+      });
+}
+
+void addMvcWallet(Indo indo) {
   showDialog(
       context: navKey.currentState!.overlay!.context,
       builder: (context) {
@@ -109,9 +167,6 @@ void hasNoLogin(Indo indo){
       });
 }
 
-
-
-///保存数据部分//////////////////////////////
 class SharedPreferencesUtils {
   static void setValue(String key, Object? value) {
     if (value is int) {
@@ -217,7 +272,6 @@ class SharedPreferencesUtils {
   }
 }
 
-///钱包实体
 class Wallet {
   String id = "0";
   String name = "Wallet";
@@ -227,23 +281,37 @@ class Wallet {
   String path = "10001";
   String address = "";
   String balance = "0.0";
+  int isChoose = 0;
 
-  Wallet(
-      this.mnemonic, this.path, this.address, this.balance, this.id, this.name);
+  Wallet(this.mnemonic, this.path, this.address, this.balance, this.id,
+      this.name, this.isChoose);
 
-  /// 这个方法在对象转json的时候自动被调用
-  Map toJson() {
-    Map map = {};
+  // Map toJson() {
+  //   Map map = {};
+  //   map["mnemonic"] = mnemonic;
+  //   map["path"] = path;
+  //   map["address"] = address;
+  //   map["balance"] = balance;
+  //   map["id"] = id;
+  //   map["name"] = name;
+  //   map["isChoose"] = isChoose;
+  //   return map;
+  // }
+
+  Map<String, Object?> toJson() {
+    Map<String, Object?>  map = {};
     map["mnemonic"] = mnemonic;
     map["path"] = path;
     map["address"] = address;
     map["balance"] = balance;
     map["id"] = id;
     map["name"] = name;
+    map["isChoose"] = isChoose;
     return map;
   }
 
-  /// 因为调用 jsonDecode 把 json 串转对象时，jsonDecode 方法的返回值是 map 类型，无法直接转成 Student 对象
+
+
   factory Wallet.fromJson(Map<String, dynamic> parsedJson) {
     Wallet wallet = Wallet(
         parsedJson['mnemonic'],
@@ -251,49 +319,13 @@ class Wallet {
         parsedJson['address'],
         parsedJson['balance'],
         parsedJson['id'],
-        parsedJson['name']);
+        parsedJson['name'],
+        parsedJson['isChoose']);
     return wallet;
   }
 
-//将list 对象数据转为  json 格式
-// String jsonStr=json.encode(goList);
-// 将Json String 数据转为list
-// List list = json.decode(jsonStr);
-}
-
-void main() {
-  /// 集合测试部分
-  var goList = [];
-  Wallet wallet = Wallet("net turn first rare glide patient", "path1",
-      "钱包1地址信息", "233.4", "0", "");
-  goList.add(wallet);
-
-  Wallet wallet2 =
-      Wallet("rare glide patient", "path2", "钱包2地址信息", "2134.67", "0", "");
-  goList.add(wallet2);
-
-  Wallet wallet3 = Wallet("Apple SD Gothic Neo glide patient", "path3",
-      "钱包3地址信息", "111.67", "0", "");
-  goList.add(wallet3);
-
-  goList.removeAt(1);
-
-  String saveData = goList.join("|");
-  print(goList.toString());
-
-  String jsonStr = json.encode(goList);
-  print(jsonStr);
-
-  List resultList = json.decode(jsonStr);
-  // Wallet myWallet=resultList[1] as Wallet;
-  // print("钱包助记词："+myWallet.mnemonic  +"  余额 ： "+myWallet.balance+"  地址：  "+myWallet.address);
-  // print(resultList[1]);
-
-  Wallet myWallet = Wallet.fromJson(resultList[1]);
-  print("钱包助记词：" +
-      myWallet.mnemonic +
-      "  余额 ： " +
-      myWallet.balance +
-      "  地址：  " +
-      myWallet.address);
+  @override
+  String toString() {
+    return 'Wallet{id: $id, name: $name, mnemonic: $mnemonic, path: $path, address: $address, balance: $balance, isChoose: $isChoose}';
+  }
 }
