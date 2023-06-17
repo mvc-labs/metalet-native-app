@@ -56,9 +56,12 @@ class _SimQrWidgitState extends State<SimQrWidgit> {
                 flex: 1,
                 child: Text(""),
               ),
-              Text(myWallet.address, style: getDefaultTextStyle()),
-              const SizedBox(width: 5),
-              Image.asset("images/add_icon_copy.png", width: 18, height: 20),
+              Text(myWallet.address, style: const TextStyle(
+                  fontSize: 12,
+                  color: Color(SimColor.deaful_txt_color),
+                  decoration: TextDecoration.none)),
+              const SizedBox(width: 2),
+              Image.asset("images/add_icon_copy.png", width: 16, height: 16),
               const Expanded(
                 flex: 1,
                 child: Text(""),

@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:mvcwallet/page/SimpleDialog.dart';
 import 'package:mvcwallet/utils/Constants.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../main.dart';
 import '../utils/SimColor.dart';
 import '../utils/SimStytle.dart';
@@ -15,9 +19,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
-  void  refreshData(){
-    if(myWalletList.isEmpty){
+  void refreshData() {
+    if (myWalletList.isEmpty) {
       deleteWallet();
     }
   }
@@ -64,7 +67,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ],
                     )),
-                 Expanded(
+                Expanded(
                     flex: 1,
                     child: Center(
                       child: Text(
@@ -79,10 +82,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     width: 44,
                     height: 44,
                     child: TextButton(
-                        onPressed:  () async {
-                          await showDialog(context: context, builder: (context){
-                            return const DeleteWalletDialog();
-                          }).then((value) => refreshData());
+                        onPressed: () async {
+                          await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const DeleteWalletDialog();
+                              }).then((value) => refreshData());
                         },
                         child: Image.asset("images/mvc_wallet_delete_icon.png",
                             width: 22, height: 22))),
@@ -92,11 +97,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   width: 44,
                   child: TextButton(
                       onPressed: () {
-                        showDialog(context: context, builder: (context){
-                          return const EditWalletDialog();
-                        }).then((value){
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const EditWalletDialog();
+                            }).then((value) {
                           setState(() {
-                           walletName=myWallet.name;
+                            walletName = myWallet.name;
                           });
                         });
                       },
@@ -105,7 +112,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 )
               ],
             ),
-            const SettingsContent()],
+            const SettingsContent()
+          ],
         ),
       ),
     );
@@ -120,26 +128,24 @@ class SettingsContent extends StatefulWidget {
 }
 
 class _SettingsContentState extends State<SettingsContent> {
-
-  String notice="USD";
-
+  String notice = "USD";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(isUst){
-      notice="USD";
-    }else{
-      notice="CNY";
+    if (isUst) {
+      notice = "USD";
+    } else {
+      notice = "CNY";
     }
   }
 
-  void  setData(){
-    if(isUst){
-      notice="USD";
-    }else{
-      notice="CNY";
+  void setData() {
+    if (isUst) {
+      notice = "USD";
+    } else {
+      notice = "CNY";
     }
   }
 
@@ -152,27 +158,35 @@ class _SettingsContentState extends State<SettingsContent> {
         children: [
           InkWell(
             onTap: () async {
-             await showDialog(context: context, builder: (context){
-                return  UrrencyUnitDialog(isUsdt: isUst,);
-              }).then((value){
+              await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return UrrencyUnitDialog(
+                      isUsdt: isUst,
+                    );
+                  }).then((value) {
                 setState(() {
                   setData();
                 });
               });
             },
-            child:   Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Urrency Unit",
+                  "Current Unit",
                   style: getDefaultTextStyle(),
                 ),
                 SizedBox(
                   child: TextButton(
                     onPressed: () async {
-                      await showDialog(context: context, builder: (context){
-                        return  UrrencyUnitDialog(isUsdt: isUst,);
-                      }).then((value){
+                      await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return UrrencyUnitDialog(
+                              isUsdt: isUst,
+                            );
+                          }).then((value) {
                         setState(() {
                           setData();
                         });
@@ -192,12 +206,28 @@ class _SettingsContentState extends State<SettingsContent> {
           ),
           const SizedBox(height: 20),
           InkWell(
-            onTap: (){
-              showDialog(context: context, builder: (context){
-                return const BackUpWalletDialog();
-              });
+            onTap: () {
+              // _authenticateMe();
+
+              if (isFingerCan) {
+                authenticateMe().then((value) {
+                  if (value) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const BackUpWalletDialog();
+                        });
+                  }
+                });
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const BackUpWalletDialog();
+                    });
+              }
             },
-            child:  Row(
+            child: Row(
               children: [
                 Text(
                   "Backup Wallet",
@@ -208,12 +238,49 @@ class _SettingsContentState extends State<SettingsContent> {
           ),
           const SizedBox(height: 30),
           InkWell(
-            onTap: (){
-              showDialog(context: context, builder: (context){
-                return const DisclaimerDialog();
+            onTap: () {
+              authenticateMe().then((value) {
+                if (value) {
+                  setState(() {
+                    if (isFingerCan) {
+                      isFingerCan = false;
+                    } else {
+                      isFingerCan = true;
+                    }
+                    SharedPreferencesUtils.setBool("key_finger", isFingerCan);
+                  });
+                }
               });
             },
-            child:  Row(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Enable fingerprint verification",
+                    style: getDefaultTextStyle(),
+                  ),
+                  Image.asset(
+                      isFingerCan
+                          ? "images/set_switch_on.png"
+                          : "images/set_switch_off.png",
+                      width: 30,
+                      height: 20),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          InkWell(
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const DisclaimerDialog();
+                  });
+            },
+            child: Row(
               children: [
                 Text(
                   "Disclaimer",
@@ -223,16 +290,65 @@ class _SettingsContentState extends State<SettingsContent> {
             ),
           ),
           const SizedBox(height: 30),
-          Row(
-            children: [
-              Text(
-                "v1.0.0",
-                style: getDefaultTextStyle(),
-              )
-            ],
+          InkWell(
+            onTap: () async {
+              // PackageInfo pack = await PackageInfo.fromPlatform();
+              // String num = pack.buildNumber;
+              // String versionName = pack.version;
+              // print("code:" + num);
+              // _launchUrl("https://api.show3.io/install/show3.apk");
+              doCheckVersion(context);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Visibility(visible: isNoGopay, child: const Text("Check Version")),
+                SizedBox(
+                  child: Text(
+                    "v $versionName  ",
+                    style: getDefaultTextStyle(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
+
+  Future<void> _launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {}
+    // if (!await launchUrl(Uri.parse(url))) {
+    //   throw Exception('Could not launch $url');
+    // }
+  }
+
+// Future<void> _authenticateMe() async {
+//   // 8. 此方法会打开一个指纹验证对话框。
+//   //    我们不需要创建一个对话框，它可以从设备中自然弹出。
+//   bool authenticated = false;
+//   try {
+//     authenticated = await _localAuthentication.authenticate(
+//       localizedReason: "Please verify your fingerprints", // 消息对话框
+//       options: const AuthenticationOptions(  biometricOnly: true,
+//           useErrorDialogs: true, stickyAuth: true),
+//     );
+//     setState(() {
+//       isFingerCan=authenticated;
+//       // _message = authenticated ? "Authorized" : "Not Authorized";
+//       // print("$_message");
+//       if(isFingerCan){
+//         showDialog(context: context, builder: (context){
+//           return const BackUpWalletDialog();
+//         });
+//       }
+//     });
+//   } catch (e) {
+//     print(e);
+//   }
+//   if (!mounted) return;
+// }
 }

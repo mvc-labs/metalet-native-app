@@ -40,7 +40,7 @@ class MyWalletDialog extends Dialog {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      const DialogTitleLayout(title: "Add/RestoreWallet"),
+                      const DialogTitleLayout(title: "Create/RestoreWallet"),
                       const SizedBox(height: 30),
                       Container(
                         height: 50,
@@ -125,8 +125,28 @@ class MyWalletDialog extends Dialog {
                                       onPressed: () {
                                         if (walletMnemoniController
                                             .text.isEmpty) {
-                                          showToast(
-                                              "Please enter the mnemonic");
+                                          // showToast(
+                                          //     "Please enter the mnemonic");
+                                          //SimCreate
+                                          String walletName = "";
+                                          String walletPath = "";
+                                          if (walletNameController
+                                              .text.isNotEmpty) {
+                                            walletName =
+                                                walletNameController.text;
+                                          } else {
+                                            walletName = "Wallet";
+                                          }
+                                          if (walletPathController
+                                              .text.isNotEmpty) {
+                                            walletPath =
+                                                walletPathController.text;
+                                          } else {
+                                            walletPath = "10001";
+                                          }
+
+                                          indo.createWallet(walletName,walletPath);
+                                          Navigator.of(context).pop();
                                         } else {
                                           String walletName = "";
                                           String walletPath = "";
@@ -198,19 +218,19 @@ class _MyWalletsDialogState extends State<MyWalletsDialog> {
     super.initState();
     switch (widget.walletList.length) {
       case 1:
-        widget.height = 220;
+        widget.height = 230;
         break;
       case 2:
-        widget.height = 250;
+        widget.height = 260;
         break;
       case 3:
-        widget.height = 300;
+        widget.height = 310;
         break;
       case 4:
-        widget.height = 350;
+        widget.height = 360;
         break;
       case 5:
-        widget.height = 400;
+        widget.height = 410;
         break;
     }
 
@@ -256,13 +276,34 @@ class _MyWalletsDialogState extends State<MyWalletsDialog> {
                         hasNoLogin(widget.indo);
                       },
                       child: Row(
-                        children: [
-                          const SizedBox(
+                        children: const [
+                          SizedBox(
                             width: 10,
                           ),
+                          // Container(
+                          //   width: 130,
+                          //   height: 30,
+                          //   child:   ElevatedButton(
+                          //     onPressed: () {
+                          //       Navigator.pop(context);
+                          //       // addMvcWallet(widget.indo);
+                          //       hasNoLogin(widget.indo);
+                          //     },
+                          //     style: ButtonStyle(
+                          //         backgroundColor: MaterialStateProperty.all(
+                          //             const Color(SimColor.color_button_blue))),
+                          //     child: const Text("Add Wallet",
+                          //         style: TextStyle(fontSize: 14)),
+                          //   ),
+                          // )
                           Text(
                             "Add Wallet",
-                            style: getDefaultTextStyleTitle(),
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Color(SimColor.color_button_blue),
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.bold
+                            ),
                           ),
                         ],
                       ),
@@ -302,12 +343,12 @@ class _MyWalletsDialogState extends State<MyWalletsDialog> {
                                   height: 44,
                                   child: TextButton(
                                     onPressed: () {
-                                      widget.indo
-                                          .switchWallet(widget.chooseWallet);
-                                      Navigator.pop(context);
                                       SqWallet sqWallet = SqWallet();
                                       widget.chooseWallet!.isChoose = 1;
                                       sqWallet.updateDefaultData(widget.chooseWallet!);
+                                      widget.indo
+                                          .switchWallet(widget.chooseWallet);
+                                      Navigator.pop(context);
                                     },
                                     child: const Text(
                                       "OK",

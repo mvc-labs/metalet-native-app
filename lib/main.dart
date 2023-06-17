@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mvcwallet/bean/CheckVersion.dart';
 import 'package:mvcwallet/bean/RateResponse.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/dialog/MyWalletDialog.dart';
@@ -22,7 +22,10 @@ import 'package:mvcwallet/sqlite/SqWallet.dart';
 import 'package:mvcwallet/utils/Constants.dart';
 import 'package:mvcwallet/utils/EventBusUtils.dart';
 import 'package:mvcwallet/utils/SimColor.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import 'bean/Update.dart';
 // "Use of this wallet is at your own risk and discretion.The wallet is not liable for any losses incurred as a result of using the wallet. ",
 
 Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet",0);
@@ -46,12 +49,20 @@ String error = "error";
 String walletName = "Wallet";
 bool isSendFinish = false;
 Timer? balanceTimer;
+String createWalletPath="10001";
+bool isFingerCan = true;
+bool isNoGopay=true;
+String versionName="";
+String versionCode="";
+
 
 
 WebViewController webViewController = WebViewController();
 
 // by now main
 void main() {
+
+
   runApp(const MyApp());
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle =
@@ -63,18 +74,93 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       navigatorKey: navKey,
       theme: ThemeData(primaryColor: Colors.white),
       // home: const SettingsPage(),
       // home: const TransRecordPage(),
       // home: const RequestPage(),
-      home: HomePage(mContext: context),
+      // home: HomePage(mContext: context),
+      home: const DefaultWidget(),
     );
   }
 }
+
+
+class DefaultWidget extends StatefulWidget {
+
+  const DefaultWidget({Key? key}) : super(key: key);
+
+  @override
+  State<DefaultWidget> createState() => _DefaultWidgetState();
+
+}
+
+class _DefaultWidgetState extends State<DefaultWidget> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SharedPreferencesUtils.getBool("key_finger",false).then((value){
+      setState(() {
+        isFingerCan=value;
+        print("change $isFingerCan");
+        if(isFingerCan){
+          authenticateMe().then((value) {
+            if(value){
+              Navigator.of(context).pushAndRemoveUntil( MaterialPageRoute(builder: (BuildContext context){
+                return  HomePage(mContext: context);
+              }), (route) => false);
+            }else{
+              exit(0);
+            }
+          });
+        }else{
+          Navigator.of(context).pushAndRemoveUntil( MaterialPageRoute(builder: (BuildContext context){
+            return  HomePage(mContext: context);
+          }), (route) => false);
+        }
+      });
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    // if(isFingerCan){
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          brightness: Brightness.light,
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+        ),
+        body: Container(
+          height: 240,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+// color: Colors.red,
+              image: DecorationImage(
+                image: AssetImage("images/bg_img_space.png"),
+              )
+// image: AssetImage("images/icon.png"),)
+          ),
+        ),
+      );
+    // }else{
+    //   return  HomePage(mContext: context);
+    // }
+  }
+}
+
+
+
 
 class HomePage extends StatefulWidget {
   final BuildContext? mContext;
@@ -97,10 +183,8 @@ class _HomePageState extends State<HomePage> implements Indo {
       setState(() {
         // var value=double.parse(event.spaceBalance)/100000000;
         // spaceBalance="$value Space";
-        spaceBalance = event.spaceBalance;
-        walletBalance = event.walletBalance;
-        print(" 更新余额信息  $spaceBalance");
-        print(" 更新余额信息法币  $walletBalance");
+        spaceBalance = event!.spaceBalance;
+        walletBalance = event!.walletBalance;
       });
     });
 
@@ -154,10 +238,11 @@ class _HomePageState extends State<HomePage> implements Indo {
           for (var wallet in value) {
             // ignore: unrelated_type_equality_checks
             if(wallet.isChoose==1){
-              myWallet = wallet;
-              isLogin = true;
-              walletName=myWallet.name;
-              dioRate(myWallet.balance);
+               myWallet = wallet;
+               print("符合条件${myWallet.toString()}");
+               isLogin = true;
+               walletName=myWallet.name;
+               dioRate(myWallet.balance);
             }
           }
         } else {
@@ -209,34 +294,28 @@ class _HomePageState extends State<HomePage> implements Indo {
               walletName=myWallet.name;
               dioRate(myWallet.balance);
             });
+            SqWallet sqWallet = SqWallet();
             if(isSwitchWallet==false){
-              SqWallet sqWallet = SqWallet();
               bool isInset=true;
               sqWallet.refreshDefaultData(isInset,myWallet);
             }else{
               isSwitchWallet=false;
+              sqWallet.updateDefaultData(myWallet);
             }
             isAddWallet = false;
-
             if(balanceTimer!=null){
               balanceTimer!.cancel();
               balanceTimer=null;
             }
 
-            // Future<List<Wallet>> list = sqWallet.getAllWallet();
-            // list.then((value) {
-            //   if (value.isNotEmpty) {
-            //     print("获取的缓存数据："+value.toString());
-            //     for (var wallet in value) {
-            //       // ignore: unrelated_type_equality_checks
-            //       wallet.isChoose=0;
-            //       sqWallet.insert(wallet);
-            //     }
-            //   } else {
-            //     print("Wallet Null");
-            //   }
-            // });
-
+            Future<List<Wallet>> list = sqWallet.getAllWallet();
+            list.then((value) {
+              if (value.isNotEmpty) {
+                print("打印一下当前存储的数据 ："+value.toString());
+              } else {
+                print("Wallet Null");
+              }
+            });
 
 
             // sqWallet.id=myWallet.id;
@@ -256,6 +335,11 @@ class _HomePageState extends State<HomePage> implements Indo {
       })
       ..addJavaScriptChannel("metaBalance", onMessageReceived: (message) {
         print("接受的余额  "+message.message);
+
+        SqWallet sqWallet = SqWallet();
+        myWallet.balance=message.message;
+        sqWallet.update(myWallet);
+
         getBalanceTimer();
         dioRate(message.message);
       })
@@ -275,14 +359,33 @@ class _HomePageState extends State<HomePage> implements Indo {
         print(onMessageReceived.message);
         // String mne="silk elder badge keep crew reject such person orange clock rural argue";
         String mne = onMessageReceived.message;
+
         if (mne.isNotEmpty) {
-          addWallet("Wallet", mne, "10001");
+          //SimCreate
+          addWallet(walletName, mne, createWalletPath);
         } else {
           showToast(error);
         }
       })
       ..setNavigationDelegate(NavigationDelegate(
           onWebResourceError: (error) {}, onPageStarted: (url) {}));
+
+
+
+    //check Version
+    SharedPreferencesUtils.getBool("ask_key",true).then((value) {
+      if(value){
+        doCheckVersion(context);
+      }
+    });
+
+    // showDialog(
+    //     context: context,
+    //     builder: (context) {
+    //       return CreateWalletDialog(indo: this);
+    //     });
+
+    initVersion();
 
     super.initState();
   }
@@ -304,73 +407,63 @@ class _HomePageState extends State<HomePage> implements Indo {
   }
 
 
+
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        brightness: Brightness.light,
+    // authenticateMe().then((value) {
+    //   bool auth=value;
+    //
+    // });
+      return Scaffold(
         backgroundColor: Colors.white,
-        elevation: 0.0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            TextButton(
-                onPressed: () {
-                  SqWallet sqWallet=SqWallet();
-                  sqWallet.getAllWallet().then((value) {
-                    if(value.isNotEmpty){
-                      showDialog(context: context, builder: (context){
-                        return MyWalletsDialog(indo: this,walletList: value,);
-                      });
-
-                      // showDialog(
-                      //     context: context,
-                      //     builder: (context) {
-                      //       return MyWalletListDialog(indo: this,isVisibility: true,walletList: value,);
-                      //     });
-                    }else{
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return CreateWalletDialog(indo: this);
-                          });
-                    }
-                  });
-                },
-                child: Row(
-                  children: [
-                    Text(
-                      walletName,
-                      style: const TextStyle(
-                          fontSize: 15,
-                          color: Color(SimColor.deaful_txt_color)),
-                    ),
-                    const SizedBox(width: 5),
-                    Image.asset("images/mvc_wallet_more_icon.png",
-                        width: 10, height: 10)
-                  ],
-                )),
-            const Expanded(flex: 1, child: Text("")),
-            SizedBox(
-              width: 44,
-              height: 44,
-              child: TextButton(
+        appBar: AppBar(
+          brightness: Brightness.light,
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TextButton(
                   onPressed: () {
-                    if (isLogin) {
-                      Navigator.of(context).push(
-                          CupertinoPageRoute(builder: (BuildContext context) {
-                        // return  ScanPage2();
-                        return const ScanPage();
-                      }));
-                    } else {
-                      hasNoLogin(this);
-                    }
+                    SqWallet sqWallet=SqWallet();
+                    sqWallet.getAllWallet().then((value) {
+                      if(value.isNotEmpty){
+                        showDialog(context: context, builder: (context){
+                          return MyWalletsDialog(indo: this,walletList: value,);
+                        });
+
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return MyWalletListDialog(indo: this,isVisibility: true,walletList: value,);
+                        //     });
+                      }else{
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return CreateWalletDialog(indo: this);
+                        //     });
+                        hasNoLogin(this);
+                      }
+                    });
                   },
-                  child: Image.asset("images/mvc_scan_icon.png",
-                      width: 22, height: 22)),
-            ),
-            SizedBox(
+                  child: Row(
+                    children: [
+                      Text(
+                        walletName,
+                        style: const TextStyle(
+                            fontSize: 15,
+                            color: Color(SimColor.deaful_txt_color)),
+                      ),
+                      const SizedBox(width: 5),
+                      Image.asset("images/mvc_wallet_more_icon.png",
+                          width: 10, height: 10)
+                    ],
+                  )),
+              const Expanded(flex: 1, child: Text("")),
+              SizedBox(
                 width: 44,
                 height: 44,
                 child: TextButton(
@@ -378,164 +471,182 @@ class _HomePageState extends State<HomePage> implements Indo {
                       if (isLogin) {
                         Navigator.of(context).push(
                             CupertinoPageRoute(builder: (BuildContext context) {
-                          return const TransRecordPage();
-                        }));
+                              // return  ScanPage2();
+                              return const ScanPage();
+                            }));
                       } else {
                         hasNoLogin(this);
                       }
                     },
-                    child: Image.asset("images/mvc_record_icon.png",
-                        width: 22, height: 22))),
-            SizedBox(
-              height: 44,
-              width: 44,
-              child: TextButton(
-                  onPressed: () {
-                    if (isLogin) {
-                      Navigator.of(context).push(
-                          CupertinoPageRoute(builder: (BuildContext context) {
-                        return const SettingsPage();
-                        // return const RequestPage();
-                      }));
-                    } else {
-                      hasNoLogin(this);
-                    }
-                  },
-                  child: Image.asset("images/mvc_more_icon.png",
-                      width: 22, height: 22)),
-            )
-          ],
-        ),
-      ),
-      body: Container(
-        child: Column(
-          children: [
-            Container(
-              height: 240,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-// color: Colors.red,
-                  image: DecorationImage(
-                image: AssetImage("images/bg_img_space.png"),
-              )
-// image: AssetImage("images/icon.png"),)
-                  ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Balance",
-                    style: TextStyle(
-                        color: Color(SimColor.deaful_txt_half_color),
-                        fontSize: 16),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ), //SimColor.deaful_txt_color
-                  Text(
-                    walletBalance,
-                    style: const TextStyle(
-                        color: Color(SimColor.deaful_txt_color), fontSize: 40),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "images/icon.png",
-                        width: 20,
-                        height: 20,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        // "21347.32 Spacessss",
-                        spaceBalance,
-                        style: const TextStyle(fontSize: 17),
-                      )
-                    ],
-                  ),
-                ],
+                    child: Image.asset("images/mvc_scan_icon.png",
+                        width: 22, height: 22)),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 44,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              if (isLogin) {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (BuildContext context) {
-                                  return const RequestPage();
-                                }));
-                              } else {
-                                hasNoLogin(this);
-                              }
-
-                              //   Navigator.of(context).push(CupertinoPageRoute(
-                              //     builder: (BuildContext context) {
-                              //   return const SimWebView();
-                              // }));
-                            },
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    const Color(SimColor.deaful_txt_color))),
-                            child: const Text("Request",
-                                style: TextStyle(fontSize: 16))),
-                      )),
-                  const SizedBox(width: 20),
-                  Expanded(
-                      flex: 1,
-                      child: SizedBox(
+              SizedBox(
+                  width: 44,
+                  height: 44,
+                  child: TextButton(
+                      onPressed: () {
+                        if (isLogin) {
+                          Navigator.of(context).push(
+                              CupertinoPageRoute(builder: (BuildContext context) {
+                                return const TransRecordPage();
+                              }));
+                        } else {
+                          hasNoLogin(this);
+                        }
+                      },
+                      child: Image.asset("images/mvc_record_icon.png",
+                          width: 22, height: 22))),
+              SizedBox(
+                height: 44,
+                width: 44,
+                child: TextButton(
+                    onPressed: () {
+                      if (isLogin) {
+                        Navigator.of(context).push(
+                            CupertinoPageRoute(builder: (BuildContext context) {
+                              return const SettingsPage();
+                              // return const RequestPage();
+                            }));
+                      } else {
+                        hasNoLogin(this);
+                      }
+                    },
+                    child: Image.asset("images/mvc_more_icon.png",
+                        width: 22, height: 22)),
+              )
+            ],
+          ),
+        ),
+        body: Container(
+          child: Column(
+            children: [
+              Container(
+                height: 240,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+// color: Colors.red,
+                    image: DecorationImage(
+                      image: AssetImage("images/bg_img_space.png"),
+                    )
+// image: AssetImage("images/icon.png"),)
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Balance",
+                      style: TextStyle(
+                          color: Color(SimColor.deaful_txt_half_color),
+                          fontSize: 16),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ), //SimColor.deaful_txt_color
+                    Text(
+                      walletBalance,
+                      style: const TextStyle(
+                          color: Color(SimColor.deaful_txt_color), fontSize: 40),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "images/icon.png",
+                          width: 30,
+                          height: 30,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          // "21347.32 Spacessss",
+                          spaceBalance,
+                          style: const TextStyle(fontSize: 17),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: SizedBox(
                           height: 44,
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (isLogin) {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (BuildContext context) {
-                                  return ScanResultPage(
-                                    result: "",
-                                    isScan: false,
-                                  );
-                                }));
-                              } else {
-                                hasNoLogin(this);
-                              }
-                              // showDialog(
-                              //     context: context,
-                              //     builder: (context) {
-                              //       return  const ProgressDialog();
-                              //     });
-                            },
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    const Color(SimColor.color_button_blue))),
-                            child: const Text("Send",
-                                style: TextStyle(fontSize: 16)),
-                          )))
-                ],
+                              onPressed: () {
+                                if (isLogin) {
+                                  Navigator.of(context).push(CupertinoPageRoute(
+                                      builder: (BuildContext context) {
+                                        return const RequestPage();
+                                      }));
+                                } else {
+                                  hasNoLogin(this);
+                                }
+
+                                //   Navigator.of(context).push(CupertinoPageRoute(
+                                //     builder: (BuildContext context) {
+                                //   return const SimWebView();
+                                // }));
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      const Color(SimColor.deaful_txt_color))),
+                              child: const Text("Request",
+                                  style: TextStyle(fontSize: 16))),
+                        )),
+                    const SizedBox(width: 20),
+                    Expanded(
+                        flex: 1,
+                        child: SizedBox(
+                            height: 44,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (isLogin) {
+                                  Navigator.of(context).push(CupertinoPageRoute(
+                                      builder: (BuildContext context) {
+                                        return ScanResultPage(
+                                          result: "",
+                                          isScan: false,
+                                        );
+                                      }));
+                                } else {
+                                  hasNoLogin(this);
+                                }
+                                // showDialog(
+                                //     context: context,
+                                //     builder: (context) {
+                                //       return  const ProgressDialog();
+                                //     });
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      const Color(SimColor.color_button_blue))),
+                              child: const Text("Send",
+                                  style: TextStyle(fontSize: 16)),
+                            )))
+                  ],
+                ),
               ),
-            ),
-            SimWebView(webViewController)
-            // Visibility(
-            //   visible: false,
-            //   child: SizedBox(
-            //     width: 100,
-            //     height: 100,
-            //     child: WebViewWidget(
-            //         controller: webViewController
-            //     ),
-            //   ),
-            // )
-          ],
+              SimWebView(webViewController)
+              // Visibility(
+              //   visible: false,
+              //   child: SizedBox(
+              //     width: 100,
+              //     height: 100,
+              //     child: WebViewWidget(
+              //         controller: webViewController
+              //     ),
+              //   ),
+              // )
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 
   @override
@@ -555,8 +666,12 @@ class _HomePageState extends State<HomePage> implements Indo {
   }
 
   @override
-  void createWallet() {
+  void createWallet(String name,String path) {
     webViewController.runJavaScript("generateMnemonic()");
+    setState(() {
+      walletName=name;
+      createWalletPath=path;
+    });
   }
 
   @override
@@ -587,7 +702,7 @@ void dioRate(String message) async {
     // print(data.result!.rates![0]);
     // Map<String, dynamic> map =jsonDecode(response.data);
     RateResponse data = RateResponse.fromJson(response.data);
-    print("get data ：" + data.toString());
+    // print("get data ：" + response.data.toString());
     String? cnyPrice;
     String? ustPrice;
 
@@ -595,8 +710,8 @@ void dioRate(String message) async {
       if (o.symbol == "mvc") {
         cnyPrice = o.price!.cny;
         ustPrice = o.price!.usd;
-        print("mvc Price： ${o.price!.cny}");
-        print("mvc \$： ${o.price!.usd}");
+        // print("mvc Price： ${o.price!.cny}");
+        // print("mvc \$： ${o.price!.usd}");
         String? price = o.price!.cny;
         print(price);
       }
@@ -617,4 +732,7 @@ void dioRate(String message) async {
     EventBusUtils.instance
         .fire(WalletHomeData(myWalletBalanceShow, walletBalance));
   }
+
+
+
 }

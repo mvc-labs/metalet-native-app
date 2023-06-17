@@ -290,7 +290,7 @@ class _UrrencyUnitDialogState extends State<UrrencyUnitDialog> {
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        const DialogTitleLayout(title: "Urrency Unit"),
+                        const DialogTitleLayout(title: "Current Unit"),
                         const Divider(height: 35),
                         const SizedBox(height: 15),
                         InkWell(
@@ -447,7 +447,7 @@ class _CreateWalletDialogState extends State<CreateWalletDialog> {
                                 if (isNew) {
                                   addMvcWallet(widget.indo);
                                 } else {
-                                  widget.indo.createWallet();
+                                  // widget.indo.createWallet();
                                 }
                               });
                             },
@@ -779,6 +779,100 @@ class DialogTitleLayout extends StatelessWidget {
     );
   }
 }
+
+
+
+//  Check Version
+class CheckVersionDialog extends StatefulWidget {
+
+  String url;
+
+  CheckVersionDialog({Key? key,required this.url}) : super(key: key);
+
+  @override
+  State<CheckVersionDialog> createState() => _CheckVersionDialogState();
+}
+
+class _CheckVersionDialogState extends State<CheckVersionDialog> {
+
+  bool isAsk=true;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+          width: double.infinity,
+          // decoration: const BoxDecoration(
+          //     color: Colors.white,
+          //     borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: Column(
+            children: [
+              const Expanded(flex: 1, child: SizedBox()),
+              Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20,20,20,10),
+                    child: Column(
+                      children: [
+                        const DialogTitleLayout(title: "Version Check"),
+                        const Divider(height: 35),
+                        Text(
+                          "Have an updated version go to download ?",
+                          style: getDefaultTextStyle(),
+                        ),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: (){
+                            setState(() {
+                              if(isAsk){
+                                isAsk=false;
+                              }else{
+                                isAsk=true;
+                              }
+                              SharedPreferencesUtils.setBool("ask_key", isAsk);
+                            });
+                          },
+                          child:   Row(
+                            children: [
+                              Image.asset(isAsk==true?
+                                  "images/mvc_normal_checkbox.png": "images/mvc_select_checkbox.png",
+                                  width: 20,
+                                  height: 20),
+                              const SizedBox(width: 10),
+                              const Text("Don't  ask me again .")
+                            ],
+                          ),
+
+                        ),
+                        //这里写2个 Button
+                        DialogBottomLayout(
+                            onConfirm: () {
+                              Navigator.pop(context);
+                              //Update
+                              // doCheckVersion();
+                              launchUrl(widget.url);
+                            },
+                            isVisibility: true),
+                      ],
+                    ),
+                  )),
+              Expanded(flex: 1, child: SizedBox()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
 
 // ignore: must_be_immutable
 class DialogBottomLayout extends StatefulWidget {

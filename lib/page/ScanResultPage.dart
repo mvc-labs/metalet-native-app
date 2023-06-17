@@ -125,8 +125,8 @@ class ScanResultContent extends StatefulWidget {
   ScanResultContent({Key? key, required this.lastResult}) : super(key: key) {
     addressController =
         TextEditingController.fromValue(TextEditingValue(text: lastResult));
-    amountController =
-        TextEditingController.fromValue(TextEditingValue(text: "0"));
+    // amountController =
+    //     TextEditingController.fromValue(const TextEditingValue(text: "0"));
   }
 
   @override
@@ -255,7 +255,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
                     child:   Center(
                     child:  TextField(
                         decoration: const InputDecoration(
-                            hintText: "Please enter the transfer address",
+                            hintText: "Transfer address",
                             border: InputBorder.none),
                         //改变输入的文本信息
                         onChanged: (value) {
@@ -318,8 +318,10 @@ class _ScanResultContentState extends State<ScanResultContent> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
                       ],
+                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                          hintText: "0", border: InputBorder.none),
+                          hintText: "0",
+                          border: InputBorder.none),
                       onChanged: (value) {
                         // widget.amount = double.parse(value);
                         // setState(() {
@@ -367,14 +369,14 @@ class _ScanResultContentState extends State<ScanResultContent> {
 
   void send(String address,String amount){
     if(address.isNotEmpty&&amount.isNotEmpty){
-
       double sendAmount=double.parse(amount)*100000000;
-
+      print("address $address");
+      print("sendAmount ${Decimal.parse(sendAmount.toString()).toStringAsFixed(0)}");
+      print("balance:  ${double.parse(myWallet.balance)}");
       if(sendAmount<double.parse(myWallet.balance)){
         FocusScope.of(context).unfocus();
         var valueRe = Decimal.parse(sendAmount.toString()).toStringAsFixed(0);
-        print("address $address");
-        print("sendAmount $valueRe");
+
         showDialog(
             context: context,
             builder: (context) {
@@ -394,8 +396,6 @@ class _ScanResultContentState extends State<ScanResultContent> {
       }else{
         showToast("Insufficient transfer balance");
       }
-
-
     }
   }
 

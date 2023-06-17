@@ -1,17 +1,83 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:mvcwallet/bean/Update.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/sqlite/SqWallet.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../bean/RateResponse.dart';
 import '../dialog/MyWalletDialog.dart';
 import '../page/SimpleDialog.dart';
+
+Future<void> initVersion() async {
+  PackageInfo pack=await PackageInfo.fromPlatform();
+  versionCode=pack.buildNumber;
+  versionName=pack.version;
+}
+
+
+void doCheckVersion(BuildContext context) async {
+  final dio = Dio();
+  final response=await dio.post("https://api.show3.space/app-base/v1/app/upgrade/info",data: {'app_name':'metalet','platform':'android'});
+  if (response.statusCode == HttpStatus.OK) {
+    print(response.data.toString());
+    Update update = Update.fromJson(response.data);
+    print("object:"+update.data!.url!);
+    if(update.data!.versionCode!>int.parse(versionCode)){
+      // ignore: use_build_context_synchronously
+      showDialog(context: context, builder: (context){
+        return  CheckVersionDialog(url: update.data!.url!);
+      });
+    }
+  }
+}
+
+
+
+
+
+Future<void> launchUrl(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+  }
+  // if (!await launchUrl(Uri.parse(url))) {
+  //   throw Exception('Could not launch $url');
+  // }
+}
+
+
+final LocalAuthentication _localAuthentication = LocalAuthentication();
+
+Future<bool> authenticateMe() async {
+  // 8. 此方法会打开一个指纹验证对话框。
+  //    我们不需要创建一个对话框，它可以从设备中自然弹出。
+  bool authenticated = false;
+  try {
+    authenticated = await _localAuthentication.authenticate(
+      localizedReason: "Please verify your fingerprints", // 消息对话框
+      options: const AuthenticationOptions(  biometricOnly: true,
+          useErrorDialogs: true, stickyAuth: true),
+    );
+    return authenticated;
+  } catch (e) {
+    print(e);
+    return authenticated;
+  }
+  // if (!mounted) return;
+}
+
 
 void showToast(String content) {
   Fluttertoast.showToast(
@@ -153,9 +219,13 @@ void hasNoLogin(Indo indo) {
   //       return MyWalletDialog(indo: indo, isVisibility: true);
   //     });
   showDialog(
+      // context: navKey.currentState!.overlay!.context,
+      // builder: (context) {
+      //   return CreateWalletDialog(indo: indo);
+      // });
       context: navKey.currentState!.overlay!.context,
       builder: (context) {
-        return CreateWalletDialog(indo: indo);
+        return MyWalletDialog(indo: indo, isVisibility: true);
       });
 }
 

@@ -420,7 +420,7 @@ class _HomePageState extends State<HomePage> implements Indo {
   }
 
   @override
-  void createWallet() {
+  void createWallet(String name,String path) {
     webViewController.runJavaScript("generateMnemonic()");
   }
 

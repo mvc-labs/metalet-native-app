@@ -154,13 +154,18 @@ class SqWallet extends BaseDbProvider {
         print("获取的缓存数据："+value.toString());
         for (var wallet in value) {
           // ignore: unrelated_type_equality_checks
-          wallet.isChoose=0;
-          update(wallet);
+          if(wallet.mnemonic==sWallet.mnemonic){
+            update(sWallet);
+          }else{
+            wallet.isChoose=0;
+            update(wallet);
+          }
+
         }
       } else {
         print("Wallet Null");
       }
-      update(sWallet);
+      // update(sWallet);
     });
   }
 
