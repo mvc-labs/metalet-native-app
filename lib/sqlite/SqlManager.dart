@@ -60,12 +60,10 @@ abstract class BaseDbProvider {
     return await open();
   }
 
-  ///super 函数对父类进行初始化
   @mustCallSuper
   prepare(name, String createSql) async {
     isTableExits = await SqlManager.isTableExits(name);
     if (!isTableExits) {
-      print("数据表不存在开始建表$createSql");
       Database? db = await SqlManager.getCurrentDatabase();
       return await db!.execute(createSql);
     }
@@ -74,7 +72,6 @@ abstract class BaseDbProvider {
   @mustCallSuper
   open() async {
     if (!isTableExits) {
-      print("检查数据库");
       await prepare(tableName(), createTableString());
     }
     return await SqlManager.getCurrentDatabase();

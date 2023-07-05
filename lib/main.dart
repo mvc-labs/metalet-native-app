@@ -234,12 +234,10 @@ class _HomePageState extends State<HomePage> implements Indo {
       Future<List<Wallet>> list = sqWallet.getAllWallet();
       list.then((value) {
         if (value.isNotEmpty) {
-          print("获取的缓存数据："+value.toString());
           for (var wallet in value) {
             // ignore: unrelated_type_equality_checks
             if(wallet.isChoose==1){
                myWallet = wallet;
-               print("符合条件${myWallet.toString()}");
                isLogin = true;
                walletName=myWallet.name;
                dioRate(myWallet.balance);
@@ -275,7 +273,6 @@ class _HomePageState extends State<HomePage> implements Indo {
           Navigator.of(navKey.currentState!.overlay!.context).pop();
         }
         if (isNoEmpty(message.message)) {
-          print("初始化完成接受的数据："+message.message);
           myWallet = Wallet.fromJson(json.decode(message.message));
 
 
@@ -311,7 +308,6 @@ class _HomePageState extends State<HomePage> implements Indo {
             Future<List<Wallet>> list = sqWallet.getAllWallet();
             list.then((value) {
               if (value.isNotEmpty) {
-                print("打印一下当前存储的数据 ："+value.toString());
               } else {
                 print("Wallet Null");
               }
@@ -334,7 +330,6 @@ class _HomePageState extends State<HomePage> implements Indo {
         showToast(" JS : " + message.message);
       })
       ..addJavaScriptChannel("metaBalance", onMessageReceived: (message) {
-        print("接受的余额  "+message.message);
 
         SqWallet sqWallet = SqWallet();
         myWallet.balance=message.message;

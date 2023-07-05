@@ -12,7 +12,6 @@ import '../utils/Constants.dart';
 import '../utils/EventBusUtils.dart';
 import '../utils/SimColor.dart';
 
-///页面弹框部分//////////////////////////////////
 // ignore: must_be_immutable
 // class MyWalletDialog extends Dialog {
 //   void Function()? onConfirm;
@@ -590,7 +589,6 @@ class DisclaimerDialog extends StatelessWidget {
                           "and bear any losses incurred due to the loss or theft of private keys or mnemonic phrases.",
                           style: getDefaultTextStyle(),
                         ),
-                        //这里写2个 Button
                         DialogBottomLayout(
                             onConfirm: () {
                               Navigator.pop(context);
@@ -766,7 +764,6 @@ class _SimWebViewState extends State<SimWebView> {
   }
 }
 
-//公共的头部控件
 class DialogTitleLayout extends StatelessWidget {
   final String title;
 

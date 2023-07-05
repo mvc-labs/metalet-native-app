@@ -61,8 +61,6 @@ Future<void> launchUrl(String url) async {
 final LocalAuthentication _localAuthentication = LocalAuthentication();
 
 Future<bool> authenticateMe() async {
-  // 8. 此方法会打开一个指纹验证对话框。
-  //    我们不需要创建一个对话框，它可以从设备中自然弹出。
   bool authenticated = false;
   try {
     authenticated = await _localAuthentication.authenticate(
