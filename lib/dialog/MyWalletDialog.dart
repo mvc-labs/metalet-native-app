@@ -51,7 +51,7 @@ class MyWalletDialog extends Dialog {
                                 fit: BoxFit.fill)),
                         child: TextField(
                           decoration: const InputDecoration(
-                              hintText: "Wallet 2", border: InputBorder.none),
+                              hintText: "Wallet Name", border: InputBorder.none),
                           controller: walletNameController,
                         ),
                       ),
@@ -66,7 +66,7 @@ class MyWalletDialog extends Dialog {
                         child: TextField(
                           maxLines: 10,
                           decoration: const InputDecoration(
-                            hintText: "mnemonic phrase",
+                            hintText: "enter your mnemonic phrase to restore wallet leave it blank to create new wallet",
                             border: InputBorder.none,
                           ),
                           controller: walletMnemoniController,
