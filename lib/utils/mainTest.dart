@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> implements Indo {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        brightness: Brightness.light,
+        // brightness: Brightness.light,
         backgroundColor: Colors.white,
         elevation: 0.0,
         title: Row(
