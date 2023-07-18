@@ -297,7 +297,8 @@ class _SettingsContentState extends State<SettingsContent> {
               // String versionName = pack.version;
               // print("code:" + num);
               // _launchUrl("https://api.show3.io/install/show3.apk");
-              doCheckVersion(context);
+              //goolepay
+              // doCheckVersion(context);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

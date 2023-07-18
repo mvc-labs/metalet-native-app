@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvcwallet/sqlite/SqWallet.dart';
 import 'package:mvcwallet/utils/Constants.dart';
-
 import '../data/Indo.dart';
 import '../page/SimpleDialog.dart';
 import '../utils/SimColor.dart';
@@ -30,18 +29,27 @@ class MyWalletDialog extends Dialog {
           type: MaterialType.transparency,
           child: Center(
             child: Container(
-                margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 width: double.infinity,
-                height: 400,
+                height: 500,
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                   child: Column(
                     children: [
                       const DialogTitleLayout(title: "Create/RestoreWallet"),
                       const SizedBox(height: 30),
+                      SizedBox(
+                        height: 30,
+                        width: double.infinity,
+                        child: Text(
+                          " wallet name:",
+                          style: getDefaultTextStyle1(),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
                       Container(
                         height: 50,
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -51,11 +59,22 @@ class MyWalletDialog extends Dialog {
                                 fit: BoxFit.fill)),
                         child: TextField(
                           decoration: const InputDecoration(
-                              hintText: "Wallet Name", border: InputBorder.none),
+                              hintText: "enter wallet name",
+                              border: InputBorder.none),
                           controller: walletNameController,
                         ),
                       ),
                       const SizedBox(height: 10),
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        height: 30,
+                        width: double.infinity,
+                        child: Text(
+                          " mnemonic:",
+                          style: getDefaultTextStyle1(),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
                       Container(
                         height: 130,
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -66,13 +85,24 @@ class MyWalletDialog extends Dialog {
                         child: TextField(
                           maxLines: 10,
                           decoration: const InputDecoration(
-                            hintText: "enter your mnemonic phrase to restore wallet leave it blank to create new wallet",
+                            hintText:
+                                "enter your mnemonic phrase to restore wallet leave it blank to create new wallet",
                             border: InputBorder.none,
                           ),
                           controller: walletMnemoniController,
                         ),
                       ),
                       const SizedBox(height: 10),
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        height: 30,
+                        width: double.infinity,
+                        child: Text(
+                          " path:",
+                          style: getDefaultTextStyle1(),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
                       Container(
                         height: 50,
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -145,7 +175,8 @@ class MyWalletDialog extends Dialog {
                                             walletPath = "10001";
                                           }
 
-                                          indo.createWallet(walletName,walletPath);
+                                          indo.createWallet(
+                                              walletName, walletPath);
                                           Navigator.of(context).pop();
                                         } else {
                                           String walletName = "";
@@ -192,7 +223,6 @@ class MyWalletDialog extends Dialog {
         ));
   }
 }
-
 
 class MyWalletsDialog extends StatefulWidget {
   Indo indo;
@@ -302,8 +332,7 @@ class _MyWalletsDialogState extends State<MyWalletsDialog> {
                                 fontSize: 15,
                                 color: Color(SimColor.color_button_blue),
                                 decoration: TextDecoration.none,
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -345,7 +374,8 @@ class _MyWalletsDialogState extends State<MyWalletsDialog> {
                                     onPressed: () {
                                       SqWallet sqWallet = SqWallet();
                                       widget.chooseWallet!.isChoose = 1;
-                                      sqWallet.updateDefaultData(widget.chooseWallet!);
+                                      sqWallet.updateDefaultData(
+                                          widget.chooseWallet!);
                                       widget.indo
                                           .switchWallet(widget.chooseWallet);
                                       Navigator.pop(context);

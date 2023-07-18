@@ -9,6 +9,14 @@ TextStyle getDefaultTextStyle() {
       decoration: TextDecoration.none);
 }
 
+TextStyle getDefaultTextStyle1() {
+  return const TextStyle(
+      fontSize: 16,
+      color: Color(SimColor.deaful_txt_color),
+      decoration: TextDecoration.none);
+}
+
+
 TextStyle getDefaultTextStyleTitle() {
   return const TextStyle(
       fontSize: 15,

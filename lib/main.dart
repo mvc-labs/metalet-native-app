@@ -51,7 +51,7 @@ bool isSendFinish = false;
 Timer? balanceTimer;
 String createWalletPath="10001";
 bool isFingerCan = true;
-bool isNoGopay=true;
+bool isNoGopay=false;
 String versionName="";
 String versionCode="";
 
