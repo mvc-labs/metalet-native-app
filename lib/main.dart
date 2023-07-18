@@ -63,6 +63,7 @@ WebViewController webViewController = WebViewController();
 void main() {
 
 
+  // ios pull
   runApp(const MyApp());
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle =
