@@ -325,7 +325,7 @@ class _TransRecordContentState extends State<TransRecordContent> {
       children: [
         InkWell(
           onTap: () {
-            ClipboardData data = ClipboardData(text: record.txid);
+            ClipboardData data = ClipboardData(text: record.txid!);
             Clipboard.setData(data);
             showToast("Copy transaction ID");
           },
@@ -339,7 +339,7 @@ class _TransRecordContentState extends State<TransRecordContent> {
               SizedBox(
                 child: TextButton(
                   onPressed: () {
-                    ClipboardData data = ClipboardData(text: record.txid);
+                    ClipboardData data = ClipboardData(text: record.txid!);
                     Clipboard.setData(data);
                     showToast("Copy transaction ID");
                   },
