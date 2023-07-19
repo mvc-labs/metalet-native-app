@@ -1,16 +1,5 @@
-# mvcwallet
+# Metalet plugin application provides the following functions:
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Real-time calculation of SPACE transaction fees.
+2. Quickly and conveniently send and receive SPACE and other cryptocurrencies.
+3. View SPACE and other cryptocurrencies' prices and market values in the application.
