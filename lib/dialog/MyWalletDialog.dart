@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvcwallet/sqlite/SqWallet.dart';
@@ -14,10 +15,20 @@ class MyWalletDialog extends Dialog {
   late TextEditingController walletNameController;
   late TextEditingController walletMnemoniController;
   late TextEditingController walletPathController;
+  FocusNode commentFocus = FocusNode();
+
 
   MyWalletDialog({super.key, required this.indo, required this.isVisibility}) {
     walletNameController = TextEditingController();
     walletMnemoniController = TextEditingController();
+    commentFocus.unfocus();
+    walletMnemoniController.addListener(() {
+      if(walletMnemoniController.text.isEmpty){
+        commentFocus.unfocus();
+      }else{
+        commentFocus.requestFocus(commentFocus);
+      }
+    });
     walletPathController = TextEditingController();
   }
 
@@ -39,7 +50,7 @@ class MyWalletDialog extends Dialog {
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                   child: Column(
                     children: [
-                      const DialogTitleLayout(title: "Create/RestoreWallet"),
+                      const DialogTitleLayout(title: "Create/Restore Wallet"),
                       const SizedBox(height: 30),
                       SizedBox(
                         height: 30,
@@ -86,7 +97,7 @@ class MyWalletDialog extends Dialog {
                           maxLines: 10,
                           decoration: const InputDecoration(
                             hintText:
-                                "enter your mnemonic phrase to restore wallet leave it blank to create new wallet",
+                                "enter your mnemonic phrase to restore wallet \nleave it blank to create new wallet",
                             border: InputBorder.none,
                           ),
                           controller: walletMnemoniController,
@@ -167,13 +178,15 @@ class MyWalletDialog extends Dialog {
                                           } else {
                                             walletName = "Wallet";
                                           }
-                                          if (walletPathController
-                                              .text.isNotEmpty) {
-                                            walletPath =
-                                                walletPathController.text;
-                                          } else {
-                                            walletPath = "10001";
-                                          }
+
+                                          walletPath = "10001";
+                                          // if (walletPathController
+                                          //     .text.isNotEmpty) {
+                                          //   walletPath =
+                                          //       walletPathController.text;
+                                          // } else {
+                                          //   walletPath = "10001";
+                                          // }
 
                                           indo.createWallet(
                                               walletName, walletPath);

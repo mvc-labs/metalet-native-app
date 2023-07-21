@@ -51,10 +51,9 @@ bool isSendFinish = false;
 Timer? balanceTimer;
 String createWalletPath="10001";
 bool isFingerCan = true;
-bool isNoGopay=false;
+bool isNoGopay=true;
 String versionName="";
 String versionCode="";
-
 
 
 WebViewController webViewController = WebViewController();
@@ -132,6 +131,7 @@ class _DefaultWidgetState extends State<DefaultWidget> {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     // if(isFingerCan){
@@ -158,6 +158,7 @@ class _DefaultWidgetState extends State<DefaultWidget> {
     //   return  HomePage(mContext: context);
     // }
   }
+
 }
 
 
@@ -173,12 +174,13 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> implements Indo {
+class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implements Indo {
   _HomePageState();
 
   @override
   void initState() {
     // TODO: implement initState
+    WidgetsBinding.instance?.addObserver(this);
     EventBusUtils.instance.on<WalletHomeData>().listen((event) {
       // print(event.);
       setState(() {
@@ -403,9 +405,37 @@ class _HomePageState extends State<HomePage> implements Indo {
   }
 
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("应用进入前台======");
+        if(isFingerCan){
+          authenticateMe().then((value) {
+            if(value){
+
+            }else{
+              exit(0);
+            }
+          });
+        }
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.paused:
+        break;
+    }
+  }
 
 
-
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance?.removeObserver(this);
+  }
   @override
   Widget build(BuildContext context) {
     // authenticateMe().then((value) {

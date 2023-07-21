@@ -258,7 +258,7 @@ class _SettingsContentState extends State<SettingsContent> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Enable fingerprint verification",
+                    "Enable FaceID",
                     style: getDefaultTextStyle(),
                   ),
                   Image.asset(
@@ -298,7 +298,9 @@ class _SettingsContentState extends State<SettingsContent> {
               // print("code:" + num);
               // _launchUrl("https://api.show3.io/install/show3.apk");
               //goolepay
-              // doCheckVersion(context);
+              if(isNoGopay){
+                doCheckVersion(context);
+              }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
