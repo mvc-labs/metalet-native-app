@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:html';
 import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
@@ -54,6 +55,7 @@ bool isFingerCan = true;
 bool isNoGopay=true;
 String versionName="";
 String versionCode="";
+bool isFore=true;
 
 
 WebViewController webViewController = WebViewController();
@@ -411,7 +413,8 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
     switch (state) {
       case AppLifecycleState.resumed:
         print("应用进入前台======");
-        if(isFingerCan){
+        if(isFingerCan&&isFore==false){
+          isFore=true;
           authenticateMe().then((value) {
             if(value){
 
@@ -426,6 +429,7 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
       case AppLifecycleState.detached:
         break;
       case AppLifecycleState.paused:
+        isFore=false;
         break;
     }
   }
