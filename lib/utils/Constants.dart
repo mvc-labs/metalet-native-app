@@ -21,42 +21,40 @@ import '../dialog/MyWalletDialog.dart';
 import '../page/SimpleDialog.dart';
 
 Future<void> initVersion() async {
-  PackageInfo pack=await PackageInfo.fromPlatform();
-  versionCode=pack.buildNumber;
-  versionName=pack.version;
+  PackageInfo pack = await PackageInfo.fromPlatform();
+  versionCode = pack.buildNumber;
+  versionName = pack.version;
 }
-
 
 void doCheckVersion(BuildContext context) async {
   final dio = Dio();
-  final response=await dio.post("https://api.show3.space/app-base/v1/app/upgrade/info",data: {'app_name':'metalet','platform':'android'});
+  final response = await dio.post(
+      "https://api.show3.space/app-base/v1/app/upgrade/info",
+      data: {'app_name': 'metalet', 'platform': 'android'});
   if (response.statusCode == HttpStatus.OK) {
     print(response.data.toString());
     Update update = Update.fromJson(response.data);
-    print("object:"+update.data!.url!);
-    if(update.data!.versionCode!>int.parse(versionCode)){
+    print("object:" + update.data!.url!);
+    if (update.data!.versionCode! > int.parse(versionCode)) {
       // ignore: use_build_context_synchronously
-      showDialog(context: context, builder: (context){
-        return  CheckVersionDialog(url: update.data!.url!);
-      });
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CheckVersionDialog(url: update.data!.url!);
+          });
     }
   }
 }
 
-
-
-
-
+//打开浏览器
 Future<void> launchUrl(String url) async {
   if (await canLaunch(url)) {
     await launch(url);
-  } else {
-  }
+  } else {}
   // if (!await launchUrl(Uri.parse(url))) {
   //   throw Exception('Could not launch $url');
   // }
 }
-
 
 final LocalAuthentication _localAuthentication = LocalAuthentication();
 
@@ -65,8 +63,8 @@ Future<bool> authenticateMe() async {
   try {
     authenticated = await _localAuthentication.authenticate(
       localizedReason: "Please verify your fingerprints", // 消息对话框
-      options: const AuthenticationOptions(  biometricOnly: true,
-          useErrorDialogs: true, stickyAuth: true),
+      options: const AuthenticationOptions(
+          biometricOnly: true, useErrorDialogs: true, stickyAuth: true),
     );
     return authenticated;
   } catch (e) {
@@ -75,7 +73,6 @@ Future<bool> authenticateMe() async {
   }
   // if (!mounted) return;
 }
-
 
 void showToast(String content) {
   Fluttertoast.showToast(
@@ -170,15 +167,14 @@ void initLocalWallet() {
 }
 
 void initLocalWalletBySql() {
-
   SqWallet sqWallet = SqWallet();
   Future<List<Wallet>> list = sqWallet.getAllWallet();
   list.then((value) {
     if (value.isNotEmpty) {
-      print("获取的缓存数据："+value.toString());
+      print("获取的缓存数据：" + value.toString());
       for (var wallet in value) {
         // ignore: unrelated_type_equality_checks
-        if(wallet.isChoose==1){
+        if (wallet.isChoose == 1) {
           myWallet = wallet;
           isLogin = true;
           dioRate(myWallet.balance);
@@ -188,9 +184,6 @@ void initLocalWalletBySql() {
       print("Wallet Null");
     }
   });
-  
-  
-
 
   SharedPreferencesUtils.getBool("isUst_key", true)
       .then((value) => isUst = value);
@@ -367,7 +360,7 @@ class Wallet {
   // }
 
   Map<String, Object?> toJson() {
-    Map<String, Object?>  map = {};
+    Map<String, Object?> map = {};
     map["mnemonic"] = mnemonic;
     map["path"] = path;
     map["address"] = address;
@@ -377,8 +370,6 @@ class Wallet {
     map["isChoose"] = isChoose;
     return map;
   }
-
-
 
   factory Wallet.fromJson(Map<String, dynamic> parsedJson) {
     Wallet wallet = Wallet(
@@ -396,4 +387,17 @@ class Wallet {
   String toString() {
     return 'Wallet{id: $id, name: $name, mnemonic: $mnemonic, path: $path, address: $address, balance: $balance, isChoose: $isChoose}';
   }
+}
+
+void p(String msg) {
+//因为String的length是字符数量不是字节数量所以为了防止中文字符过多，
+//  把4*1024的MAX字节打印长度改为1000字符数
+  int maxStrLength = 1000;
+//大于1000时
+  while (msg.length > maxStrLength) {
+    print(msg.substring(0, maxStrLength));
+    msg = msg.substring(maxStrLength);
+  }
+//剩余部分
+  print(msg);
 }

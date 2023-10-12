@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mvcwallet/page/SimpleDialog.dart';
+import 'package:mvcwallet/page/TokenPage.dart';
 import 'package:mvcwallet/utils/Constants.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -54,18 +55,32 @@ class _SettingsPageState extends State<SettingsPage> {
                         return const HomePage();
                       }));
                     },
-                    child: Row(
-                      children: [
-                        Image.asset("images/mvc_back_icon.png",
-                            width: 20, height: 22),
-                        const SizedBox(width: 5),
-                        const Text(
-                          "Back",
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Color(SimColor.deaful_txt_color)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Image.asset("images/mvc_back_icon.png",
+                                      width: 20, height: 22),
+                                  const SizedBox(width: 5),
+                                  const Text(
+                                    "Back",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color:
+                                            Color(SimColor.deaful_txt_color)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     )),
                 Expanded(
                     flex: 1,
@@ -156,6 +171,28 @@ class _SettingsContentState extends State<SettingsContent> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(
+                  settings: const RouteSettings(name: "token"),
+                  builder: (BuildContext context) {
+                    return const TokePage();
+                  }));
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Tokens",
+                  style: getDefaultTextStyle(),
+                ),
+                Image.asset("images/meta_right_icon.png", width: 20, height: 20)
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           InkWell(
             onTap: () async {
               await showDialog(
@@ -298,14 +335,15 @@ class _SettingsContentState extends State<SettingsContent> {
               // print("code:" + num);
               // _launchUrl("https://api.show3.io/install/show3.apk");
               //goolepay
-              if(isNoGopay){
+              if (isNoGopay) {
                 doCheckVersion(context);
               }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Visibility(visible: isNoGopay, child: const Text("Check Version")),
+                Visibility(
+                    visible: isNoGopay, child: const Text("Check Version")),
                 SizedBox(
                   child: Text(
                     "v $versionName  ",

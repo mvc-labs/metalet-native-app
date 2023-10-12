@@ -26,7 +26,49 @@ class  ShowLoadingDialog{
   ShowLoadingDialog(this.isShow);
 }
 
-
+//删除钱包通知
 class DeleteWallet{
 
 }
+
+
+class SendNftSuccess{
+
+
+
+}
+
+class SendFtSuccess{
+
+
+
+}
+
+
+class SendNftDialogData{
+
+
+  String? nftName;
+  String? nftIconUrl;
+  String? nftTokenIndex;
+  String? receiveAddress;
+  String? transactionID;
+
+
+
+
+}
+
+
+class SendFtDialogData{
+
+  String? nftName;
+  String? receiveAddress;
+  String? transactionID;
+  String? ftAmount;
+
+
+
+
+}
+

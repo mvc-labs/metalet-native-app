@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
-import 'dart:html';
 import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
@@ -10,14 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mvcwallet/bean/CheckVersion.dart';
+import 'package:mvcwallet/bean/NftSendBack.dart';
 import 'package:mvcwallet/bean/RateResponse.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/dialog/MyWalletDialog.dart';
+import 'package:mvcwallet/page/NftPage.dart';
 import 'package:mvcwallet/page/RequestPage.dart';
 import 'package:mvcwallet/page/ScanPage.dart';
 import 'package:mvcwallet/page/ScanResultPage.dart';
 import 'package:mvcwallet/page/SettingsPage.dart';
 import 'package:mvcwallet/page/SimpleDialog.dart';
+import 'package:mvcwallet/page/TokenPage.dart';
 import 'package:mvcwallet/page/TransRecordPage.dart';
 import 'package:mvcwallet/sqlite/SqWallet.dart';
 import 'package:mvcwallet/utils/Constants.dart';
@@ -56,6 +58,9 @@ bool isNoGopay=true;
 String versionName="";
 String versionCode="";
 bool isFore=true;
+NftSendBack nftSendBack=NftSendBack();
+SendNftDialogData sendNftDialogData=SendNftDialogData();
+SendFtDialogData sendFtDialogData=SendFtDialogData();
 
 
 WebViewController webViewController = WebViewController();
@@ -176,11 +181,17 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+
+
+
 class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implements Indo {
   _HomePageState();
 
+
   @override
   void initState() {
+
+
     // TODO: implement initState
     WidgetsBinding.instance?.addObserver(this);
     EventBusUtils.instance.on<WalletHomeData>().listen((event) {
@@ -354,6 +365,7 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
           showToast(error);
         }
       })
+
       ..addJavaScriptChannel("metaCreateWallet",
           onMessageReceived: (onMessageReceived) {
         print(onMessageReceived.message);
@@ -367,7 +379,38 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
           showToast(error);
         }
       })
-      ..setNavigationDelegate(NavigationDelegate(
+
+      ..addJavaScriptChannel("metaSendNft", onMessageReceived: (onMessageReceived){
+        // p(onMessageReceived.message);
+        nftSendBack = NftSendBack.fromJson(json.decode(onMessageReceived.message));
+        print(nftSendBack.txid);
+        if(nftSendBack.txid!.isNotEmpty){
+          Navigator.popUntil(context, ModalRoute.withName("token"));
+          EventBusUtils.instance
+              .fire(SendNftSuccess());
+        }
+      })
+
+      ..addJavaScriptChannel("metaSendFt", onMessageReceived: (onMessageReceived){
+        // p(onMessageReceived.message);
+
+        try{
+          nftSendBack = NftSendBack.fromJson(json.decode(onMessageReceived.message));
+          print(nftSendBack.txid);
+          if(nftSendBack.txid!.isNotEmpty){
+            Navigator.popUntil(context, ModalRoute.withName("token"));
+            EventBusUtils.instance
+                .fire(SendFtSuccess());
+          }
+        }catch(e){
+          Navigator.of(navKey.currentState!.overlay!.context).pop();
+          showToast("Send failed Please check the address");
+          print(e.toString());
+        }
+
+      })
+
+        ..setNavigationDelegate(NavigationDelegate(
           onWebResourceError: (error) {}, onPageStarted: (url) {}));
 
 

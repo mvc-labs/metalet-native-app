@@ -24,4 +24,12 @@ TextStyle getDefaultTextStyleTitle() {
       decoration: TextDecoration.none,
       fontWeight: FontWeight.bold
   );
+
+}
+
+TextStyle getDefaultGrayTextStyle() {
+  return const TextStyle(
+      fontSize: 15,
+      color: Color(SimColor.deaful_gray_txt_color),
+      decoration: TextDecoration.none);
 }

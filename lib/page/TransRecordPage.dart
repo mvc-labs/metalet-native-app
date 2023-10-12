@@ -60,6 +60,7 @@ class _TransRecordContentState extends State<TransRecordContent> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
+        print("触发加载更多");
         TransRecordResponse response = recordList[recordList.length - 1];
 
         if (response.flag!.isNotEmpty) {
@@ -134,9 +135,9 @@ class _TransRecordContentState extends State<TransRecordContent> {
                   shrinkWrap: true,
                   itemCount: recordList.length,
                   itemBuilder: getListViewItemLayout,
+                  controller: _scrollController,
                 ),
               )
-
 
           )
         ],

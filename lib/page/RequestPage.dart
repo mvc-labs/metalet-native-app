@@ -162,11 +162,18 @@ class _TitleBackState2 extends State<TitleBack2> {
                 ],
               )),
         ),
-        Text(
-          widget.title,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Color(SimColor.deaful_txt_color),
+        SizedBox(
+          width: 200,
+          child: Text(
+            widget.title,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Color(SimColor.deaful_txt_color),
+            ),
+
           ),
         ),
         const Expanded(

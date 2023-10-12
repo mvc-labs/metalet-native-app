@@ -2,6 +2,7 @@
 
 import 'package:mvcwallet/utils/Constants.dart';
 
+//wallet
 abstract class  Indo{
 
   void addWallet(String walletName,String mnemoni,String path);
@@ -10,5 +11,20 @@ abstract class  Indo{
 
   void switchWallet(Wallet? wallet);
 
+
+}
+
+
+
+//send NFT
+abstract class SendNftIndo{
+  void sendCancel();
+  void sendConfirm(String sendAddress);
+
+}
+
+abstract class SendFtIndo{
+  void sendCancel();
+  void sendConfirm(String sendAddress,String sendAmount);
 
 }

@@ -20,17 +20,17 @@ var wif;
 var ftManager ;
 var nftManager ;
 
-// <!--first auto init -->
-// <!--setTimeout(() => {-->
-// <!--    version();-->
-// <!--    wallet =metaContract.Wallet.fromMnemonic({-->
-// <!--       mnemonic:mnemonic,-->
-// <!--       network:'mainnet',-->
-// <!--       feeb:1,-->
-// <!--       path:path,-->
-// <!--     });-->
-// <!--}, 3000);-->
-// <!--    ftManager = new metaContract.FtManager()-->
+<!--first auto init -->
+<!--setTimeout(() => {-->
+<!--    version();-->
+<!--    wallet =metaContract.Wallet.fromMnemonic({-->
+<!--       mnemonic:mnemonic,-->
+<!--       network:'mainnet',-->
+<!--       feeb:1,-->
+<!--       path:path,-->
+<!--     });-->
+<!--}, 3000);-->
+<!--    ftManager = new metaContract.FtManager()-->
 
 function initMetaWallet(mnemonic,path,id,name){
 try{
@@ -40,9 +40,7 @@ try{
        feeb:1,
        path:path,
      });
-
      wif = wallet.privateKey.toWIF();
-     
 
    wallet.getBalance().then((res) => {
     var userInfo= {
@@ -59,7 +57,7 @@ try{
         metaBalance.postMessage(res.toString());
    });
 
-   initFtManager();
+<!--   initFtManager();-->
 
 }catch(e){
  metaInitCallBack.postMessage('');
@@ -119,53 +117,27 @@ nftManager =new metaContract.NftManager({
 
 
 
-async function transferNft(genesis,codehash,tokenIndex,receiverAddress){
-  try{
+<!--async function transferNft(genesis,codehash,tokenIndex,receiverAddress){-->
+<!--  try{-->
+<!--   -->
+<!--    let res=await nftManager.transfer({genesis,codehash,tokenIndex,wif,receiverAddress});-->
+<!--    metaSendNft.postMessage(JSON.stringify(res));-->
 
-    let res=await nftManager.transfer({genesis,codehash,tokenIndex,wif,receiverAddress});
-    metaSendNft.postMessage(JSON.stringify(res));
-
-  }catch(e){
-    metaSendNft.postMessage(e.toString);
-  }
-}
-
-
-
-async function transferFt(codehash, genesis,address,amount) {
-
-try{
-  // console.log("打印私钥："+wif);
-
-var transferRes = await wallet.merge().then(async (res) => {
-      const transferRes = await ftManager.transfer({
-        codehash,
-        genesis,
-        senderWif:wif,
-        receivers:[
-          {
-            address,
-            amount,
-          }
-        ]
-      })
-       metaSendFt.postMessage(JSON.stringify(transferRes));
-  });
-}catch(e){
-metaSendFt.postMessage(e.toString());
-}
-
-}
+<!--  }catch(e){-->
+<!--    metaSendNft.postMessage(e.toString);-->
+<!--  }-->
+<!--}-->
 
 
 
 
-// <!--setTimeout(() => {-->
-// <!--wallet.getBalance().then((res) => {-->
-// <!--        metaBalance.postMessage(res.toString());-->
-// <!--});-->
-// <!--}, 5000);-->
 
+
+<!--setTimeout(() => {-->
+<!--wallet.getBalance().then((res) => {-->
+<!--        metaBalance.postMessage(res.toString());-->
+<!--});-->
+<!--}, 5000);-->
 
 </script>
 </body>

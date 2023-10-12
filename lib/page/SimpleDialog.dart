@@ -10,6 +10,7 @@ import 'package:mvcwallet/utils/SimStytle.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../utils/Constants.dart';
 import '../utils/EventBusUtils.dart';
+import '../utils/MetaFunUtils.dart';
 import '../utils/SimColor.dart';
 
 // ignore: must_be_immutable
@@ -189,11 +190,12 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
                                           showToast("Delete Success");
                                           setState(() {
                                             isLogin = false;
-                                            SqWallet sqWallet=SqWallet();
+                                            SqWallet sqWallet = SqWallet();
                                             sqWallet.delete(myWallet);
                                             // deleteWallet();
                                             balanceTimer!.cancel();
-                                            Future.delayed(const Duration(seconds: 1),(){
+                                            Future.delayed(
+                                                const Duration(seconds: 1), () {
                                               EventBusUtils.instance
                                                   .fire(DeleteWallet());
                                             });
@@ -606,6 +608,7 @@ class DisclaimerDialog extends StatelessWidget {
   }
 }
 
+//加载
 class ProgressDialog extends StatefulWidget {
   bool isShow;
 
@@ -636,6 +639,884 @@ class _ProgressDialogState extends State<ProgressDialog> {
   }
 }
 
+//nft sure
+class ShowNftPayDialog extends StatefulWidget {
+  String nftName;
+  String nftIconUrl;
+  String nftTokenIndex;
+  String receiveAddress;
+  SendNftIndo sendNftIndo;
+
+  ShowNftPayDialog(
+      {Key? key,
+      required this.nftName,
+      required this.nftIconUrl,
+      required this.nftTokenIndex,
+      required this.receiveAddress,required this.sendNftIndo})
+      : super(key: key);
+
+  @override
+  State<ShowNftPayDialog> createState() => _ShowNftPayDialogState();
+}
+
+class _ShowNftPayDialogState extends State<ShowNftPayDialog> {
+  @override
+  Widget build(BuildContext context) {
+    MetaFunUtils metaFunUtils = MetaFunUtils();
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          child: Column(
+            children: [
+              const Expanded(flex: 1, child: SizedBox()),
+              Container(
+                margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(
+                    width: 1,
+                    color: const Color(0xff80D2D7DE),
+                  ),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Confirm Transaction",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(SimColor.deaful_txt_color),
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+
+                       Container(
+                        decoration:  BoxDecoration(
+                          // color:Color(0xff26D2D7DE),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                            border: Border.all(
+                                width: 1,
+                                color: Color(0xff80D2D7DE)
+                            ),
+                        ),
+                        child:   Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Visibility(
+                                visible: true,
+                                // child:  metaFunUtils.getImageContainer(image))
+                                child: metaFunUtils.getImageContainer(Image.network(
+                                    widget.nftIconUrl,
+                                    fit: BoxFit.cover)),
+                              ),
+                              const Visibility(
+                                visible: true,
+                                child: SizedBox(
+                                  width: 20,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          widget.nftName,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color:
+                                              Color(SimColor.deaful_txt_color),
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "#${widget.nftTokenIndex}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 12),
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            "Recipient Address",
+                            style: TextStyle(
+                                color: Color(SimColor.gray_txt_color),
+                                fontSize: 15),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            widget.receiveAddress!,
+                            style: const TextStyle(
+                                color: Color(SimColor.deaful_txt_color),
+                                fontSize: 15),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child:
+                                  InkWell(
+                                    onTap: (){
+                                      widget.sendNftIndo.sendCancel();
+                                    },
+                                    child:   Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(5)),
+                                          border: Border.all(
+                                            width: 1,
+                                            color: const Color(
+                                                SimColor.color_button_blue),
+                                          )),
+                                      child: const Padding(
+                                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                        child: Text(
+                                          "Cancel",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Color(
+                                                SimColor.color_button_blue,
+                                              ),
+                                              fontSize: 15),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+
+
+                            )
+                            ,
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          Expanded(
+                              flex: 1,
+                              child:
+
+                              InkWell(
+                                onTap: (){
+                                  widget.sendNftIndo.sendConfirm(widget.receiveAddress);
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                      color: Color(SimColor.color_button_blue)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 11, 20, 11),
+                                    child: Text("Confirm",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15)),
+                                  ),
+                                ),
+                              )
+                              ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Expanded(flex: 1, child: SizedBox()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+// nft send success
+class ShowNftSuccessDialog extends StatefulWidget {
+  String nftName;
+  String nftIconUrl;
+  String nftTokenIndex;
+  String receiveAddress;
+  String transactionID;
+
+  ShowNftSuccessDialog(
+      {Key? key,
+        required this.nftName,
+        required this.nftIconUrl,
+        required this.nftTokenIndex,
+        required this.receiveAddress,required this.transactionID})
+      : super(key: key);
+
+  @override
+  State<ShowNftSuccessDialog> createState() => _ShowNftSuccessDialogState();
+}
+
+class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
+  @override
+  Widget build(BuildContext context) {
+    MetaFunUtils metaFunUtils = MetaFunUtils();
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          child: Column(
+            children: [
+              const Expanded(flex: 1, child: SizedBox()),
+              Container(
+                margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(
+                    width: 1,
+                    color: const Color(0xff80D2D7DE),
+                  ),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  child: Column(
+                    children: [
+                      Image.asset("images/mvc_select_checkbox.png",width: 54,height: 54,),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Text(
+                        "Successfully Transfers",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(SimColor.deaful_txt_color),
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        // decoration:  BoxDecoration(
+                        //   // color:Color(0xff26D2D7DE),
+                        //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                        //   border: Border.all(
+                        //       width: 1,
+                        //       color: Color(0xff80D2D7DE)
+                        //   ),
+                        // ),
+                        child:   Padding(
+                          padding: const EdgeInsets.all(0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          widget.nftName,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color:
+                                              Color(SimColor.deaful_txt_color),
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "#${widget.nftTokenIndex}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 12),
+                                        ))
+                                  ],
+                                ),
+                              ),
+                              const Visibility(
+                                visible: true,
+                                child: SizedBox(
+                                  width: 20,
+                                ),
+                              ),
+
+                              Visibility(
+                                visible: true,
+                                // child:  metaFunUtils.getImageContainer(image))
+                                child: metaFunUtils.getImageContainerSize(Image.network(
+                                    widget.nftIconUrl,
+                                    fit: BoxFit.cover),40,40),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            "Recipient Address",
+                            style: TextStyle(
+                                color: Color(SimColor.gray_txt_color),
+                                fontSize: 15),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            widget.receiveAddress!,
+                            style: const TextStyle(
+                                color: Color(SimColor.deaful_txt_color),
+                                fontSize: 12),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            "Transaction ID",
+                            style: TextStyle(
+                                color: Color(SimColor.gray_txt_color),
+                                fontSize: 15),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      InkWell(
+                        onTap: (){
+                          ClipboardData data =   ClipboardData(text: widget.transactionID!);
+                          Clipboard.setData(data);
+                          showToast("Copy Success");
+                        },
+                        child:    Row(
+                          children: [
+
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 220),
+                              child: Text(
+                                widget.transactionID!,
+                                style: const TextStyle(
+                                  color: Color(SimColor.deaful_txt_color),
+                                  fontSize: 12,
+
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+
+                            Image.asset("images/add_icon_copy.png", width: 16, height: 16),
+
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          // Expanded(
+                          //     flex: 1,
+                          //     child:
+                          //     InkWell(
+                          //       onTap: (){
+                          //         widget.sendNftIndo.sendCancel();
+                          //       },
+                          //       child:   Container(
+                          //         decoration: BoxDecoration(
+                          //             borderRadius: const BorderRadius.all(
+                          //                 Radius.circular(5)),
+                          //             border: Border.all(
+                          //               width: 1,
+                          //               color: const Color(
+                          //                   SimColor.color_button_blue),
+                          //             )),
+                          //         child: const Padding(
+                          //           padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                          //           child: Text(
+                          //             "Cancel",
+                          //             textAlign: TextAlign.center,
+                          //             style: TextStyle(
+                          //                 color: Color(
+                          //                   SimColor.color_button_blue,
+                          //                 ),
+                          //                 fontSize: 15),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     )
+                          //
+                          //
+                          // )
+                          // ,
+                          // const SizedBox(
+                          //   width: 30,
+                          // ),
+                          Expanded(
+                              flex: 1,
+                              child:
+
+                              InkWell(
+                                onTap: (){
+                                  Navigator.of(context).pop();
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                      color: Color(SimColor.color_button_blue)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 11, 20, 11),
+                                    child: Text("OK",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15)),
+                                  ),
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Expanded(flex: 1, child: SizedBox()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+//nft sure
+class ShowFtPayDialog extends StatefulWidget {
+  String nftName;
+  String amount;
+  String receiveAddress;
+  SendFtIndo sendFtIndo;
+
+  ShowFtPayDialog(
+      {Key? key,
+        required this.nftName,
+        required this.amount,
+        required this.receiveAddress,required this.sendFtIndo})
+      : super(key: key);
+
+  @override
+  State<ShowFtPayDialog> createState() => _ShowFtPayDialogState();
+}
+
+class _ShowFtPayDialogState extends State<ShowFtPayDialog> {
+  @override
+  Widget build(BuildContext context) {
+    MetaFunUtils metaFunUtils = MetaFunUtils();
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          child: Column(
+            children: [
+              const Expanded(flex: 1, child: SizedBox()),
+              Container(
+                margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(
+                    width: 1,
+                    color: const Color(0xff80D2D7DE),
+                  ),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Confirm Transaction",
+                        style: TextStyle(
+                            fontSize: 17,
+                            color: Color(SimColor.deaful_txt_color),
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            "Amount",
+                            style: TextStyle(
+                                color: Color(SimColor.gray_txt_color),
+                                fontSize: 15),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                           "${ widget.amount!} ${widget.nftName}",
+                            style: const TextStyle(
+                                color: Color(SimColor.deaful_txt_color),
+                                fontSize: 14),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            "Recipient Address",
+                            style: TextStyle(
+                                color: Color(SimColor.gray_txt_color),
+                                fontSize: 15),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            widget.receiveAddress!,
+                            style: const TextStyle(
+                                color: Color(SimColor.deaful_txt_color),
+                                fontSize: 14),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child:
+                              InkWell(
+                                onTap: (){
+                                  widget.sendFtIndo.sendCancel();
+                                },
+                                child:   Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(5)),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: const Color(
+                                            SimColor.color_button_blue),
+                                      )),
+                                  child: const Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                    child: Text(
+                                      "Cancel",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Color(
+                                            SimColor.color_button_blue,
+                                          ),
+                                          fontSize: 15),
+                                    ),
+                                  ),
+                                ),
+                              )
+
+
+                          )
+                          ,
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          Expanded(
+                              flex: 1,
+                              child:
+
+                              InkWell(
+                                onTap: (){
+                                  widget.sendFtIndo.sendConfirm(widget.receiveAddress,widget.amount);
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                      color: Color(SimColor.color_button_blue)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 11, 20, 11),
+                                    child: Text("Confirm",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15)),
+                                  ),
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Expanded(flex: 1, child: SizedBox()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+// nft send success
+class ShowFtSuccessDialog extends StatefulWidget {
+  String nftName;
+  String receiveAddress;
+  String transactionID;
+  String ftAmount;
+
+
+
+  ShowFtSuccessDialog(
+      {Key? key,
+        required this.nftName,
+        required this.ftAmount,
+        required this.receiveAddress,required this.transactionID})
+      : super(key: key);
+
+  @override
+  State<ShowFtSuccessDialog> createState() => _ShowFtSuccessDialogState();
+}
+
+class _ShowFtSuccessDialogState extends State<ShowFtSuccessDialog> {
+  @override
+  Widget build(BuildContext context) {
+    MetaFunUtils metaFunUtils = MetaFunUtils();
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          child: Column(
+            children: [
+              const Expanded(flex: 1, child: SizedBox()),
+              Container(
+                margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(
+                    width: 1,
+                    color: const Color(0xff80D2D7DE),
+                  ),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  child: Column(
+                    children: [
+                      Image.asset("images/mvc_select_checkbox.png",width: 54,height: 54,),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Text(
+                        "Successfully Transfers",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Color(SimColor.deaful_txt_color),
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            "Amount",
+                            style: TextStyle(
+                                color: Color(SimColor.gray_txt_color),
+                                fontSize: 16),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "${widget.ftAmount} ${widget.nftName}",
+                            style: const TextStyle(
+                                color: Color(SimColor.deaful_txt_color),
+                                fontSize: 14),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            "Recipient Address",
+                            style: TextStyle(
+                                color: Color(SimColor.gray_txt_color),
+                                fontSize: 16),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            widget.receiveAddress!,
+                            style: const TextStyle(
+                                color: Color(SimColor.deaful_txt_color),
+                                fontSize: 13),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            "Transaction ID",
+                            style: TextStyle(
+                                color: Color(SimColor.gray_txt_color),
+                                fontSize: 15),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      InkWell(
+                        onTap: (){
+                          ClipboardData data =   ClipboardData(text: widget.transactionID!);
+                          Clipboard.setData(data);
+                          showToast("Copy Success");
+                        },
+                        child:    Row(
+                          children: [
+
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 220),
+                              child: Text(
+                                widget.transactionID!,
+                                style: const TextStyle(
+                                  color: Color(SimColor.deaful_txt_color),
+                                  fontSize: 15,
+
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+
+                            Image.asset("images/add_icon_copy.png", width: 16, height: 16),
+
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+
+                          Expanded(
+                              flex: 1,
+                              child:
+
+                              InkWell(
+                                onTap: (){
+                                  Navigator.of(context).pop();
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                      color: Color(SimColor.color_button_blue)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 11, 20, 11),
+                                    child: Text("OK",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15)),
+                                  ),
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Expanded(flex: 1, child: SizedBox()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+//编辑
 class EditWalletDialog extends StatefulWidget {
   const EditWalletDialog({Key? key}) : super(key: key);
 
@@ -691,9 +1572,9 @@ class _EditWalletDialogState extends State<EditWalletDialog> {
                                 if (walletNameController.text.isNotEmpty) {
                                   myWallet.name = walletNameController.text;
                                   showToast("Success");
-                                  SqWallet sqWallet=SqWallet();
+                                  SqWallet sqWallet = SqWallet();
                                   sqWallet.updateDefaultData(myWallet);
-                                  walletName=myWallet.name;
+                                  walletName = myWallet.name;
                                   // changeWalletInfo(myWallet);
                                 }
                               });
@@ -758,6 +1639,7 @@ class _SimWebViewState extends State<SimWebView> {
     // _webViewController?.loadHtmlString(fileHtmlContent);
 
     _webViewController.loadFlutterAsset("files/meta-mvc.html");
+    // _webViewController.setUserAgent(userAgent)
     String jsContent =
         await rootBundle.loadString("files/metaContract.iife.js");
     _webViewController.runJavaScript(jsContent);
@@ -777,23 +1659,18 @@ class DialogTitleLayout extends StatelessWidget {
   }
 }
 
-
-
 //  Check Version
 class CheckVersionDialog extends StatefulWidget {
-
   String url;
 
-  CheckVersionDialog({Key? key,required this.url}) : super(key: key);
+  CheckVersionDialog({Key? key, required this.url}) : super(key: key);
 
   @override
   State<CheckVersionDialog> createState() => _CheckVersionDialogState();
 }
 
 class _CheckVersionDialogState extends State<CheckVersionDialog> {
-
-  bool isAsk=true;
-
+  bool isAsk = true;
 
   @override
   Widget build(BuildContext context) {
@@ -814,7 +1691,7 @@ class _CheckVersionDialogState extends State<CheckVersionDialog> {
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20,20,20,10),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
                     child: Column(
                       children: [
                         const DialogTitleLayout(title: "Version Check"),
@@ -825,27 +1702,28 @@ class _CheckVersionDialogState extends State<CheckVersionDialog> {
                         ),
                         const SizedBox(height: 20),
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             setState(() {
-                              if(isAsk){
-                                isAsk=false;
-                              }else{
-                                isAsk=true;
+                              if (isAsk) {
+                                isAsk = false;
+                              } else {
+                                isAsk = true;
                               }
                               SharedPreferencesUtils.setBool("ask_key", isAsk);
                             });
                           },
-                          child:   Row(
+                          child: Row(
                             children: [
-                              Image.asset(isAsk==true?
-                                  "images/mvc_normal_checkbox.png": "images/mvc_select_checkbox.png",
+                              Image.asset(
+                                  isAsk == true
+                                      ? "images/mvc_normal_checkbox.png"
+                                      : "images/mvc_select_checkbox.png",
                                   width: 20,
                                   height: 20),
                               const SizedBox(width: 10),
                               const Text("Don't  ask me again .")
                             ],
                           ),
-
                         ),
                         //这里写2个 Button
                         DialogBottomLayout(
@@ -867,9 +1745,6 @@ class _CheckVersionDialogState extends State<CheckVersionDialog> {
     );
   }
 }
-
-
-
 
 // ignore: must_be_immutable
 class DialogBottomLayout extends StatefulWidget {
@@ -930,5 +1805,50 @@ class _DialogBottomLayoutState extends State<DialogBottomLayout> {
         ],
       ),
     );
+  }
+}
+
+//dialog
+class DialogUless extends StatefulWidget {
+  const DialogUless({Key? key}) : super(key: key);
+
+  @override
+  State<DialogUless> createState() => _DialogUlessState();
+}
+
+class _DialogUlessState extends State<DialogUless> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          child: Column(
+            children: [
+              const Expanded(flex: 1, child: SizedBox()),
+              Container(
+                margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(
+                    width: 1,
+                    color: const Color(0xff80D2D7DE),
+                  ),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                  child: Column(
+                    children: [],
+                  ),
+                ),
+              ),
+              const Expanded(flex: 1, child: SizedBox()),
+            ],
+          ),
+        ),
+      ),
+    );
+    ;
   }
 }
