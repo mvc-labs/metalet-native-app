@@ -119,7 +119,7 @@ class _NftPageState extends State<NftPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(items.nftName!,style: const TextStyle(
+                Text(items.nftSeriesName!,style: const TextStyle(
                   color: Color(SimColor.deaful_txt_color),
                   fontSize: 16,
                 ),),
@@ -234,8 +234,9 @@ class _NftPageState extends State<NftPage> {
     map["page"] = page;
     map["pageSize"] = pageSize;
     map["chain"] = chain;
-    String url =
-        "https://api.show3.io/aggregation/v2/app/show/nft/$address/summary";
+    String url = "https://api.show3.io/aggregation/v2/app/show/nft/$address/summary";
+    // String url = "https://metalet.space/mvc-api/aggregation/v2/app/show/nft/$address/summary";
+    // String url = "https://metalet.space/metasv/aggregation/v2/app/show/nft/$address/summary";
     Dio dio = Dio();
     Response response = await dio.get(url, queryParameters: map);
     Map<String, dynamic> data = response.data;

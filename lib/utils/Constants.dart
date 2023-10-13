@@ -217,7 +217,8 @@ void hasNoLogin(Indo indo) {
       context: navKey.currentState!.overlay!.context,
       builder: (context) {
         return MyWalletDialog(indo: indo, isVisibility: true);
-      });
+      },
+      barrierDismissible: false);
 }
 
 void addMvcWallet(Indo indo) {

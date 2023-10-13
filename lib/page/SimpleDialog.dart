@@ -764,7 +764,7 @@ class _ShowNftPayDialogState extends State<ShowNftPayDialog> {
                             "Recipient Address",
                             style: TextStyle(
                                 color: Color(SimColor.gray_txt_color),
-                                fontSize: 15),
+                                fontSize: 14),
                           )
                         ],
                       ),
@@ -777,7 +777,7 @@ class _ShowNftPayDialogState extends State<ShowNftPayDialog> {
                             widget.receiveAddress!,
                             style: const TextStyle(
                                 color: Color(SimColor.deaful_txt_color),
-                                fontSize: 15),
+                                fontSize: 13),
                           )
                         ],
                       ),

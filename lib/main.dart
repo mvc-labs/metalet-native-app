@@ -94,6 +94,13 @@ class MyApp extends StatelessWidget {
       // home: const RequestPage(),
       // home: HomePage(mContext: context),
       home: const DefaultWidget(),
+      builder: (context, child) {
+        return GestureDetector(
+          // 全局添加点击空白处隐藏键盘
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: child,
+        );
+      },
     );
   }
 }
@@ -382,13 +389,19 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
 
       ..addJavaScriptChannel("metaSendNft", onMessageReceived: (onMessageReceived){
         // p(onMessageReceived.message);
-        nftSendBack = NftSendBack.fromJson(json.decode(onMessageReceived.message));
-        print(nftSendBack.txid);
-        if(nftSendBack.txid!.isNotEmpty){
-          Navigator.popUntil(context, ModalRoute.withName("token"));
-          EventBusUtils.instance
-              .fire(SendNftSuccess());
+        try{
+          nftSendBack = NftSendBack.fromJson(json.decode(onMessageReceived.message));
+          print(nftSendBack.txid);
+          if(nftSendBack.txid!.isNotEmpty){
+            Navigator.popUntil(context, ModalRoute.withName("token"));
+            EventBusUtils.instance
+                .fire(SendNftSuccess());
+          }
+        }catch(e){
+          Navigator.of(navKey.currentState!.overlay!.context).pop();
+          showToast("Send failed Please check the address");
         }
+
       })
 
       ..addJavaScriptChannel("metaSendFt", onMessageReceived: (onMessageReceived){

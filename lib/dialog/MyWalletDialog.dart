@@ -15,18 +15,18 @@ class MyWalletDialog extends Dialog {
   late TextEditingController walletNameController;
   late TextEditingController walletMnemoniController;
   late TextEditingController walletPathController;
-  FocusNode commentFocus = FocusNode();
+  // FocusNode commentFocus = FocusNode();
 
 
   MyWalletDialog({super.key, required this.indo, required this.isVisibility}) {
     walletNameController = TextEditingController();
     walletMnemoniController = TextEditingController();
-    commentFocus.unfocus();
+    // commentFocus.unfocus();
     walletMnemoniController.addListener(() {
       if(walletMnemoniController.text.isEmpty){
-        commentFocus.unfocus();
+        // commentFocus.unfocus();
       }else{
-        commentFocus.requestFocus(commentFocus);
+        // commentFocus.requestFocus(commentFocus);
       }
     });
     walletPathController = TextEditingController();
@@ -34,206 +34,213 @@ class MyWalletDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-        visible: isVisibility,
-        child: Material(
-          type: MaterialType.transparency,
-          child: Center(
-            child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                width: double.infinity,
-                height: 500,
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Column(
-                    children: [
-                      const DialogTitleLayout(title: "Create/Restore Wallet"),
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        height: 30,
-                        width: double.infinity,
-                        child: Text(
-                          " wallet name:",
-                          style: getDefaultTextStyle1(),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      Container(
-                        height: 50,
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage("images/input.png"),
-                                fit: BoxFit.fill)),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                              hintText: "enter wallet name",
-                              border: InputBorder.none),
-                          controller: walletNameController,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                        height: 30,
-                        width: double.infinity,
-                        child: Text(
-                          " mnemonic:",
-                          style: getDefaultTextStyle1(),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      Container(
-                        height: 130,
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage("images/input_large_bg.png"),
-                                fit: BoxFit.fill)),
-                        child: TextField(
-                          maxLines: 10,
-                          decoration: const InputDecoration(
-                            hintText:
-                                "enter your mnemonic phrase to restore wallet \nleave it blank to create new wallet",
-                            border: InputBorder.none,
+    return
+      Visibility(
+          visible: isVisibility,
+          child: Material(
+              type: MaterialType.transparency,
+
+              child: Center(
+                child: Container(
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    width: double.infinity,
+                    height: 500,
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                      child: Column(
+                        children: [
+                          const DialogTitleLayout(title: "Create/Restore Wallet"),
+                          const SizedBox(height: 30),
+                          SizedBox(
+                            height: 30,
+                            width: double.infinity,
+                            child: Text(
+                              " wallet name:",
+                              style: getDefaultTextStyle1(),
+                              textAlign: TextAlign.left,
+                            ),
                           ),
-                          controller: walletMnemoniController,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                        height: 30,
-                        width: double.infinity,
-                        child: Text(
-                          " path:",
-                          style: getDefaultTextStyle1(),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      Container(
-                        height: 50,
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage("images/input.png"),
-                                fit: BoxFit.fill)),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                              // hintText: "m/44'/10001'/0'",
-                              hintText: "10001",
-                              border: InputBorder.none),
-                          controller: walletPathController,
-                        ),
-                      ),
-                      // DialogBottomLayout(indo: indo,isVisibility: isVisibility)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Visibility(
-                                visible: isVisibility,
-                                child: Expanded(
+                          Container(
+                            height: 50,
+                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage("images/input.png"),
+                                    fit: BoxFit.fill)),
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                  hintText: "enter wallet name",
+                                  border: InputBorder.none),
+                              controller: walletNameController,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            height: 30,
+                            width: double.infinity,
+                            child: Text(
+                              " mnemonic:",
+                              style: getDefaultTextStyle1(),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Container(
+                            height: 130,
+                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage("images/input_large_bg.png"),
+                                    fit: BoxFit.fill)),
+                            child: TextField(
+                              maxLines: 10,
+                              decoration: const InputDecoration(
+                                hintText:
+                                "enter your mnemonic phrase to restore wallet \nleave it blank to create new wallet",
+                                border: InputBorder.none,
+                              ),
+                              controller: walletMnemoniController,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            height: 30,
+                            width: double.infinity,
+                            child: Text(
+                              " path:",
+                              style: getDefaultTextStyle1(),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Container(
+                            height: 50,
+                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage("images/input.png"),
+                                    fit: BoxFit.fill)),
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                // hintText: "m/44'/10001'/0'",
+                                  hintText: "10001",
+                                  border: InputBorder.none),
+                              controller: walletPathController,
+                            ),
+                          ),
+                          // DialogBottomLayout(indo: indo,isVisibility: isVisibility)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Visibility(
+                                    visible: isVisibility,
+                                    child: Expanded(
+                                        flex: 1,
+                                        child: SizedBox(
+                                          height: 44,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Color(
+                                                      SimColor.deaful_txt_color)),
+                                            ),
+                                          ),
+                                        ))),
+                                Visibility(
+                                  visible: isVisibility,
+                                  child: const SizedBox(width: 20),
+                                ),
+                                Expanded(
                                     flex: 1,
                                     child: SizedBox(
-                                      height: 44,
-                                      child: TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text(
-                                          "Cancel",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Color(
-                                                  SimColor.deaful_txt_color)),
-                                        ),
-                                      ),
-                                    ))),
-                            Visibility(
-                              visible: isVisibility,
-                              child: const SizedBox(width: 20),
+                                        height: 44,
+                                        child: TextButton(
+                                          onPressed: () {
+                                            if (walletMnemoniController
+                                                .text.isEmpty) {
+                                              // showToast(
+                                              //     "Please enter the mnemonic");
+                                              //SimCreate
+                                              String walletName = "";
+                                              String walletPath = "";
+                                              if (walletNameController
+                                                  .text.isNotEmpty) {
+                                                walletName =
+                                                    walletNameController.text;
+                                              } else {
+                                                walletName = "Wallet";
+                                              }
+
+                                              walletPath = "10001";
+                                              // if (walletPathController
+                                              //     .text.isNotEmpty) {
+                                              //   walletPath =
+                                              //       walletPathController.text;
+                                              // } else {
+                                              //   walletPath = "10001";
+                                              // }
+
+                                              indo.createWallet(
+                                                  walletName, walletPath);
+                                              Navigator.of(context).pop();
+                                            } else {
+                                              String walletName = "";
+                                              String walletPath = "";
+                                              if (walletNameController
+                                                  .text.isNotEmpty) {
+                                                walletName =
+                                                    walletNameController.text;
+                                              } else {
+                                                walletName = "Wallet";
+                                              }
+                                              if (walletPathController
+                                                  .text.isNotEmpty) {
+                                                walletPath =
+                                                    walletPathController.text;
+                                              } else {
+                                                walletPath = "10001";
+                                              }
+                                              indo.addWallet(
+                                                  walletName,
+                                                  walletMnemoniController.text,
+                                                  walletPath);
+                                              // showDialog(context: context, builder: (context){
+                                              //   return ProgressDialog(isShow: true);
+                                              // });
+                                              Navigator.of(context).pop();
+                                            }
+                                          },
+                                          child: const Text(
+                                            "OK",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Color(
+                                                    SimColor.color_button_blue)),
+                                          ),
+                                        )))
+                              ],
                             ),
-                            Expanded(
-                                flex: 1,
-                                child: SizedBox(
-                                    height: 44,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        if (walletMnemoniController
-                                            .text.isEmpty) {
-                                          // showToast(
-                                          //     "Please enter the mnemonic");
-                                          //SimCreate
-                                          String walletName = "";
-                                          String walletPath = "";
-                                          if (walletNameController
-                                              .text.isNotEmpty) {
-                                            walletName =
-                                                walletNameController.text;
-                                          } else {
-                                            walletName = "Wallet";
-                                          }
+                          )
+                        ],
+                      ),
+                    )),
+              )
 
-                                          walletPath = "10001";
-                                          // if (walletPathController
-                                          //     .text.isNotEmpty) {
-                                          //   walletPath =
-                                          //       walletPathController.text;
-                                          // } else {
-                                          //   walletPath = "10001";
-                                          // }
 
-                                          indo.createWallet(
-                                              walletName, walletPath);
-                                          Navigator.of(context).pop();
-                                        } else {
-                                          String walletName = "";
-                                          String walletPath = "";
-                                          if (walletNameController
-                                              .text.isNotEmpty) {
-                                            walletName =
-                                                walletNameController.text;
-                                          } else {
-                                            walletName = "Wallet";
-                                          }
-                                          if (walletPathController
-                                              .text.isNotEmpty) {
-                                            walletPath =
-                                                walletPathController.text;
-                                          } else {
-                                            walletPath = "10001";
-                                          }
-                                          indo.addWallet(
-                                              walletName,
-                                              walletMnemoniController.text,
-                                              walletPath);
-                                          // showDialog(context: context, builder: (context){
-                                          //   return ProgressDialog(isShow: true);
-                                          // });
-                                          Navigator.of(context).pop();
-                                        }
-                                      },
-                                      child: const Text(
-                                        "OK",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color(
-                                                SimColor.color_button_blue)),
-                                      ),
-                                    )))
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                )),
-          ),
-        ));
+          ))
+
+
+   ;
   }
 }
 
@@ -286,7 +293,7 @@ class _MyWalletsDialogState extends State<MyWalletsDialog> {
   Widget build(BuildContext context) {
     return Material(
       type: MaterialType.transparency,
-      child: Center(
+      child:Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxHeight: widget.height,
@@ -408,7 +415,9 @@ class _MyWalletsDialogState extends State<MyWalletsDialog> {
                 ),
               )),
         ),
-      ),
+      )
+
+
     );
   }
 
