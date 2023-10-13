@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mvcwallet/bean/TransRecordResponse.dart';
 import 'package:mvcwallet/main.dart';
+import '../constant/SimContants.dart';
 import '../utils/Constants.dart';
 import '../utils/SimColor.dart';
 import '../utils/SimStytle.dart';
@@ -371,7 +372,7 @@ class _TransRecordContentState extends State<TransRecordContent> {
     print("www$flag");
     final dio = Dio();
     final response = await dio.get(
-        "https://mainnet.mvcapi.com/address/${myWallet.address}/tx?flag=$flag");
+        "$mvc_api/address/${myWallet.address}/tx?flag=$flag");
     if (response.statusCode == HttpStatus.ok) {
       // String stationsJson = jsonDecode(response.data);
       List<TransRecordResponse> items = [];
@@ -390,7 +391,7 @@ class _TransRecordContentState extends State<TransRecordContent> {
   Future<void> getRecordList() async {
     final dio = Dio();
     final response = await dio
-        .get("https://mainnet.mvcapi.com/address/${myWallet.address}/tx?flag=");
+        .get("$mvc_api/address/${myWallet.address}/tx?flag=");
     if (response.statusCode == HttpStatus.ok) {
       // String stationsJson = jsonDecode(response.data);
       List<TransRecordResponse> items = [];

@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mvcwallet/bean/FtRecord.dart';
+import 'package:mvcwallet/constant/SimContants.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/SendFtPage.dart';
@@ -337,7 +338,7 @@ class _FtDetailPageState extends State<FtDetailPage> {
     // map["genesis"] = widget.ftItem.genesis;
     map["flag"] = flag;
     String url =
-        "https://mainnet.mvcapi.com/contract/ft/address/${myWallet
+        "$mvc_api/contract/ft/address/${myWallet
         .address}/${widget.ftItem.codehash}/${widget.ftItem.genesis}/tx";
 
     Dio dio = Dio();
