@@ -39,6 +39,7 @@ try{
        network:'mainnet',
        feeb:1,
        path:path,
+      // apiUrl:"https://metalet.space/mvc-api"
      });
 
      wif = wallet.privateKey.toWIF();
@@ -105,6 +106,7 @@ ftManager= new metaContract.FtManager({
     apiTarget: metaContract.API_TARGET.MVC,
     purse: wif,
     feeb: 1,
+    apiHost:"https://metalet.space/mvc-api"
 });
 
 
@@ -113,6 +115,7 @@ nftManager =new metaContract.NftManager({
     apiTarget: metaContract.API_TARGET.MVC,
     purse:  wif,
     feeb: 1,
+    apiHost:"https://metalet.space/mvc-api"
 });
 
 }
@@ -142,6 +145,7 @@ var transferRes = await wallet.merge().then(async (res) => {
         codehash,
         genesis,
         senderWif:wif,
+
         receivers:[
           {
             address,

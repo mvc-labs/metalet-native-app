@@ -318,7 +318,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
                       ],
-                      keyboardType: TextInputType.number,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       decoration: const InputDecoration(
                           hintText: "0",
                           border: InputBorder.none),
@@ -345,7 +345,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
               ),
             ),
             const SizedBox(
-              height: 50,
+              height: 44,
             ),
             Container(
               height: 44,

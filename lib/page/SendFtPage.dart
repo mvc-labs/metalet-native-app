@@ -114,7 +114,7 @@ class _SendFtpageState extends State<SendFtpage> implements SendFtIndo{
                 )
               ],
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 46),
            Row(
              children: [
                Expanded(

@@ -6,6 +6,7 @@ import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/ShowNftDetailPage.dart';
 
 import '../bean/NftDetailBean.dart';
+import '../constant/SimContants.dart';
 import '../utils/MetaFunUtils.dart';
 import 'RequestPage.dart';
 
@@ -153,7 +154,7 @@ class _NftDetailListPageState extends State<NftDetailListPage> {
     map["genesis"] = widget.genesis;
 
     String url =
-        "https://api.show3.space/aggregation/v2/app/show/nft/${myWallet.address}/details";
+        "$mvc_metalet/v2/app/show/nft/${myWallet.address}/details";
     Dio dio = Dio();
     Response response = await dio.get(url, queryParameters: map);
     print("请求nftList数据：$response");
@@ -176,7 +177,7 @@ class _NftDetailListPageState extends State<NftDetailListPage> {
     map["genesis"] = widget.genesis;
 
     String url =
-        "https://api.show3.space/aggregation/v2/app/show/nft/${myWallet.address}/details";
+        "$mvc_metalet/v2/app/show/nft/${myWallet.address}/details";
     Dio dio = Dio();
     Response response = await dio.get(url, queryParameters: map);
     Map<String, dynamic> data = response.data;

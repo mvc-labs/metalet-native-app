@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvcwallet/bean/FtData.dart';
+import 'package:mvcwallet/constant/SimContants.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/FtDetailPage.dart';
 import 'package:mvcwallet/page/RequestPage.dart';
@@ -196,7 +197,7 @@ class _FtPageState extends State<FtPage> {
     map["pageSize"] = pageSize;
     map["chain"] = chain;
     String url =
-        "https://api.show3.io/aggregation/v2/app/show/ft/${myWallet.address}/summaries";
+        "$mvc_metalet/v2/app/show/ft/${myWallet.address}/summaries";
 
     Dio dio = Dio();
     Response response = await dio.get(url, queryParameters: map);
