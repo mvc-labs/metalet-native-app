@@ -398,6 +398,11 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
             Navigator.popUntil(context, ModalRoute.withName("token"));
             EventBusUtils.instance
                 .fire(SendNftSuccess());
+
+            showDialog(context: context, builder: (BuildContext context){
+              return ShowNftSuccessDialog(nftName: sendNftDialogData.nftName!,nftIconUrl: sendNftDialogData.nftIconUrl!,nftTokenIndex: sendNftDialogData.nftTokenIndex!,receiveAddress:sendNftDialogData.receiveAddress!, transactionID: nftSendBack.txid!,);
+            });
+
           }
         }catch(e){
           Navigator.of(navKey.currentState!.overlay!.context).pop();

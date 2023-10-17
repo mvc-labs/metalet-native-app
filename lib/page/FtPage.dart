@@ -205,6 +205,10 @@ class _FtPageState extends State<FtPage> {
     Map<String, dynamic> data = response.data;
     FtData ftData = FtData.fromJson(data);
     List<Items> ftListData=ftData.data!.results!.items!;
+    if(!mounted){
+      return;
+    }
+
     setState(() {
 
       ftList.clear();

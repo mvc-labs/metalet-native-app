@@ -52,15 +52,11 @@ class _NftPageState extends State<NftPage> {
 
 
     EventBusUtils.instance.on<SendNftSuccess>().listen((event) {
-
       Future.delayed(const Duration(seconds: 1),(){
-       setState(() {
-         showDialog(context: context, builder: (BuildContext context){
-           return ShowNftSuccessDialog(nftName: sendNftDialogData.nftName!,nftIconUrl: sendNftDialogData.nftIconUrl!,nftTokenIndex: sendNftDialogData.nftTokenIndex!,receiveAddress:sendNftDialogData.receiveAddress!, transactionID: nftSendBack.txid!,);
-         });
-
+        // showDialog(context: context, builder: (BuildContext context){
+        //   return ShowNftSuccessDialog(nftName: sendNftDialogData.nftName!,nftIconUrl: sendNftDialogData.nftIconUrl!,nftTokenIndex: sendNftDialogData.nftTokenIndex!,receiveAddress:sendNftDialogData.receiveAddress!, transactionID: nftSendBack.txid!,);
+        // });
          getNftData();
-       });
       });
 
 
@@ -68,6 +64,12 @@ class _NftPageState extends State<NftPage> {
 
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -104,12 +106,15 @@ class _NftPageState extends State<NftPage> {
   Widget getListViewItemLayout(BuildContext context, int index) {
     Items items=nftList[index];
     nftItemList=items.nftDetailItemList!;
-    return InkWell(
+
+    return Visibility(
+        visible: nftItemList.isEmpty?false:true,
+        child: InkWell(
       onTap:(){
         Navigator.of(context).push(
-          CupertinoPageRoute(builder: (BuildContext context){
-            return NftDetailListPage(codehash: items.nftCodehash!, genesis: items.nftGenesis!,title: items.nftName!,);
-          })
+            CupertinoPageRoute(builder: (BuildContext context){
+              return NftDetailListPage(codehash: items.nftCodehash!, genesis: items.nftGenesis!,title: items.nftName!,);
+            })
         );
       },
       child: Container(
@@ -125,7 +130,7 @@ class _NftPageState extends State<NftPage> {
                   fontSize: 16,
                 ),),
                 const Expanded(flex: 1, child: Text("")),
-                Text(items.nftMyCount!.toString(),style: const TextStyle(color: Color(SimColor.gray_txt_color),fontSize: 13),),
+                Text(nftItemList.length.toString(),style: const TextStyle(color: Color(SimColor.gray_txt_color),fontSize: 13),),
                 Image.asset(
                   "images/meta_right_icon.png",
                   width: 15,
@@ -164,7 +169,7 @@ class _NftPageState extends State<NftPage> {
           ],
         ),
       ),
-    );
+    ));
   }
 
 
@@ -246,6 +251,9 @@ class _NftPageState extends State<NftPage> {
 
     print("请求的nft数据：${myNftList[0].nftName!}");
 
+    if(!mounted){
+      return;
+    }
     setState(() {
       nftList.clear();
       nftList.addAll(myNftList);
