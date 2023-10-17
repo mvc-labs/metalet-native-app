@@ -122,11 +122,16 @@ class _SendFtpageState extends State<SendFtpage> implements SendFtIndo{
                  child: ElevatedButton(
                    onPressed: () {
                      if(amountController.value.text.isNotEmpty&&addressController.value.text.isNotEmpty){
-                       showDialog(context: context, builder: (BuildContext context){
-                         return ShowFtPayDialog(nftName: widget.ftItem.symbol!,amount: amountController.value.text,receiveAddress: addressController.value.text,sendFtIndo: this,);
-                       });
-                     }
 
+                       if(num.parse(widget.ftItem!.balance!)>=num.parse(amountController.value.text)){
+                         showDialog(context: context, builder: (BuildContext context){
+                           return ShowFtPayDialog(nftName: widget.ftItem.symbol!,amount: amountController.value.text,receiveAddress: addressController.value.text,sendFtIndo: this,);
+                         });
+                       }else{
+                         showToast("Insufficient transfer balance");
+                       }
+
+                     }
                    },
                    style: ButtonStyle(
                        backgroundColor: MaterialStateProperty.all(

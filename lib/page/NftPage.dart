@@ -68,7 +68,7 @@ class _NftPageState extends State<NftPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-
+    EventBusUtils.instance.destroy();
   }
   @override
   Widget build(BuildContext context) {

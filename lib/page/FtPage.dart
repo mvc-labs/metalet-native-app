@@ -220,4 +220,13 @@ class _FtPageState extends State<FtPage> {
     //
     print(ftData.data!.results!.items![0].name);
   }
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    EventBusUtils.instance.destroy();
+  }
+
 }

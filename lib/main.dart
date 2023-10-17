@@ -78,6 +78,7 @@ void main() {
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+
 }
 
 class MyApp extends StatelessWidget {
@@ -194,6 +195,9 @@ class HomePage extends StatefulWidget {
 
 
 class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implements Indo {
+  late StreamSubscription  _subscription_delete;
+  late StreamSubscription  _subscription_banlace;
+
   _HomePageState();
 
 
@@ -203,7 +207,7 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
 
     // TODO: implement initState
     WidgetsBinding.instance?.addObserver(this);
-    EventBusUtils.instance.on<WalletHomeData>().listen((event) {
+    _subscription_banlace= EventBusUtils.instance.on<WalletHomeData>().listen((event) {
       // print(event.);
       setState(() {
         // var value=double.parse(event.spaceBalance)/100000000;
@@ -213,7 +217,7 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
       });
     });
 
-    EventBusUtils.instance.on<DeleteWallet>().listen((event) {
+    _subscription_delete=  EventBusUtils.instance.on<DeleteWallet>().listen((event) {
       // print(event.);
       setState(() {
         // var value=double.parse(event.spaceBalance)/100000000;
@@ -367,9 +371,13 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
         isSendFinish = true;
         if (message.message.isNotEmpty) {
           showToast(success);
-          Navigator.of(navKey.currentState!.overlay!.context)
-            ..pop()
-            ..pop();
+          // Navigator.of(navKey.currentState!.overlay!.context)
+          //   ..pop()
+          //   ..pop();
+          Navigator.of(context).pushAndRemoveUntil( MaterialPageRoute(builder: (BuildContext context){
+            return  HomePage(mContext: context);
+          }), (route) => false);
+
         } else {
           showToast(error);
         }
@@ -502,6 +510,9 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
   void dispose() {
     super.dispose();
     WidgetsBinding.instance?.removeObserver(this);
+    // EventBusUtils.instance.destroy();
+    _subscription_delete.cancel();
+    _subscription_banlace.cancel();
   }
   @override
   Widget build(BuildContext context) {

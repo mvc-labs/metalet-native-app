@@ -352,7 +352,17 @@ class _ScanResultContentState extends State<ScanResultContent> {
               width: double.infinity,
               child: ElevatedButton(
                   onPressed: () {
-                    send(widget.addressController.text,widget.amountController.text);
+                    if(isFingerCan){
+                      authenticateMe().then((value) {
+                        if(value){
+                          //正确
+                          send(widget.addressController.text,widget.amountController.text);
+                        }
+                      });
+                    }else{
+                      //  TODO 继续
+                      send(widget.addressController.text,widget.amountController.text);
+                    }
                   },
                   style: ButtonStyle(
                     backgroundColor:

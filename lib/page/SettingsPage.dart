@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
@@ -295,7 +297,8 @@ class _SettingsContentState extends State<SettingsContent> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Enable FaceID",
+                    Platform.isAndroid?"Payment Verification":"Enable FaceID"
+                    ,
                     style: getDefaultTextStyle(),
                   ),
                   Image.asset(
