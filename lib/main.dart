@@ -31,7 +31,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'bean/Update.dart';
 // "Use of this wallet is at your own risk and discretion.The wallet is not liable for any losses incurred as a result of using the wallet. ",
 
-Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet",0);
+Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0);
 int selectIndex = 0;
 int id = 0;
 String wallets = "";
@@ -43,7 +43,7 @@ bool isUst = true;
 bool isShowLoadingDialog = false;
 bool isAddWallet = false;
 bool isSwitchWallet = false;
-bool   isLogin = false;
+bool isLogin = false;
 bool isCreate = false;
 // BuildContext? context;
 final navKey = GlobalKey<NavigatorState>();
@@ -52,25 +52,20 @@ String error = "error";
 String walletName = "Wallet";
 bool isSendFinish = false;
 Timer? balanceTimer;
-String createWalletPath="10001";
+String createWalletPath = "10001";
 bool isFingerCan = true;
-bool isNoGopay=true;
-String versionName="";
-String versionCode="";
-bool isFore=true;
-NftSendBack nftSendBack=NftSendBack();
-SendNftDialogData sendNftDialogData=SendNftDialogData();
-SendFtDialogData sendFtDialogData=SendFtDialogData();
-
+bool isNoGopay = true;
+String versionName = "";
+String versionCode = "";
+bool isFore = true;
+NftSendBack nftSendBack = NftSendBack();
+SendNftDialogData sendNftDialogData = SendNftDialogData();
+SendFtDialogData sendFtDialogData = SendFtDialogData();
 
 WebViewController webViewController = WebViewController();
 
-
-
 // by now main
 void main() {
-
-
   // ios pull
   runApp(const MyApp());
   if (Platform.isAndroid) {
@@ -78,17 +73,13 @@ void main() {
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
-
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       navigatorKey: navKey,
       theme: ThemeData(primaryColor: Colors.white),
@@ -108,78 +99,76 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class DefaultWidget extends StatefulWidget {
-
   const DefaultWidget({Key? key}) : super(key: key);
 
   @override
   State<DefaultWidget> createState() => _DefaultWidgetState();
-
 }
 
 class _DefaultWidgetState extends State<DefaultWidget> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    SharedPreferencesUtils.getBool("key_finger",false).then((value){
+    SharedPreferencesUtils.getBool("key_finger", false).then((value) {
       setState(() {
-        isFingerCan=value;
+        isFingerCan = value;
         print("change $isFingerCan");
-        if(isFingerCan){
+        if (isFingerCan) {
           authenticateMe().then((value) {
-            if(value){
-              Navigator.of(context).pushAndRemoveUntil( MaterialPageRoute(builder: (BuildContext context){
-                return  HomePage(mContext: context);
-              }), (route) => false);
-            }else{
+            if (value) {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      settings: const RouteSettings(name: "home"),
+                      builder: (BuildContext context) {
+                        return HomePage(mContext: context);
+                      }),
+                  (route) => false);
+            } else {
               exit(0);
             }
           });
-        }else{
-          Navigator.of(context).pushAndRemoveUntil( MaterialPageRoute(builder: (BuildContext context){
-            return  HomePage(mContext: context);
-          }), (route) => false);
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  settings: const RouteSettings(name: "home"),
+                  builder: (BuildContext context) {
+                    return HomePage(mContext: context);
+                  }),
+              (route) => false);
         }
       });
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     // if(isFingerCan){
-      return Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        // brightness: Brightness.light,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          // brightness: Brightness.light,
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-        ),
-        body: Container(
-          height: 240,
-          width: double.infinity,
-          decoration: const BoxDecoration(
+        elevation: 0.0,
+      ),
+      body: Container(
+        height: 240,
+        width: double.infinity,
+        decoration: const BoxDecoration(
 // color: Colors.red,
-              image: DecorationImage(
-                image: AssetImage("images/bg_img_space.png"),
-              )
+            image: DecorationImage(
+          image: AssetImage("images/bg_img_space.png"),
+        )
 // image: AssetImage("images/icon.png"),)
-          ),
-        ),
-      );
+            ),
+      ),
+    );
     // }else{
     //   return  HomePage(mContext: context);
     // }
   }
-
 }
-
-
-
 
 class HomePage extends StatefulWidget {
   final BuildContext? mContext;
@@ -191,23 +180,20 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-
-
-
-class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implements Indo {
-  late StreamSubscription  _subscription_delete;
-  late StreamSubscription  _subscription_banlace;
+class _HomePageState extends State<HomePage>
+    with WidgetsBindingObserver
+    implements Indo {
+  late StreamSubscription _subscription_delete;
+  late StreamSubscription _subscription_banlace;
 
   _HomePageState();
 
-
   @override
   void initState() {
-
-
     // TODO: implement initState
     WidgetsBinding.instance?.addObserver(this);
-    _subscription_banlace= EventBusUtils.instance.on<WalletHomeData>().listen((event) {
+    _subscription_banlace =
+        EventBusUtils.instance.on<WalletHomeData>().listen((event) {
       // print(event.);
       setState(() {
         // var value=double.parse(event.spaceBalance)/100000000;
@@ -217,7 +203,8 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
       });
     });
 
-    _subscription_delete=  EventBusUtils.instance.on<DeleteWallet>().listen((event) {
+    _subscription_delete =
+        EventBusUtils.instance.on<DeleteWallet>().listen((event) {
       // print(event.);
       setState(() {
         // var value=double.parse(event.spaceBalance)/100000000;
@@ -225,7 +212,7 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
         isLogin = false;
         spaceBalance = "0.0 Space";
         walletBalance = "\$ 0.0";
-        walletName="Wallet";
+        walletName = "Wallet";
         print("11111");
         SqWallet sqWallet = SqWallet();
         Future<List<Wallet>> list = sqWallet.getAllWallet();
@@ -233,22 +220,21 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
           setState(() {
             if (value.isNotEmpty) {
               print("22222");
-              Wallet vWallet=value[0];
-              vWallet.isChoose=1;
+              Wallet vWallet = value[0];
+              vWallet.isChoose = 1;
               myWallet = vWallet;
               isLogin = true;
-              walletName=myWallet.name;
-              print("44444"+myWallet.balance);
+              walletName = myWallet.name;
+              print("44444" + myWallet.balance);
               dioRate(myWallet.balance);
               sqWallet.updateDefaultData(myWallet);
               switchWallet(myWallet);
-
             } else {
               print("33333");
               isLogin = false;
               spaceBalance = "0.0 Space";
               walletBalance = "\$ 0.0";
-              walletName="Wallet";
+              walletName = "Wallet";
             }
           });
         });
@@ -265,11 +251,11 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
         if (value.isNotEmpty) {
           for (var wallet in value) {
             // ignore: unrelated_type_equality_checks
-            if(wallet.isChoose==1){
-               myWallet = wallet;
-               isLogin = true;
-               walletName=myWallet.name;
-               dioRate(myWallet.balance);
+            if (wallet.isChoose == 1) {
+              myWallet = wallet;
+              isLogin = true;
+              walletName = myWallet.name;
+              dioRate(myWallet.balance);
             }
           }
         } else {
@@ -304,7 +290,6 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
         if (isNoEmpty(message.message)) {
           myWallet = Wallet.fromJson(json.decode(message.message));
 
-
           print("：${myWallet.mnemonic}");
           if (isAddWallet) {
             id = int.parse(myWallet.id);
@@ -313,25 +298,24 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
             String cacheWallet = json.encode(myWalletList);
             SharedPreferencesUtils.setValue("mvc_wallet", cacheWallet);
 
-
             showToast(success);
             isLogin = true;
             setState(() {
-              walletName=myWallet.name;
+              walletName = myWallet.name;
               dioRate(myWallet.balance);
             });
             SqWallet sqWallet = SqWallet();
-            if(isSwitchWallet==false){
-              bool isInset=true;
-              sqWallet.refreshDefaultData(isInset,myWallet);
-            }else{
-              isSwitchWallet=false;
+            if (isSwitchWallet == false) {
+              bool isInset = true;
+              sqWallet.refreshDefaultData(isInset, myWallet);
+            } else {
+              isSwitchWallet = false;
               sqWallet.updateDefaultData(myWallet);
             }
             isAddWallet = false;
-            if(balanceTimer!=null){
+            if (balanceTimer != null) {
               balanceTimer!.cancel();
-              balanceTimer=null;
+              balanceTimer = null;
             }
 
             Future<List<Wallet>> list = sqWallet.getAllWallet();
@@ -341,7 +325,6 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
                 print("Wallet Null");
               }
             });
-
 
             // sqWallet.id=myWallet.id;
             // sqWallet.name=myWallet.name;
@@ -359,9 +342,8 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
         showToast(" JS : " + message.message);
       })
       ..addJavaScriptChannel("metaBalance", onMessageReceived: (message) {
-
         SqWallet sqWallet = SqWallet();
-        myWallet.balance=message.message;
+        myWallet.balance = message.message;
         sqWallet.update(myWallet);
 
         getBalanceTimer();
@@ -373,16 +355,16 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
           showToast(success);
           // Navigator.of(navKey.currentState!.overlay!.context)
           //   ..pop()
-          //   ..pop();
-          Navigator.of(context).pushAndRemoveUntil( MaterialPageRoute(builder: (BuildContext context){
-            return  HomePage(mContext: context);
-          }), (route) => false);
-
+          // //   ..pop();
+          // Navigator.of(context).pushAndRemoveUntil(
+          //     MaterialPageRoute(builder: (BuildContext context) {
+          //   return HomePage(mContext: context);
+          // }), (route) => false);
+          Navigator.popUntil(context, ModalRoute.withName("home"));
         } else {
           showToast(error);
         }
       })
-
       ..addJavaScriptChannel("metaCreateWallet",
           onMessageReceived: (onMessageReceived) {
         print(onMessageReceived.message);
@@ -396,56 +378,58 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
           showToast(error);
         }
       })
-
-      ..addJavaScriptChannel("metaSendNft", onMessageReceived: (onMessageReceived){
+      ..addJavaScriptChannel("metaSendNft",
+          onMessageReceived: (onMessageReceived) {
         // p(onMessageReceived.message);
-        try{
-          nftSendBack = NftSendBack.fromJson(json.decode(onMessageReceived.message));
+        try {
+          nftSendBack =
+              NftSendBack.fromJson(json.decode(onMessageReceived.message));
           print(nftSendBack.txid);
-          if(nftSendBack.txid!.isNotEmpty){
+          if (nftSendBack.txid!.isNotEmpty) {
             Navigator.popUntil(context, ModalRoute.withName("token"));
-            EventBusUtils.instance
-                .fire(SendNftSuccess());
+            EventBusUtils.instance.fire(SendNftSuccess());
 
-            showDialog(context: context, builder: (BuildContext context){
-              return ShowNftSuccessDialog(nftName: sendNftDialogData.nftName!,nftIconUrl: sendNftDialogData.nftIconUrl!,nftTokenIndex: sendNftDialogData.nftTokenIndex!,receiveAddress:sendNftDialogData.receiveAddress!, transactionID: nftSendBack.txid!,);
-            });
-
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return ShowNftSuccessDialog(
+                    nftName: sendNftDialogData.nftName!,
+                    nftIconUrl: sendNftDialogData.nftIconUrl!,
+                    nftTokenIndex: sendNftDialogData.nftTokenIndex!,
+                    receiveAddress: sendNftDialogData.receiveAddress!,
+                    transactionID: nftSendBack.txid!,
+                  );
+                });
           }
-        }catch(e){
+        } catch (e) {
           Navigator.of(navKey.currentState!.overlay!.context).pop();
           showToast("Send failed Please check the address");
         }
-
       })
-
-      ..addJavaScriptChannel("metaSendFt", onMessageReceived: (onMessageReceived){
+      ..addJavaScriptChannel("metaSendFt",
+          onMessageReceived: (onMessageReceived) {
         // p(onMessageReceived.message);
 
-        try{
-          nftSendBack = NftSendBack.fromJson(json.decode(onMessageReceived.message));
+        try {
+          nftSendBack =
+              NftSendBack.fromJson(json.decode(onMessageReceived.message));
           print(nftSendBack.txid);
-          if(nftSendBack.txid!.isNotEmpty){
+          if (nftSendBack.txid!.isNotEmpty) {
             Navigator.popUntil(context, ModalRoute.withName("token"));
-            EventBusUtils.instance
-                .fire(SendFtSuccess());
+            EventBusUtils.instance.fire(SendFtSuccess());
           }
-        }catch(e){
+        } catch (e) {
           Navigator.of(navKey.currentState!.overlay!.context).pop();
           showToast("Send failed Please check the address");
           print(e.toString());
         }
-
       })
-
-        ..setNavigationDelegate(NavigationDelegate(
+      ..setNavigationDelegate(NavigationDelegate(
           onWebResourceError: (error) {}, onPageStarted: (url) {}));
 
-
-
     //check Version
-    SharedPreferencesUtils.getBool("ask_key",true).then((value) {
-      if(value){
+    SharedPreferencesUtils.getBool("ask_key", true).then((value) {
+      if (value) {
         doCheckVersion(context);
       }
     });
@@ -461,22 +445,20 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
     super.initState();
   }
 
-
-  getBalanceTimer(){
+  getBalanceTimer() {
     balanceTimer ??= Timer.periodic(const Duration(seconds: 5), (timer) {
-        // timeCount -= 1;
-        if(isLogin){
-          // if (timeCount <= 0) {
-          //   timeCount = 5;
-          webViewController.runJavaScript("getBalance()");
-          // dioRate(message);
-          // }
-        } else{
-          timer.cancel();
-        }
-      });
+      // timeCount -= 1;
+      if (isLogin) {
+        // if (timeCount <= 0) {
+        //   timeCount = 5;
+        webViewController.runJavaScript("getBalance()");
+        // dioRate(message);
+        // }
+      } else {
+        timer.cancel();
+      }
+    });
   }
-
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -484,12 +466,11 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
     switch (state) {
       case AppLifecycleState.resumed:
         print("应用进入前台======");
-        if(isFingerCan&&isFore==false){
-          isFore=true;
+        if (isFingerCan && isFore == false) {
+          isFore = true;
           authenticateMe().then((value) {
-            if(value){
-
-            }else{
+            if (value) {
+            } else {
               exit(0);
             }
           });
@@ -500,11 +481,10 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
       case AppLifecycleState.detached:
         break;
       case AppLifecycleState.paused:
-        isFore=false;
+        isFore = false;
         break;
     }
   }
-
 
   @override
   void dispose() {
@@ -514,243 +494,249 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
     _subscription_delete.cancel();
     _subscription_banlace.cancel();
   }
+
   @override
   Widget build(BuildContext context) {
     // authenticateMe().then((value) {
     //   bool auth=value;
     //
     // });
-      return Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        // brightness: Brightness.light,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          // brightness: Brightness.light,
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              TextButton(
-                  onPressed: () {
-                    SqWallet sqWallet=SqWallet();
-                    sqWallet.getAllWallet().then((value) {
-                      if(value.isNotEmpty){
-                        showDialog(context: context, builder: (context){
-                          return MyWalletsDialog(indo: this,walletList: value,);
-                        });
+        elevation: 0.0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            TextButton(
+                onPressed: () {
+                  SqWallet sqWallet = SqWallet();
+                  sqWallet.getAllWallet().then((value) {
+                    if (value.isNotEmpty) {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return MyWalletsDialog(
+                              indo: this,
+                              walletList: value,
+                            );
+                          });
 
-                        // showDialog(
-                        //     context: context,
-                        //     builder: (context) {
-                        //       return MyWalletListDialog(indo: this,isVisibility: true,walletList: value,);
-                        //     });
-                      }else{
-                        // showDialog(
-                        //     context: context,
-                        //     builder: (context) {
-                        //       return CreateWalletDialog(indo: this);
-                        //     });
-                        hasNoLogin(this);
-                      }
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Text(
-                        walletName,
-                        style: const TextStyle(
-                            fontSize: 15,
-                            color: Color(SimColor.deaful_txt_color)),
-                      ),
-                      const SizedBox(width: 5),
-                      Image.asset("images/mvc_wallet_more_icon.png",
-                          width: 10, height: 10)
-                    ],
-                  )),
-              const Expanded(flex: 1, child: Text("")),
-              SizedBox(
-                width: 44,
-                height: 44,
-                child: TextButton(
-                    onPressed: () {
-                      if (isLogin) {
-                        Navigator.of(context).push(
-                            CupertinoPageRoute(builder: (BuildContext context) {
-                              // return  ScanPage2();
-                              return const ScanPage();
-                            }));
-                      } else {
-                        hasNoLogin(this);
-                      }
-                    },
-                    child: Image.asset("images/mvc_scan_icon.png",
-                        width: 22, height: 22)),
-              ),
-              SizedBox(
-                  width: 44,
-                  height: 44,
-                  child: TextButton(
-                      onPressed: () {
-                        if (isLogin) {
-                          Navigator.of(context).push(
-                              CupertinoPageRoute(builder: (BuildContext context) {
-                                return const TransRecordPage();
-                              }));
-                        } else {
-                          hasNoLogin(this);
-                        }
-                      },
-                      child: Image.asset("images/mvc_record_icon.png",
-                          width: 22, height: 22))),
-              SizedBox(
-                height: 44,
-                width: 44,
-                child: TextButton(
-                    onPressed: () {
-                      if (isLogin) {
-                        Navigator.of(context).push(
-                            CupertinoPageRoute(builder: (BuildContext context) {
-                              return const SettingsPage();
-                              // return const RequestPage();
-                            }));
-                      } else {
-                        hasNoLogin(this);
-                      }
-                    },
-                    child: Image.asset("images/mvc_more_icon.png",
-                        width: 22, height: 22)),
-              )
-            ],
-          ),
-        ),
-        body: Container(
-          child: Column(
-            children: [
-              Container(
-                height: 240,
-                width: double.infinity,
-                decoration: const BoxDecoration(
-// color: Colors.red,
-                    image: DecorationImage(
-                      image: AssetImage("images/bg_img_space.png"),
-                    )
-// image: AssetImage("images/icon.png"),)
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Balance",
-                      style: TextStyle(
-                          color: Color(SimColor.deaful_txt_half_color),
-                          fontSize: 16),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ), //SimColor.deaful_txt_color
-                    Text(
-                      walletBalance,
-                      style: const TextStyle(
-                          color: Color(SimColor.deaful_txt_color), fontSize: 40),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "images/icon.png",
-                          width: 30,
-                          height: 30,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          // "21347.32 Spacessss",
-                          spaceBalance,
-                          style: const TextStyle(fontSize: 17),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                      // showDialog(
+                      //     context: context,
+                      //     builder: (context) {
+                      //       return MyWalletListDialog(indo: this,isVisibility: true,walletList: value,);
+                      //     });
+                    } else {
+                      // showDialog(
+                      //     context: context,
+                      //     builder: (context) {
+                      //       return CreateWalletDialog(indo: this);
+                      //     });
+                      hasNoLogin(this);
+                    }
+                  });
+                },
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                        flex: 1,
-                        child: SizedBox(
+                    Text(
+                      walletName,
+                      style: const TextStyle(
+                          fontSize: 15,
+                          color: Color(SimColor.deaful_txt_color)),
+                    ),
+                    const SizedBox(width: 5),
+                    Image.asset("images/mvc_wallet_more_icon.png",
+                        width: 10, height: 10)
+                  ],
+                )),
+            const Expanded(flex: 1, child: Text("")),
+            SizedBox(
+              width: 44,
+              height: 44,
+              child: TextButton(
+                  onPressed: () {
+                    if (isLogin) {
+                      Navigator.of(context).push(
+                          CupertinoPageRoute(builder: (BuildContext context) {
+                        // return  ScanPage2();
+                        return const ScanPage();
+                      }));
+                    } else {
+                      hasNoLogin(this);
+                    }
+                  },
+                  child: Image.asset("images/mvc_scan_icon.png",
+                      width: 22, height: 22)),
+            ),
+            SizedBox(
+                width: 44,
+                height: 44,
+                child: TextButton(
+                    onPressed: () {
+                      if (isLogin) {
+                        Navigator.of(context).push(
+                            CupertinoPageRoute(builder: (BuildContext context) {
+                          return const TransRecordPage();
+                        }));
+                      } else {
+                        hasNoLogin(this);
+                      }
+                    },
+                    child: Image.asset("images/mvc_record_icon.png",
+                        width: 22, height: 22))),
+            SizedBox(
+              height: 44,
+              width: 44,
+              child: TextButton(
+                  onPressed: () {
+                    if (isLogin) {
+                      Navigator.of(context).push(
+                          CupertinoPageRoute(builder: (BuildContext context) {
+                        return const SettingsPage();
+                        // return const RequestPage();
+                      }));
+                    } else {
+                      hasNoLogin(this);
+                    }
+                  },
+                  child: Image.asset("images/mvc_more_icon.png",
+                      width: 22, height: 22)),
+            )
+          ],
+        ),
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Container(
+              height: 240,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+// color: Colors.red,
+                  image: DecorationImage(
+                image: AssetImage("images/bg_img_space.png"),
+              )
+// image: AssetImage("images/icon.png"),)
+                  ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Balance",
+                    style: TextStyle(
+                        color: Color(SimColor.deaful_txt_half_color),
+                        fontSize: 16),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ), //SimColor.deaful_txt_color
+                  Text(
+                    walletBalance,
+                    style: const TextStyle(
+                        color: Color(SimColor.deaful_txt_color), fontSize: 40),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "images/icon.png",
+                        width: 30,
+                        height: 30,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        // "21347.32 Spacessss",
+                        spaceBalance,
+                        style: const TextStyle(fontSize: 17),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 44,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              if (isLogin) {
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (BuildContext context) {
+                                  return const RequestPage();
+                                }));
+                              } else {
+                                hasNoLogin(this);
+                              }
+
+                              //   Navigator.of(context).push(CupertinoPageRoute(
+                              //     builder: (BuildContext context) {
+                              //   return const SimWebView();
+                              // }));
+                            },
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color(SimColor.deaful_txt_color))),
+                            child: const Text("Request",
+                                style: TextStyle(fontSize: 16))),
+                      )),
+                  const SizedBox(width: 20),
+                  Expanded(
+                      flex: 1,
+                      child: SizedBox(
                           height: 44,
                           child: ElevatedButton(
-                              onPressed: () {
-                                if (isLogin) {
-                                  Navigator.of(context).push(CupertinoPageRoute(
-                                      builder: (BuildContext context) {
-                                        return const RequestPage();
-                                      }));
-                                } else {
-                                  hasNoLogin(this);
-                                }
-
-                                //   Navigator.of(context).push(CupertinoPageRoute(
-                                //     builder: (BuildContext context) {
-                                //   return const SimWebView();
-                                // }));
-                              },
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      const Color(SimColor.deaful_txt_color))),
-                              child: const Text("Request",
-                                  style: TextStyle(fontSize: 16))),
-                        )),
-                    const SizedBox(width: 20),
-                    Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                            height: 44,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (isLogin) {
-                                  Navigator.of(context).push(CupertinoPageRoute(
-                                      builder: (BuildContext context) {
-                                        return ScanResultPage(
-                                          result: "",
-                                          isScan: false,
-                                        );
-                                      }));
-                                } else {
-                                  hasNoLogin(this);
-                                }
-                                // showDialog(
-                                //     context: context,
-                                //     builder: (context) {
-                                //       return  const ProgressDialog();
-                                //     });
-                              },
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      const Color(SimColor.color_button_blue))),
-                              child: const Text("Send",
-                                  style: TextStyle(fontSize: 16)),
-                            )))
-                  ],
-                ),
+                            onPressed: () {
+                              if (isLogin) {
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (BuildContext context) {
+                                  return ScanResultPage(
+                                    result: "",
+                                    isScan: false,
+                                  );
+                                }));
+                              } else {
+                                hasNoLogin(this);
+                              }
+                              // showDialog(
+                              //     context: context,
+                              //     builder: (context) {
+                              //       return  const ProgressDialog();
+                              //     });
+                            },
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color(SimColor.color_button_blue))),
+                            child: const Text("Send",
+                                style: TextStyle(fontSize: 16)),
+                          )))
+                ],
               ),
-              SimWebView(webViewController)
-              // Visibility(
-              //   visible: false,
-              //   child: SizedBox(
-              //     width: 100,
-              //     height: 100,
-              //     child: WebViewWidget(
-              //         controller: webViewController
-              //     ),
-              //   ),
-              // )
-            ],
-          ),
+            ),
+            SimWebView(webViewController)
+            // Visibility(
+            //   visible: false,
+            //   child: SizedBox(
+            //     width: 100,
+            //     height: 100,
+            //     child: WebViewWidget(
+            //         controller: webViewController
+            //     ),
+            //   ),
+            // )
+          ],
         ),
-      );
+      ),
+    );
   }
 
   @override
@@ -770,27 +756,27 @@ class _HomePageState extends State<HomePage>  with WidgetsBindingObserver implem
   }
 
   @override
-  void createWallet(String name,String path) {
+  void createWallet(String name, String path) {
     webViewController.runJavaScript("generateMnemonic()");
     setState(() {
-      walletName=name;
-      createWalletPath=path;
+      walletName = name;
+      createWalletPath = path;
     });
   }
 
   @override
   void switchWallet(Wallet? wallet) {
-    if(wallet!=null){
+    if (wallet != null) {
       showDialog(
-        context: context,
-        builder: (context) {
-          return ProgressDialog(isShow: true);
-        });
-    isShowLoadingDialog = true;
-    isAddWallet = true;
-    isSwitchWallet=true;
-    webViewController.runJavaScript(
-        "initMetaWallet('${wallet.mnemonic}','${wallet.path}','${wallet.id}','${wallet.name}')");
+          context: context,
+          builder: (context) {
+            return ProgressDialog(isShow: true);
+          });
+      isShowLoadingDialog = true;
+      isAddWallet = true;
+      isSwitchWallet = true;
+      webViewController.runJavaScript(
+          "initMetaWallet('${wallet.mnemonic}','${wallet.path}','${wallet.id}','${wallet.name}')");
     }
   }
 }
@@ -836,7 +822,4 @@ void dioRate(String message) async {
     EventBusUtils.instance
         .fire(WalletHomeData(myWalletBalanceShow, walletBalance));
   }
-
-
-
 }
