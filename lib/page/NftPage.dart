@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +25,7 @@ class NftPage extends StatefulWidget {
 }
 
 class _NftPageState extends State<NftPage> {
+  late StreamSubscription  _subscription;
   //刷新
   final ScrollController _scrollController = ScrollController();
 
@@ -51,7 +54,7 @@ class _NftPageState extends State<NftPage> {
 
 
 
-    EventBusUtils.instance.on<SendNftSuccess>().listen((event) {
+    _subscription= EventBusUtils.instance.on<SendNftSuccess>().listen((event) {
       Future.delayed(const Duration(seconds: 1),(){
         // showDialog(context: context, builder: (BuildContext context){
         //   return ShowNftSuccessDialog(nftName: sendNftDialogData.nftName!,nftIconUrl: sendNftDialogData.nftIconUrl!,nftTokenIndex: sendNftDialogData.nftTokenIndex!,receiveAddress:sendNftDialogData.receiveAddress!, transactionID: nftSendBack.txid!,);
@@ -68,7 +71,8 @@ class _NftPageState extends State<NftPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    EventBusUtils.instance.destroy();
+    // EventBusUtils.instance.destroy();
+    _subscription.cancel();
   }
   @override
   Widget build(BuildContext context) {

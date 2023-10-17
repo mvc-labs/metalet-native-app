@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,6 +35,8 @@ class _FtPageState extends State<FtPage> {
   String chain="mvc";
 
 
+  late StreamSubscription  _subscription;
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +62,7 @@ class _FtPageState extends State<FtPage> {
     getFtData();
 
 
-    EventBusUtils.instance.on<SendFtSuccess>().listen((event) {
+    _subscription= EventBusUtils.instance.on<SendFtSuccess>().listen((event) {
 
       Future.delayed(const Duration(seconds: 1),(){
         setState(() {
@@ -226,7 +230,8 @@ class _FtPageState extends State<FtPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    EventBusUtils.instance.destroy();
+    // EventBusUtils.instance.destroy();
+    _subscription.cancel();
   }
 
 }
