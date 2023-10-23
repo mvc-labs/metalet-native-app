@@ -61,6 +61,7 @@ class _NftPageState extends State<NftPage> {
         //   return ShowNftSuccessDialog(nftName: sendNftDialogData.nftName!,nftIconUrl: sendNftDialogData.nftIconUrl!,nftTokenIndex: sendNftDialogData.nftTokenIndex!,receiveAddress:sendNftDialogData.receiveAddress!, transactionID: nftSendBack.txid!,);
         // });
          getNftData();
+         //push test
       });
 
 
