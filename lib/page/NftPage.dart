@@ -36,6 +36,7 @@ class _NftPageState extends State<NftPage> {
   int page = 1;
   int pageSize = 30;
   bool isRefresh=true;
+  bool showFt=true;
 
   @override
   void initState() {
@@ -81,16 +82,34 @@ class _NftPageState extends State<NftPage> {
     return Scaffold(
       body:RefreshIndicator(
           onRefresh: getNftData,
-          child: Column(
+          child:
+          Column(
             children: [
-             Expanded(
-                 flex: 1,
-                 child:  ListView.builder(
-                 shrinkWrap: true,
-                 itemCount: nftList.length,
-                 controller: _scrollController,
-                 itemBuilder: getListViewItemLayout),
-             )
+
+              Visibility(
+                  visible: showFt,
+                  child:  Expanded(
+                    flex: 1,
+                    child:  ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: nftList.length,
+                        controller: _scrollController,
+                        itemBuilder: getListViewItemLayout),
+                  )),
+
+              Visibility(
+                  visible: showFt == true ? false : true,
+                  child:  Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize:MainAxisSize.min ,
+                          children: [
+                            Image.asset("images/default_img_nodata.png",width: 100,height: 100,),
+                            const Text("NO DATA",style: TextStyle(color: Color(SimColor.deaful_gray_txt_color),fontSize: 18),)
+                          ],
+                        ),
+                      )))
             ],
           )) ,
 
@@ -134,7 +153,7 @@ class _NftPageState extends State<NftPage> {
                   fontSize: 16,
                 ),),
                 const Expanded(flex: 1, child: Text("")),
-                Text(nftItemList.length.toString(),style: const TextStyle(color: Color(SimColor.gray_txt_color),fontSize: 13),),
+                Text(items.nftMyCount.toString(),style: const TextStyle(color: Color(SimColor.gray_txt_color),fontSize: 13),),
                 Image.asset(
                   "images/meta_right_icon.png",
                   width: 15,
@@ -253,7 +272,6 @@ class _NftPageState extends State<NftPage> {
     NftData nftData = NftData.fromJson(data);
     List<Items> myNftList = nftData.data!.results!.items!;
 
-    print("请求的nft数据：${myNftList[0].nftName!}");
 
     if(!mounted){
       return;
@@ -261,6 +279,9 @@ class _NftPageState extends State<NftPage> {
     setState(() {
       nftList.clear();
       nftList.addAll(myNftList);
+      if (myNftList.isEmpty) {
+        showFt = false;
+      }
     });
   }
 

@@ -183,24 +183,54 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
                                     height: 44,
                                     child: TextButton(
                                       onPressed: () {
-                                        if (isOK) {
-                                          Navigator.of(context)
-                                            ..pop()
-                                            ..pop();
-                                          showToast("Delete Success");
-                                          setState(() {
-                                            isLogin = false;
-                                            SqWallet sqWallet = SqWallet();
-                                            sqWallet.delete(myWallet);
-                                            // deleteWallet();
-                                            balanceTimer!.cancel();
-                                            Future.delayed(
-                                                const Duration(seconds: 1), () {
-                                              EventBusUtils.instance
-                                                  .fire(DeleteWallet());
-                                            });
+
+                                        if(isFingerCan){
+                                          authenticateMe().then((value) {
+                                            if(value){
+                                              //正确
+                                              if (isOK) {
+                                                Navigator.of(context)
+                                                  ..pop()
+                                                  ..pop();
+                                                showToast("Delete Success");
+                                                setState(() {
+                                                  isLogin = false;
+                                                  SqWallet sqWallet = SqWallet();
+                                                  sqWallet.delete(myWallet);
+                                                  // deleteWallet();
+                                                  balanceTimer!.cancel();
+                                                  Future.delayed(
+                                                      const Duration(seconds: 1), () {
+                                                    EventBusUtils.instance
+                                                        .fire(DeleteWallet());
+                                                  });
+                                                });
+                                              }
+                                            }
                                           });
+                                        }else{
+                                          //  TODO 继续
+                                          if (isOK) {
+                                            Navigator.of(context)
+                                              ..pop()
+                                              ..pop();
+                                            showToast("Delete Success");
+                                            setState(() {
+                                              isLogin = false;
+                                              SqWallet sqWallet = SqWallet();
+                                              sqWallet.delete(myWallet);
+                                              // deleteWallet();
+                                              balanceTimer!.cancel();
+                                              Future.delayed(
+                                                  const Duration(seconds: 1), () {
+                                                EventBusUtils.instance
+                                                    .fire(DeleteWallet());
+                                              });
+                                            });
+                                          }
                                         }
+
+
                                       },
                                       child: handleText(),
                                     )))
