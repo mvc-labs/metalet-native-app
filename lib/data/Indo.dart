@@ -14,13 +14,11 @@ abstract class SendNftIndo {
   void sendCancel();
 
   void sendConfirm(String sendAddress);
+//  w s 修复
 }
 
 abstract class SendFtIndo {
   void sendCancel();
 
   void sendConfirm(String sendAddress, String sendAmount);
-// btc change1111111  333
-// btc change1111111
-// 我是没问题的代码 最终将提交
 }
