@@ -53,9 +53,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     onPressed: () {
                       Navigator.of(context).pop(
                           CupertinoPageRoute(builder: (BuildContext context) {
-                        // return const SettingsPage();
-                        return const HomePage();
-                      }));
+                            // return const SettingsPage();
+                            return const HomePage();
+                          }));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -75,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     style: TextStyle(
                                         fontSize: 15,
                                         color:
-                                            Color(SimColor.deaful_txt_color)),
+                                        Color(SimColor.deaful_txt_color)),
                                   ),
                                 ],
                               ),
@@ -297,7 +297,9 @@ class _SettingsContentState extends State<SettingsContent> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    Platform.isAndroid?"Payment Verification":"Enable FaceID"
+                    Platform.isAndroid
+                        ? "Payment Verification"
+                        : "Enable FaceID"
                     ,
                     style: getDefaultTextStyle(),
                   ),
@@ -331,30 +333,34 @@ class _SettingsContentState extends State<SettingsContent> {
           ),
           const SizedBox(height: 30),
           InkWell(
-            onTap: () async {
-              // PackageInfo pack = await PackageInfo.fromPlatform();
-              // String num = pack.buildNumber;
-              // String versionName = pack.version;
-              // print("code:" + num);
-              // _launchUrl("https://api.show3.io/install/show3.apk");
-              //goolepay
-              if (isNoGopay) {
-                doCheckVersion(context);
-              }
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Visibility(
-                    visible: isNoGopay, child: const Text("Check Version")),
-                SizedBox(
-                  child: Text(
-                    "v $versionName  ",
-                    style: getDefaultTextStyle(),
+              onTap: () async {
+                // PackageInfo pack = await PackageInfo.fromPlatform();
+                // String num = pack.buildNumber;
+                // String versionName = pack.version;
+                // print("code:" + num);
+                // _launchUrl("https://api.show3.io/install/show3.apk");
+                //goolepay
+                if (isNoGopay) {
+                  doCheckVersion(context);
+                }
+              },
+              child:
+              Visibility(visible: isNoGopay,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Check Version"),
+                      SizedBox(
+                        child: Text(
+                          "v $versionName  ",
+                          style: getDefaultTextStyle(),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
+              )
+
+
           ),
         ],
       ),

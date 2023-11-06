@@ -1764,7 +1764,8 @@ class _CheckVersionDialogState extends State<CheckVersionDialog> {
                               if (Platform.isIOS){
                                 launchUrl("https://apps.apple.com/us/app/metalet/id6450825531?platform=iphone");
                               }else{
-                                launchUrl(widget.url);
+                                launchUrl("https://www.metalet.space/");
+                                // launchUrl(widget.url);
                               }
                             },
                             isVisibility: true),

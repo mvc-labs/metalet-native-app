@@ -1,27 +1,29 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class SqlManager{
-
-  static const _VERSION=1;
-  static const _NAME="mvc.db";
+class SqlManager {
+  static const _VERSION = 3;
+  static const _NAME = "mvc.db";
   static Database? _database;
 
-
   static Future<Database> init({String? sql}) async {
-    var databasesPath=await getDatabasesPath();
+    var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, _NAME);
-     return await openDatabase(path,version: _VERSION,onCreate: (Database db,int version) async{});
+    return await openDatabase(path,
+        version: _VERSION,
+        onCreate: (Database db, int version) async {},
+        onUpgrade: (Database db, int oldVersion, int newVersion) async {
+          var batch = db.batch();
+          //执行升级部分
+        });
   }
-
 
   static isTableExits(String tableName) async {
     await getCurrentDatabase();
-    var res=await _database!.rawQuery("select * from Sqlite_master where type = 'table' and name = '$tableName'");
-    return res!=null && res.length >0;
+    var res = await _database!.rawQuery(
+        "select * from Sqlite_master where type = 'table' and name = '$tableName'");
+    return res != null && res.length > 0;
   }
 
   static Future<Database?> getCurrentDatabase() async {
@@ -39,13 +41,9 @@ class SqlManager{
     _database?.close();
     _database = null;
   }
-
 }
 
-
-
 abstract class BaseDbProvider {
-
   bool isTableExits = false;
 
   createTableString();
@@ -76,7 +74,4 @@ abstract class BaseDbProvider {
     }
     return await SqlManager.getCurrentDatabase();
   }
-
-
-
 }

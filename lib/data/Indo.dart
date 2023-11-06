@@ -1,30 +1,23 @@
-
-
 import 'package:mvcwallet/utils/Constants.dart';
 
 //wallet
-abstract class  Indo{
+abstract class Indo {
+  void addWallet(String walletName, String mnemoni, String path);
 
-  void addWallet(String walletName,String mnemoni,String path);
-
-  void createWallet(String walletName,String path);
+  void createWallet(String walletName, String path);
 
   void switchWallet(Wallet? wallet);
-
-
 }
-
-
 
 //send NFT
-abstract class SendNftIndo{
+abstract class SendNftIndo {
   void sendCancel();
-  void sendConfirm(String sendAddress);
 
+  void sendConfirm(String sendAddress);
 }
 
-abstract class SendFtIndo{
+abstract class SendFtIndo {
   void sendCancel();
-  void sendConfirm(String sendAddress,String sendAmount);
 
+  void sendConfirm(String sendAddress, String sendAmount);
 }
