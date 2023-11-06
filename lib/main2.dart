@@ -12,7 +12,6 @@ import 'package:mvcwallet/bean/NftSendBack.dart';
 import 'package:mvcwallet/bean/RateResponse.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/dialog/MyWalletDialog.dart';
-import 'package:mvcwallet/page/MainSpacePage.dart';
 import 'package:mvcwallet/page/NftPage.dart';
 import 'package:mvcwallet/page/RequestPage.dart';
 import 'package:mvcwallet/page/ScanPage.dart';
@@ -172,7 +171,77 @@ class _DefaultWidgetState extends State<DefaultWidget> {
   }
 }
 
+class HomeTabPage extends StatefulWidget {
+  const HomeTabPage({Key? key}) : super(key: key);
 
+  @override
+  State<HomeTabPage> createState() => _HomeTabPageState();
+}
+
+class _HomeTabPageState extends State<HomeTabPage> with SingleTickerProviderStateMixin {
+  late TabController tabController;
+  late int index;
+  static final List<Tab> _homeTopTabList = <Tab>[
+    Tab(
+      child: Row(
+        children: [
+          Image.asset("images/meta_right_icon.png", width: 20, height: 20),
+          Text("SPACE")
+        ],
+      ),
+    ),
+    Tab(
+      child: Row(
+        children: [
+          Image.asset("images/meta_right_icon.png", width: 20, height: 20),
+          Text("BTC")
+        ],
+      ),
+    ),
+  ];
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tabController = TabController(length: 2, vsync: this);
+    tabController.addListener(() {
+      index = tabController.index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        title: const TitleBack("Tokens"),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(40),
+          child: Material(
+            color: Colors.white,
+            child: TabBar(
+              labelColor: Colors.blue,
+              unselectedLabelColor: Colors.black54,
+              tabs: _homeTopTabList,
+              controller: tabController,
+              indicatorSize: TabBarIndicatorSize.label,
+            ),
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 40, 10, 10),
+        child: TabBarView(
+          controller: tabController,
+          children: const <Widget>[HomePage(), HomePage()],
+        ),
+      ),
+    );
+  }
+}
 
 class HomePage extends StatefulWidget {
   final BuildContext? mContext;
@@ -185,18 +254,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with WidgetsBindingObserver, SingleTickerProviderStateMixin
-implements Indo {
+    with WidgetsBindingObserver
+    implements Indo {
   late StreamSubscription _subscription_delete;
   late StreamSubscription _subscription_banlace;
-  late Indo indo;
 
   _HomePageState();
 
   @override
   void initState() {
     // TODO: implement initState
-    indo=this;
     WidgetsBinding.instance?.addObserver(this);
     _subscription_banlace =
         EventBusUtils.instance.on<WalletHomeData>().listen((event) {
@@ -447,14 +514,8 @@ implements Indo {
     //     });
 
     initVersion();
-    tabController = TabController(length: 2, vsync: this);
-    tabController.addListener(() {
-      index = tabController.index;
-    });
 
     super.initState();
-
-
   }
 
   getBalanceTimer() {
@@ -506,27 +567,6 @@ implements Indo {
     _subscription_delete.cancel();
     _subscription_banlace.cancel();
   }
-
-  late TabController tabController;
-  late int index;
-  static final List<Tab> _homeTopTabList = <Tab>[
-    Tab(
-      child: Row(
-        children: [
-          Image.asset("images/meta_right_icon.png", width: 20, height: 20),
-          Text("SPACE")
-        ],
-      ),
-    ),
-    Tab(
-      child: Row(
-        children: [
-          Image.asset("images/meta_right_icon.png", width: 20, height: 20),
-          Text("BTC")
-        ],
-      ),
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -640,24 +680,135 @@ implements Indo {
             )
           ],
         ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(40),
-          child: Material(
-            color: Colors.white,
-            child: TabBar(
-              labelColor: Colors.blue,
-              unselectedLabelColor: Colors.black54,
-              tabs: _homeTopTabList,
-              controller: tabController,
-              indicatorSize: TabBarIndicatorSize.label,
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Container(
+              height: 240,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+// color: Colors.red,
+                  image: DecorationImage(
+                image: AssetImage("images/bg_img_space.png"),
+              )
+// image: AssetImage("images/icon.png"),)
+                  ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Balance",
+                    style: TextStyle(
+                        color: Color(SimColor.deaful_txt_half_color),
+                        fontSize: 16),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ), //SimColor.deaful_txt_color
+                  Text(
+                    walletBalance,
+                    style: const TextStyle(
+                        color: Color(SimColor.deaful_txt_color), fontSize: 40),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "images/icon.png",
+                        width: 30,
+                        height: 30,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        // "21347.32 Spacessss",
+                        spaceBalance,
+                        style: const TextStyle(fontSize: 17),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 44,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              if (isLogin) {
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (BuildContext context) {
+                                  return const RequestPage();
+                                }));
+                              } else {
+                                hasNoLogin(this);
+                              }
+
+                              //   Navigator.of(context).push(CupertinoPageRoute(
+                              //     builder: (BuildContext context) {
+                              //   return const SimWebView();
+                              // }));
+                            },
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color(SimColor.deaful_txt_color))),
+                            child: const Text("Request",
+                                style: TextStyle(fontSize: 16))),
+                      )),
+                  const SizedBox(width: 20),
+                  Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                          height: 44,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (isLogin) {
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (BuildContext context) {
+                                  return ScanResultPage(
+                                    result: "",
+                                    isScan: false,
+                                  );
+                                }));
+                              } else {
+                                hasNoLogin(this);
+                              }
+                              // showDialog(
+                              //     context: context,
+                              //     builder: (context) {
+                              //       return  const ProgressDialog();
+                              //     });
+                            },
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color(SimColor.color_button_blue))),
+                            child: const Text("Send",
+                                style: TextStyle(fontSize: 16)),
+                          )))
+                ],
+              ),
+            ),
+            SimWebView(webViewController)
+            // Visibility(
+            //   visible: false,
+            //   child: SizedBox(
+            //     width: 100,
+            //     height: 100,
+            //     child: WebViewWidget(
+            //         controller: webViewController
+            //     ),
+            //   ),
+            // )
+          ],
         ),
       ),
-      body: TabBarView(
-        controller: tabController,
-        children:  <Widget>[MainSpacePage(indo: indo),MainSpacePage(indo: indo)],
-      )
     );
   }
 
@@ -745,3 +896,5 @@ void dioRate(String message) async {
         .fire(WalletHomeData(myWalletBalanceShow, walletBalance));
   }
 }
+
+

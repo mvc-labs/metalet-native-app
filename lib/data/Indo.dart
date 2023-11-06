@@ -26,5 +26,5 @@ abstract class SendNftIndo{
 abstract class SendFtIndo{
   void sendCancel();
   void sendConfirm(String sendAddress,String sendAmount);
-
 }
+
