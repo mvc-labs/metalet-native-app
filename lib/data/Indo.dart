@@ -14,7 +14,6 @@ abstract class SendNftIndo {
   void sendCancel();
 
   void sendConfirm(String sendAddress);
-//  w s 修复
 }
 
 abstract class SendFtIndo {
