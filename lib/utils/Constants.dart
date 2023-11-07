@@ -117,7 +117,7 @@ void changeWalletInfo(Wallet wallet) {
 void deleteWallet() {
   myWalletList.clear();
   SharedPreferencesUtils.setValue("mvc_wallet", "");
-  myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0);
+  myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0,"","","");
   // webViewController.runJavaScript("initMetaWallet('','','','')");
   wallets = "";
   spaceBalance = "0.0 Space";
@@ -345,8 +345,14 @@ class Wallet {
   String balance = "0.0";
   int isChoose = 0;
 
+  //btc
+  String btcAddress="";
+  String btcPath="";
+  String btcBalance="";
+
+
   Wallet(this.mnemonic, this.path, this.address, this.balance, this.id,
-      this.name, this.isChoose);
+      this.name, this.isChoose,this.btcAddress,this.btcPath,this.btcBalance);
 
   // Map toJson() {
   //   Map map = {};
@@ -369,6 +375,9 @@ class Wallet {
     map["id"] = id;
     map["name"] = name;
     map["isChoose"] = isChoose;
+    map["btcAddress"] = btcAddress;
+    map["btcPath"] = btcPath;
+    map["btcBalance"] = btcBalance;
     return map;
   }
 
@@ -380,14 +389,22 @@ class Wallet {
         parsedJson['balance'],
         parsedJson['id'],
         parsedJson['name'],
-        parsedJson['isChoose']);
+        parsedJson['isChoose'],
+        parsedJson['btcAddress'],
+        parsedJson['btcPath'],
+        parsedJson['btcBalance']);
     return wallet;
   }
 
   @override
   String toString() {
-    return 'Wallet{id: $id, name: $name, mnemonic: $mnemonic, path: $path, address: $address, balance: $balance, isChoose: $isChoose}';
+    return 'Wallet{id: $id, name: $name, mnemonic: $mnemonic, path: $path, address: $address, balance: $balance, isChoose: $isChoose, btcAddress: $btcAddress, btcPath: $btcPath, btcBalance: $btcBalance}';
   }
+
+// @override
+  // String toString() {
+  //   return 'Wallet{id: $id, name: $name, mnemonic: $mnemonic, path: $path, address: $address, balance: $balance, isChoose: $isChoose}';
+  // }
 }
 
 void p(String msg) {

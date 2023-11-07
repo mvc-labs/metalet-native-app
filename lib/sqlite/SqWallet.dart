@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 
 class SqWallet extends BaseDbProvider {
   //name
-  String simName = "wallet";
+  static String simName = "wallet";
   String id = "id";
   String name = "name";
   String mnemonic = "mnemonic";
@@ -12,6 +12,11 @@ class SqWallet extends BaseDbProvider {
   String address = "address";
   String balance = "balance";
   String isChoose="isChoose";
+  //btc
+  static String btcPath="btcPath";
+  static String btcAddress="btcAddress";
+  static String btcBalance="btcBalance";
+
 
   SqWallet();
 
@@ -44,7 +49,10 @@ class SqWallet extends BaseDbProvider {
        $path $textType,  
        $address $textType,  
        $isChoose $integerType,  
-       $balance $textType )
+       $balance $textType,
+       $btcAddress $textType,
+       $btcPath $textType,
+       $btcBalance $textType)
     ''';
     return sql;
   }
@@ -65,7 +73,7 @@ class SqWallet extends BaseDbProvider {
     }
     print("插入的数据："+wallet.toString());
     return await db.rawInsert(
-        "insert into $simName($id,$name,$mnemonic,$path,$address,$balance,$isChoose) values (?,?,?,?,?,?,?)",
+        "insert into $simName($id,$name,$mnemonic,$path,$address,$balance,$isChoose,$btcAddress,$btcPath,$btcBalance) values (?,?,?,?,?,?,?,?,?,?)",
         [
           wallet.id,
           wallet.name,
@@ -74,6 +82,9 @@ class SqWallet extends BaseDbProvider {
           wallet.address,
           wallet.balance,
           wallet.isChoose,
+          wallet.btcAddress,
+          wallet.btcPath,
+          wallet.btcBalance,
         ]);
   }
 

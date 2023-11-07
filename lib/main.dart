@@ -31,7 +31,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'bean/Update.dart';
 // "Use of this wallet is at your own risk and discretion.The wallet is not liable for any losses incurred as a result of using the wallet. ",
 
-Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0);
+Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0,"","","");
 int selectIndex = 0;
 int id = 0;
 String wallets = "";
@@ -311,6 +311,11 @@ implements Indo {
               dioRate(myWallet.balance);
             });
             SqWallet sqWallet = SqWallet();
+
+            if(myWallet.btcAddress.isEmpty){
+              initBTCWallet();
+            }
+
             if (isSwitchWallet == false) {
               bool isInset = true;
               sqWallet.refreshDefaultData(isInset, myWallet);
@@ -318,6 +323,7 @@ implements Indo {
               isSwitchWallet = false;
               sqWallet.updateDefaultData(myWallet);
             }
+
             isAddWallet = false;
             if (balanceTimer != null) {
               balanceTimer!.cancel();
@@ -470,6 +476,17 @@ implements Indo {
         timer.cancel();
       }
     });
+  }
+
+
+  //btc function
+  void initBTCWallet(    ) {
+    myWallet.btcAddress="is btc address value";
+    myWallet.btcPath="is btc path";
+    myWallet.btcBalance="is btc balance";
+
+    // sqWallet.updateDefaultData(myWallet);
+
   }
 
   @override
