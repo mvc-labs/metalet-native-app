@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:common_utils/common_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -221,10 +220,11 @@ class _FtDetailPageState extends State<FtDetailPage> {
 
   Widget getListViewItemLayout(BuildContext context, int index) {
     FtRecord record = recordList[index];
-    DateTime dateTime =
-    DateUtil.getDateTimeByMs(int.parse(record.time.toString()));
-    String showTime =
-    DateUtil.formatDate(dateTime, format: "yyyy-MM-dd HH:mm:ss");
+    // DateTime dateTime =
+    // DateUtil.getDateTimeByMs(int.parse(record.time.toString()));
+    // String showTime =
+    // DateUtil.formatDate(dateTime, format: "yyyy-MM-dd HH:mm:ss");
+    String showTime=TimeUtils.formatDateTime(int.parse(record.time.toString()));
 
     num recordMoney = 0;
     String showMoney = "";

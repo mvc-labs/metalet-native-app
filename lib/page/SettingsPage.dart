@@ -6,7 +6,6 @@ import 'package:local_auth/local_auth.dart';
 import 'package:mvcwallet/page/SimpleDialog.dart';
 import 'package:mvcwallet/page/TokenPage.dart';
 import 'package:mvcwallet/utils/Constants.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../main.dart';

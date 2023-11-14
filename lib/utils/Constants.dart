@@ -19,6 +19,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../bean/RateResponse.dart';
 import '../dialog/MyWalletDialog.dart';
 import '../page/SimpleDialog.dart';
+import 'package:date_format/date_format.dart';
 
 Future<void> initVersion() async {
   PackageInfo pack = await PackageInfo.fromPlatform();
@@ -418,4 +419,17 @@ void p(String msg) {
   }
 //剩余部分
   print(msg);
+}
+
+
+
+
+class TimeUtils {
+  static String formatDateTime(int timestamp) {
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    // String time=formatDate(date,  [HH,'\\h',nn]);
+    String time=formatDate(date,  [yyyy,'-',mm,"-",dd," ",HH,":",nn]);
+    // var formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    return time;
+  }
 }

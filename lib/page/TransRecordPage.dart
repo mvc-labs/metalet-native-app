@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:common_utils/common_utils.dart';
+// import 'package:common_utils/common_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -303,9 +303,11 @@ class _TransRecordContentState extends State<TransRecordContent> {
 
   Widget getListViewItemLayout(BuildContext context, int index) {
     TransRecordResponse record = recordList[index];
-    DateTime dateTime =
-        DateUtil.getDateTimeByMs(int.parse(record.time.toString()));
-    String showTime = DateUtil.formatDate(dateTime, format: "yyyy-MM-dd HH:mm");
+    // DateTime dateTime =
+    //     DateUtil.getDateTimeByMs(int.parse(record.time.toString()));
+    // String showTime = DateUtil.formatDate(dateTime, format: "yyyy-MM-dd HH:mm");
+
+    String showTime=TimeUtils.formatDateTime(int.parse(record.time.toString()));
     num recordMoney = 0;
     String showMoney = "";
     recordMoney = record.income! - record.outcome!;
