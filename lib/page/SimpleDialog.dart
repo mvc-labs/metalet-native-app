@@ -1649,14 +1649,15 @@ class _SimWebViewState extends State<SimWebView> {
     return Visibility(
       visible: false,
       child: SizedBox(
-        width: 100,
-        height: 100,
+        width: 44,
+        height: 44,
         child: WebViewWidget(controller: _webViewController),
       ),
     );
   }
 
   _loadHtmlFromAssets() async {
+    print("webView init ");
     // String url = "";
     // if (Platform.isAndroid) {
     //   url = "file:///android_asset/flutter_assets/files/meta-mvc.html";

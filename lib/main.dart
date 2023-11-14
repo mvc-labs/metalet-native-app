@@ -12,6 +12,7 @@ import 'package:mvcwallet/bean/NftSendBack.dart';
 import 'package:mvcwallet/bean/RateResponse.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/dialog/MyWalletDialog.dart';
+import 'package:mvcwallet/page/MainBTCPage.dart';
 import 'package:mvcwallet/page/MainSpacePage.dart';
 import 'package:mvcwallet/page/NftPage.dart';
 import 'package:mvcwallet/page/RequestPage.dart';
@@ -27,11 +28,14 @@ import 'package:mvcwallet/utils/EventBusUtils.dart';
 import 'package:mvcwallet/utils/SimColor.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:bip39/bip39.dart' as bip39;
+import 'package:bitcoin_flutter/bitcoin_flutter.dart'  hide Wallet;
+
 
 import 'bean/Update.dart';
 // "Use of this wallet is at your own risk and discretion.The wallet is not liable for any losses incurred as a result of using the wallet. ",
 
-Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0);
+Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0,"","","");
 int selectIndex = 0;
 int id = 0;
 String wallets = "";
@@ -73,6 +77,9 @@ void main() {
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+
+
+
 }
 
 class MyApp extends StatelessWidget {
@@ -295,6 +302,7 @@ implements Indo {
         }
         if (isNoEmpty(message.message)) {
           myWallet = Wallet.fromJson(json.decode(message.message));
+          SqWallet sqWallet = SqWallet();
 
           print("：${myWallet.mnemonic}");
           if (isAddWallet) {
@@ -310,7 +318,12 @@ implements Indo {
               walletName = myWallet.name;
               dioRate(myWallet.balance);
             });
-            SqWallet sqWallet = SqWallet();
+
+
+            if(myWallet.btcAddress.isEmpty){
+              initBTCWallet();
+            }
+
             if (isSwitchWallet == false) {
               bool isInset = true;
               sqWallet.refreshDefaultData(isInset, myWallet);
@@ -318,6 +331,7 @@ implements Indo {
               isSwitchWallet = false;
               sqWallet.updateDefaultData(myWallet);
             }
+
             isAddWallet = false;
             if (balanceTimer != null) {
               balanceTimer!.cancel();
@@ -338,6 +352,13 @@ implements Indo {
             // sqWallet.path=myWallet.path;
             // sqWallet.address=myWallet.address;
             // sqWallet.balance=myWallet.balance;
+          }else{
+
+            if(myWallet.btcAddress.isEmpty){
+              initBTCWallet();
+            }
+            sqWallet.updateDefaultData(myWallet);
+
           }
         } else {
           // initMetaWallet
@@ -354,6 +375,7 @@ implements Indo {
 
         getBalanceTimer();
         dioRate(message.message);
+        print("获取的余额是： "+message.message);
       })
       ..addJavaScriptChannel("metaSend", onMessageReceived: (message) {
         isSendFinish = true;
@@ -470,6 +492,27 @@ implements Indo {
         timer.cancel();
       }
     });
+  }
+
+
+  //btc function
+  void initBTCWallet(   ) {
+    print("初始化btc Wallet");
+
+    var seed = bip39.mnemonicToSeed(
+        'surround off omit layer raise spoon mail ill priority virtual jazz glass');
+    var wallet=HDWallet.fromSeed(seed);
+    print("btc Address hd wallet : "+wallet.address);
+    HDWallet  bsWallet= wallet.derivePath("m/44'/236'/0'/0/0");
+    print("btc Address: "+bsWallet.address);
+
+
+    myWallet.btcAddress="is btc address value";
+    myWallet.btcPath="is btc path";
+    myWallet.btcBalance="is btc balance";
+
+    // sqWallet.updateDefaultData(myWallet);
+
   }
 
   @override
@@ -637,7 +680,8 @@ implements Indo {
                   },
                   child: Image.asset("images/mvc_more_icon.png",
                       width: 22, height: 22)),
-            )
+            ),
+            SimWebView(webViewController)
           ],
         ),
         bottom: PreferredSize(
@@ -654,9 +698,9 @@ implements Indo {
           ),
         ),
       ),
-      body: TabBarView(
-        controller: tabController,
-        children:  <Widget>[MainSpacePage(indo: indo),MainSpacePage(indo: indo)],
+      body:TabBarView(
+            controller: tabController,
+            children:  <Widget>[MainSpacePage(indo: indo),MainBTCPage(indo: indo)],
       )
     );
   }
@@ -675,6 +719,7 @@ implements Indo {
     var id = Random().nextInt(100000000).toString();
     webViewController.runJavaScript(
         "initMetaWallet('$mnemoni','$path','$id','$walletName')");
+
   }
 
   @override

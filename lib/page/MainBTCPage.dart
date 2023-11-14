@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,19 +10,16 @@ import 'RequestPage.dart';
 import 'ScanResultPage.dart';
 import 'SimpleDialog.dart';
 
-
-class MainSpacePage extends StatefulWidget {
-
+class MainBTCPage extends StatefulWidget {
   Indo indo;
 
-   MainSpacePage({Key? key,required this.indo}) : super(key: key);
+  MainBTCPage({Key? key, required this.indo}) : super(key: key);
 
   @override
-  State<MainSpacePage> createState() => _MainSpacePageState();
+  State<MainBTCPage> createState() => _MainBTCPageState();
 }
 
-class _MainSpacePageState extends State<MainSpacePage> {
-
+class _MainBTCPageState extends State<MainBTCPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,10 +31,10 @@ class _MainSpacePageState extends State<MainSpacePage> {
             decoration: const BoxDecoration(
 // color: Colors.red,
                 image: DecorationImage(
-                  image: AssetImage("images/bg_img_space.png"),
-                )
+              image: AssetImage("images/bg_img_space.png"),
+            )
 // image: AssetImage("images/icon.png"),)
-            ),
+                ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -52,7 +48,7 @@ class _MainSpacePageState extends State<MainSpacePage> {
                   height: 20,
                 ), //SimColor.deaful_txt_color
                 Text(
-                  walletBalance,
+                  myWallet.btcBalance,
                   style: const TextStyle(
                       color: Color(SimColor.deaful_txt_color), fontSize: 40),
                 ),
@@ -68,7 +64,7 @@ class _MainSpacePageState extends State<MainSpacePage> {
                     const SizedBox(width: 10),
                     Text(
                       // "21347.32 Spacessss",
-                      spaceBalance,
+                      myWallet.btcBalance,
                       style: const TextStyle(fontSize: 17),
                     )
                   ],
@@ -90,8 +86,8 @@ class _MainSpacePageState extends State<MainSpacePage> {
                             if (isLogin) {
                               Navigator.of(context).push(CupertinoPageRoute(
                                   builder: (BuildContext context) {
-                                    return const RequestPage();
-                                  }));
+                                return const RequestPage();
+                              }));
                             } else {
                               hasNoLogin(widget.indo);
                             }
@@ -117,11 +113,11 @@ class _MainSpacePageState extends State<MainSpacePage> {
                             if (isLogin) {
                               Navigator.of(context).push(CupertinoPageRoute(
                                   builder: (BuildContext context) {
-                                    return ScanResultPage(
-                                      result: "",
-                                      isScan: false,
-                                    );
-                                  }));
+                                return ScanResultPage(
+                                  result: "",
+                                  isScan: false,
+                                );
+                              }));
                             } else {
                               hasNoLogin(widget.indo);
                             }
@@ -140,7 +136,7 @@ class _MainSpacePageState extends State<MainSpacePage> {
               ],
             ),
           ),
-
+          // SimWebView(webViewController)
         ],
       ),
     );
