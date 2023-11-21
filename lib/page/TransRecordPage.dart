@@ -5,6 +5,7 @@ import 'dart:ui';
 // import 'package:common_utils/common_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mvcwallet/bean/TransRecordResponse.dart';
@@ -77,70 +78,77 @@ class _TransRecordContentState extends State<TransRecordContent> {
       onRefresh: getRecordList,
       child: Column(
         children: [
-          const TitleBack("Transaction Record"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(
+                        CupertinoPageRoute(builder: (BuildContext context) {
+                      // return const SettingsPage();
+                      return HomePage();
+                    }));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.asset("images/mvc_back_icon.png",
+                          width: 22, height: 22),
+                      const SizedBox(width: 5),
+                      const Text(
+                        "Back",
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Color(SimColor.deaful_txt_color)),
+                      ),
+                    ],
+                  )),
+              // Expanded(
+              //   child:
+              // ),
+              const Expanded(flex: 1, child: Text("")),
+              Align(
+                alignment: Alignment.topRight,
+                child: Row(
+                  children: [
+                    Image.asset("images/icon.png", width: 24, height: 24),
+                    const SizedBox(
+                      width: 3,
+                    ),
+                    const Text(
+                      "Transaction Record",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(SimColor.deaful_txt_color),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              const Expanded(flex: 2, child: Text("")),
+              // const Expanded(
+              //   flex: 1,
+              //   child:  ,),
+              // Container(
+              //   width: 50,
+              //   child: Text(""),
+              // )
+            ],
+          ),
+          // const TitleBack("Transaction Record"),
           const SizedBox(height: 10),
-          // const Divider(),
-          // Container(
-          //   margin:const EdgeInsets.fromLTRB(20, 20, 20, 0),
-          //   height: 70,
-          //   // decoration: BoxDecoration(color: Colors.red),
-          //   width: double.infinity,
-          //   child: Column(
-          //     children: [
-          //       Row(
-          //         children: [
-          //           Image.asset(
-          //             "images/icon.png",
-          //             width: 40,
-          //             height: 40,
-          //           ),
-          //           const SizedBox(width: 15),
-          //           Expanded(
-          //               flex: 1,
-          //               child: Column(
-          //                 children: [
-          //                   Row(
-          //                     children: const [
-          //                       Text(
-          //                         "Balances",
-          //                         style: TextStyle(
-          //                             color:
-          //                             Color(SimColor.deaful_txt_half_color),
-          //                             fontSize: 14),
-          //                         textAlign: TextAlign.start,
-          //                       )
-          //                     ],
-          //                   ),
-          //                   const SizedBox(height: 5),
-          //                   Row(
-          //                     children: [
-          //                       Text(spaceBalance,
-          //                           style: const TextStyle(
-          //                               color: Color(SimColor.deaful_txt_color),
-          //                               fontSize: 18))
-          //                     ],
-          //                   ),
-          //                 ],
-          //               ))
-          //         ],
-          //       )
-          //     ],
-          //   ),
-          // ),
-          // const Divider(height: 10,),
           Expanded(
               flex: 1,
-              child:Container(
+              child: Container(
                 margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child:  ListView.builder(
+                child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: recordList.length,
                   itemBuilder: getListViewItemLayout,
                   controller: _scrollController,
                 ),
-              )
-
-          )
+              ))
         ],
       ),
     );
@@ -307,7 +315,8 @@ class _TransRecordContentState extends State<TransRecordContent> {
     //     DateUtil.getDateTimeByMs(int.parse(record.time.toString()));
     // String showTime = DateUtil.formatDate(dateTime, format: "yyyy-MM-dd HH:mm");
 
-    String showTime=TimeUtils.formatDateTime(int.parse(record.time.toString()));
+    String showTime =
+        TimeUtils.formatDateTime(int.parse(record.time.toString()));
     num recordMoney = 0;
     String showMoney = "";
     recordMoney = record.income! - record.outcome!;
@@ -373,8 +382,8 @@ class _TransRecordContentState extends State<TransRecordContent> {
   getRecordListLoadMore(String? flag) async {
     print("www$flag");
     final dio = Dio();
-    final response = await dio.get(
-        "$mvc_api/address/${myWallet.address}/tx?flag=$flag");
+    final response =
+        await dio.get("$mvc_api/address/${myWallet.address}/tx?flag=$flag");
     if (response.statusCode == HttpStatus.ok) {
       // String stationsJson = jsonDecode(response.data);
       List<TransRecordResponse> items = [];
@@ -392,8 +401,8 @@ class _TransRecordContentState extends State<TransRecordContent> {
 
   Future<void> getRecordList() async {
     final dio = Dio();
-    final response = await dio
-        .get("$mvc_api/address/${myWallet.address}/tx?flag=");
+    final response =
+        await dio.get("$mvc_api/address/${myWallet.address}/tx?flag=");
     if (response.statusCode == HttpStatus.ok) {
       // String stationsJson = jsonDecode(response.data);
       List<TransRecordResponse> items = [];

@@ -13,25 +13,29 @@ import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/SendFtPage.dart';
 import 'package:mvcwallet/utils/SimStytle.dart';
+import '../../bean/Brc20ListBean.dart';
+import '../../bean/BtcFtDetailBean.dart';
+import '../../bean/FtData.dart';
+import '../../utils/Constants.dart';
+import '../../utils/MetaFunUtils.dart';
+import '../../utils/SimColor.dart';
+import '../RequestBtcPage.dart';
 
-import '../bean/FtData.dart';
-import '../utils/Constants.dart';
-import '../utils/MetaFunUtils.dart';
-import '../utils/SimColor.dart';
-import 'RequestPage.dart';
 
-class FtDetailPage extends StatefulWidget {
-  Items ftItem;
+class BtcFtDetailPage extends StatefulWidget {
+  TickList ftItem;
 
-  FtDetailPage({Key? key, required this.ftItem}) : super(key: key);
+  BtcFtDetailPage({Key? key, required this.ftItem}) : super(key: key);
 
   @override
-  State<FtDetailPage> createState() => _FtDetailPageState();
+  State<BtcFtDetailPage> createState() => _BtcFtDetailPageState();
+
 }
 
-class _FtDetailPageState extends State<FtDetailPage> {
+class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
   String flag = "";
-  List<FtRecord> recordList = [];
+  List<InscriptionsList> recordList = [];
+  int  page=1;
 
   @override
   void initState() {
@@ -43,7 +47,7 @@ class _FtDetailPageState extends State<FtDetailPage> {
   @override
   Widget build(BuildContext context) {
     MetaFunUtils metaFunUtils = MetaFunUtils();
-    String url = metaFunUtils.getShowImageUrl(widget.ftItem.icon!);
+    String url ="";
 
     return Scaffold(
       body: Container(
@@ -77,9 +81,14 @@ class _FtDetailPageState extends State<FtDetailPage> {
                     //   style: const TextStyle(
                     //       color: Color(SimColor.deaful_txt_color), fontSize: 40),
                     // ),
+
                     ClipOval(
                       child: metaFunUtils.getImageContainerSize(
-                          Image.network(url, fit: BoxFit.cover), 80, 80),
+                          Image.network(url, fit: BoxFit.cover, errorBuilder: (BuildContext context, Object execption,
+                              StackTrace? stackTrace) {
+                            return widget.ftItem.token=="ORXC"?Image.asset("images/ordi_icon.png",width: 20,height: 20,):Image.asset("images/img_token_default.png",width: 20,height: 20,);
+                            // return Image.asset('assets/img_token_default.png');
+                          }), 80, 80),
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -91,52 +100,52 @@ class _FtDetailPageState extends State<FtDetailPage> {
                         // const SizedBox(width: 10),
                         Text(
                           // "21347.32 Spacessss",
-                          "${widget.ftItem.balance!}  ${widget.ftItem.symbol}",
+                          "${widget.ftItem.balance!}  ${widget.ftItem.token}",
                           style: const TextStyle(fontSize: 25),
                         )
                       ],
                     ),
                     const SizedBox(height: 20),
 
-                    InkWell(
-                      onTap: () {
-                        ClipboardData data =
-                            ClipboardData(text: widget.ftItem.genesis!);
-                        Clipboard.setData(data);
-                        showToast("Copy Success");
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            // decoration: const BoxDecoration(
-                            //   color: Color(0xff26D2D7DE),
-                            //   borderRadius:
-                            //       BorderRadius.all(Radius.circular(10)),
-                            // ),
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 220),
-                              child: Text(
-                                widget.ftItem.genesis!,
-                                style: const TextStyle(
-                                  color: Color(SimColor.deaful_txt_color),
-                                  fontSize: 14,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Image.asset("images/add_icon_copy.png",
-                              width: 20, height: 20),
-                        ],
-                      ),
-                    )
+                    // InkWell(
+                    //   onTap: () {
+                    //     ClipboardData data =
+                    //         ClipboardData(text: widget.ftItem.genesis!);
+                    //     Clipboard.setData(data);
+                    //     showToast("Copy Success");
+                    //   },
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Container(
+                    //         // decoration: const BoxDecoration(
+                    //         //   color: Color(0xff26D2D7DE),
+                    //         //   borderRadius:
+                    //         //       BorderRadius.all(Radius.circular(10)),
+                    //         // ),
+                    //         child: ConstrainedBox(
+                    //           constraints: const BoxConstraints(maxWidth: 220),
+                    //           child: Text(
+                    //             widget.ftItem.genesis!,
+                    //             style: const TextStyle(
+                    //               color: Color(SimColor.deaful_txt_color),
+                    //               fontSize: 14,
+                    //             ),
+                    //             overflow: TextOverflow.ellipsis,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       const SizedBox(width: 8),
+                    //       Image.asset("images/add_icon_copy.png",
+                    //           width: 20, height: 20),
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -148,35 +157,35 @@ class _FtDetailPageState extends State<FtDetailPage> {
                               onPressed: () {
                                 Navigator.of(context).push(CupertinoPageRoute(
                                     builder: (BuildContext context) {
-                                  return const RequestPage();
+                                  return const RequestBtcPage();
                                 }));
                               },
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
-                                      const Color(SimColor.deaful_txt_color))),
+                                      const Color(SimColor.color_button_blue))),
                               child: const Text("Request",
                                   style: TextStyle(fontSize: 16))),
                         )),
                     const SizedBox(width: 20),
-                    Expanded(
+                  /*  Expanded(
                         flex: 1,
                         child: SizedBox(
                             height: 44,
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (BuildContext builder) {
-                                  return SendFtpage(
-                                    ftItem: widget.ftItem,
-                                  );
-                                }));
+                                // Navigator.of(context).push(CupertinoPageRoute(
+                                //     builder: (BuildContext builder) {
+                                //   return SendFtpage(
+                                //     ftItem: widget.ftItem,
+                                //   );
+                                // }));
                               },
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                       const Color(SimColor.color_button_blue))),
                               child: const Text("Send",
                                   style: TextStyle(fontSize: 16)),
-                            )))
+                            )))*/
                   ],
                 ),
               ),
@@ -189,7 +198,7 @@ class _FtDetailPageState extends State<FtDetailPage> {
               //        itemBuilder: getListViewItemLayout),
               //  ),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
               Row(
                 children: [
@@ -218,7 +227,7 @@ class _FtDetailPageState extends State<FtDetailPage> {
   }
 
   Widget getListViewItemLayout(BuildContext context, int index) {
-    FtRecord record = recordList[index];
+    InscriptionsList record = recordList[index];
     // DateTime dateTime =
     // DateUtil.getDateTimeByMs(int.parse(record.time.toString()));
     // String showTime =
@@ -228,14 +237,14 @@ class _FtDetailPageState extends State<FtDetailPage> {
 
     num recordMoney = 0;
     String showMoney = "";
-    recordMoney = record.income! - record.outcome!;
+    // recordMoney = record.income! - record.outcome!;
     bool isInCome = true;
-    num jindu = pow(10, widget.ftItem.decimalNum!);
+    // num jindu = pow(10, widget.ftItem.decimalNum!);
 
-    var value = double.parse(recordMoney.toString()) / jindu;
-    if (recordMoney > 0) {
+    // var value = double.parse(recordMoney.toString()) / jindu;
+    if (record.toAddress!.contains(myWallet.btcAddress)) {
       showMoney =
-          "+ ${Decimal.parse(value.toString()).toString()} ${widget.ftItem.symbol!}";
+          "+ ${record.amount} ${record.token}";
       // showMoney =value.toString().replaceAll(RegExp(r"([.]*0+)(?!.*\d)"), "");
       // showMoney = "+${Decimal.parse(value.toString()).toStringAsFixed(8)} ${widget.ftItem.symbol!}";
 
@@ -245,12 +254,12 @@ class _FtDetailPageState extends State<FtDetailPage> {
       // var valueRe = Decimal.parse(value.toString()).toStringAsFixed(8);
       // showMoney = "${value.toStringAsFixed(8)} Space";
       showMoney =
-          "${Decimal.parse(value.toString()).toString()} ${widget.ftItem.symbol!}";
+          "-${record!.amount} ${record.token}";
       isInCome = false;
       // showMoney="-$valueRe Space";
     }
 
-    String txid = record.txid!;
+    String txid = record.txId!;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -331,27 +340,22 @@ class _FtDetailPageState extends State<FtDetailPage> {
   Future<void> getFtRecordData() async {
     // https://api.show3.io/aggregation/v2/app/show/ft/1C2XjqoXHRegJNnmJqGDMt3rbAcrYLX4L9/summaries?chain=mvc&page=1&pageSize=30
     Map<String, dynamic> map = {};
-    // map["address"] = myWallet.address;
-    // map["codeHash"] = widget.ftItem.codehash;
-    // map["genesis"] = widget.ftItem.genesis;
-    map["flag"] = flag;
-    String url =
-        "$mvc_api/contract/ft/address/${myWallet.address}/${widget.ftItem.codehash}/${widget.ftItem.genesis}/tx";
+    map["chain"] = "btc";
+    map["tick"] = widget.ftItem.token;
+    map["address"] = myWallet.btcAddress;
+    map["page"] = page;
 
     Dio dio = Dio();
-    Response response = await dio.get(url, queryParameters: map);
+    Response response = await dio.get(METALET_BTC_FT_DETAIL_URL, queryParameters: map);
 
     if (response.statusCode == HttpStatus.ok) {
-      List<FtRecord> items = [];
-      final List<dynamic> stationsJson = response.data;
-      print(response.data.toString());
-      items =
-          List<FtRecord>.from(stationsJson.map((e) => FtRecord.fromJson(e)));
+      List<InscriptionsList> items = [];
+      BtcFtDetailBean btcFtDetailBean=BtcFtDetailBean.fromJson( response.data);
+      items = btcFtDetailBean.data!.inscriptionsList!;
       setState(() {
         recordList.clear();
         recordList.addAll(items);
       });
-
       print(recordList.toString());
     }
   }

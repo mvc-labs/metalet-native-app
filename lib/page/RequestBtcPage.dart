@@ -7,14 +7,14 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../utils/SimColor.dart';
 import '../utils/SimStytle.dart';
 
-class RequestPage extends StatefulWidget {
-  const RequestPage({Key? key}) : super(key: key);
+class RequestBtcPage extends StatefulWidget {
+  const RequestBtcPage({Key? key}) : super(key: key);
 
   @override
-  State<RequestPage> createState() => _SettingsPageState();
+  State<RequestBtcPage> createState() => _RequestBtcPageState();
 }
 
-class _SettingsPageState extends State<RequestPage> {
+class _RequestBtcPageState extends State<RequestBtcPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,11 +42,11 @@ class _SimQrWidgitState extends State<SimQrWidgit> {
     return Column(
       children: [
         const SizedBox(height: 30),
-        QrImage(size: 225, data: myWallet.address),
+        QrImage(size: 225, data: myWallet.btcAddress),
         const SizedBox(height: 30),
         TextButton(
           onPressed: () {
-            ClipboardData data =   ClipboardData(text:myWallet.address);
+            ClipboardData data =   ClipboardData(text:myWallet.btcAddress);
             Clipboard.setData(data);
             showToast("Copy Address");
           },
@@ -56,7 +56,7 @@ class _SimQrWidgitState extends State<SimQrWidgit> {
                 flex: 1,
                 child: Text(""),
               ),
-              Text(myWallet.address, style: const TextStyle(
+              Text(myWallet.btcAddress, style: const TextStyle(
                   fontSize: 12,
                   color: Color(SimColor.deaful_txt_color),
                   decoration: TextDecoration.none)),

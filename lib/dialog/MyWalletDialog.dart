@@ -191,7 +191,7 @@ class MyWalletDialog extends Dialog {
                                               // }
 
                                               indo.createWallet(
-                                                  walletName, walletPath);
+                                                  walletName, walletPath,"");
                                               Navigator.of(context).pop();
                                             } else {
                                               String walletName = "";
@@ -213,7 +213,7 @@ class MyWalletDialog extends Dialog {
                                               indo.addWallet(
                                                   walletName,
                                                   walletMnemoniController.text,
-                                                  walletPath);
+                                                  walletPath,"");
                                               // showDialog(context: context, builder: (context){
                                               //   return ProgressDialog(isShow: true);
                                               // });
@@ -243,6 +243,16 @@ class MyWalletDialog extends Dialog {
    ;
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 class MyWalletsDialog extends StatefulWidget {
   Indo indo;

@@ -1,21 +1,20 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mvcwallet/bean/Update.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/main.dart';
+import 'package:mvcwallet/page/addwallet/RestoreWalletPage.dart';
 import 'package:mvcwallet/sqlite/SqWallet.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 import '../bean/RateResponse.dart';
 import '../dialog/MyWalletDialog.dart';
 import '../page/SimpleDialog.dart';
@@ -205,29 +204,33 @@ void initLocalWalletBySql() {
 }
 
 void hasNoLogin(Indo indo) {
+  //add btc
+  Navigator.of(navKey.currentState!.overlay!.context).push(CupertinoPageRoute(builder: (BuildContext builder){
+    return RestoreWalletPage(indo: indo);
+  }));
+
+  //
+  // showDialog(
+  //     // context: navKey.currentState!.overlay!.context,
+  //     // builder: (context) {
+  //     //   return CreateWalletDialog(indo: indo);
+  //     // });
+  //     context: navKey.currentState!.overlay!.context,
+  //     builder: (context) {
+  //       return MyWalletDialog(indo: indo, isVisibility: true);
+  //     },
+  //     barrierDismissible: false);
+}
+
+void addMvcWallet(Indo indo) {
+  Navigator.of(navKey.currentState!.overlay!.context).push(CupertinoPageRoute(builder: (BuildContext builder){
+    return RestoreWalletPage(indo: indo);
+  }));
   // showDialog(
   //     context: navKey.currentState!.overlay!.context,
   //     builder: (context) {
   //       return MyWalletDialog(indo: indo, isVisibility: true);
   //     });
-  showDialog(
-      // context: navKey.currentState!.overlay!.context,
-      // builder: (context) {
-      //   return CreateWalletDialog(indo: indo);
-      // });
-      context: navKey.currentState!.overlay!.context,
-      builder: (context) {
-        return MyWalletDialog(indo: indo, isVisibility: true);
-      },
-      barrierDismissible: false);
-}
-
-void addMvcWallet(Indo indo) {
-  showDialog(
-      context: navKey.currentState!.overlay!.context,
-      builder: (context) {
-        return MyWalletDialog(indo: indo, isVisibility: true);
-      });
 }
 
 class SharedPreferencesUtils {

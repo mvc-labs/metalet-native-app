@@ -1,11 +1,17 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mvcwallet/bean/BtcBalanceResponse.dart';
+import 'package:mvcwallet/bean/MetaLetRate.dart';
+import 'package:mvcwallet/constant/SimContants.dart';
 
 import '../data/Indo.dart';
 import '../main.dart';
 import '../utils/Constants.dart';
 import '../utils/SimColor.dart';
+import 'RequestBtcPage.dart';
 import 'RequestPage.dart';
 import 'ScanResultPage.dart';
 import 'SimpleDialog.dart';
@@ -20,6 +26,20 @@ class MainBTCPage extends StatefulWidget {
 }
 
 class _MainBTCPageState extends State<MainBTCPage> {
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      btcBalance=myWallet.btcBalance+" BTC";
+    });
+    getBTCBalance();
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +51,7 @@ class _MainBTCPageState extends State<MainBTCPage> {
             decoration: const BoxDecoration(
 // color: Colors.red,
                 image: DecorationImage(
-              image: AssetImage("images/bg_img_space.png"),
+              image: AssetImage("images/bg_img_btc.png"),
             )
 // image: AssetImage("images/icon.png"),)
                 ),
@@ -48,7 +68,7 @@ class _MainBTCPageState extends State<MainBTCPage> {
                   height: 20,
                 ), //SimColor.deaful_txt_color
                 Text(
-                  myWallet.btcBalance,
+                  btcWalletBalance,
                   style: const TextStyle(
                       color: Color(SimColor.deaful_txt_color), fontSize: 40),
                 ),
@@ -57,14 +77,14 @@ class _MainBTCPageState extends State<MainBTCPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      "images/icon.png",
-                      width: 30,
-                      height: 30,
+                      "images/btc_icon.png",
+                      width: 24,
+                      height: 24,
                     ),
                     const SizedBox(width: 10),
                     Text(
                       // "21347.32 Spacessss",
-                      myWallet.btcBalance,
+                      btcBalance,
                       style: const TextStyle(fontSize: 17),
                     )
                   ],
@@ -86,12 +106,11 @@ class _MainBTCPageState extends State<MainBTCPage> {
                             if (isLogin) {
                               Navigator.of(context).push(CupertinoPageRoute(
                                   builder: (BuildContext context) {
-                                return const RequestPage();
+                                return const RequestBtcPage();
                               }));
                             } else {
                               hasNoLogin(widget.indo);
                             }
-
                             //   Navigator.of(context).push(CupertinoPageRoute(
                             //     builder: (BuildContext context) {
                             //   return const SimWebView();
@@ -111,21 +130,18 @@ class _MainBTCPageState extends State<MainBTCPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (isLogin) {
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (BuildContext context) {
-                                return ScanResultPage(
-                                  result: "",
-                                  isScan: false,
-                                );
-                              }));
+                              // Navigator.of(context).push(CupertinoPageRoute(
+                              //     builder: (BuildContext context) {
+                              //   return ScanResultPage(
+                              //     result: "",
+                              //     isScan: false,
+                              //   );
+                              // }));
+                              showToast("coming soon");
                             } else {
                               hasNoLogin(widget.indo);
                             }
-                            // showDialog(
-                            //     context: context,
-                            //     builder: (context) {
-                            //       return  const ProgressDialog();
-                            //     });
+
                           },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
@@ -141,4 +157,38 @@ class _MainBTCPageState extends State<MainBTCPage> {
       ),
     );
   }
+
+
+
+  Future<void> getBTCBalance() async{
+    final dio=Dio();
+    Map<String, dynamic> map = {};
+    map["address"] = myWallet.btcAddress;
+    map["chain "] = "btc";
+    Response response=await dio.get(BTC_BALANCE_URL,queryParameters: map);
+    if(response.statusCode==HttpStatus.ok){
+      Map<String, dynamic> dataResponse=response.data;
+      BtcBalanceResponse balanceResponse=BtcBalanceResponse.fromJson(dataResponse);
+      print("获取的btc余额是：${balanceResponse.data!.satoshi}");
+      num  btc=balanceResponse.data!.satoshi!;
+      var btcNum = (btc / 100000000).toStringAsFixed(8);
+
+      if(num.parse(btcNum)>0){
+        Response response=await dio.get(MEYALET_RATE_URL);
+        Map<String, dynamic> dataResponse=response.data;
+        MetaLetRate metaLetRate=MetaLetRate.fromJson(dataResponse);
+        num btcPrice=metaLetRate.data!.priceInfo!.btc!;
+        print(metaLetRate.data!.priceInfo!.btc!.toString());
+        setState(() {
+          btcBalance=btcNum.toString();
+          btcWalletBalance = "\$ ${(btcPrice * double.parse(btcNum)).toStringAsFixed(2)}";
+        });
+      }
+
+    }
+  }
+
+
+
+
 }

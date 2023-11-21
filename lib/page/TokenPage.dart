@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mvcwallet/bean/FtData.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/RequestPage.dart';
+import 'package:mvcwallet/page/FtListPage.dart';
 import 'package:mvcwallet/utils/EventBusUtils.dart';
 import 'package:mvcwallet/utils/MetaFunUtils.dart';
 import 'package:mvcwallet/utils/SimColor.dart';
@@ -49,6 +50,7 @@ class _TokePageState extends State<TokePage>
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
+        elevation: 0.0,
         title: const TitleBack("Tokens"),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(40),
@@ -65,10 +67,10 @@ class _TokePageState extends State<TokePage>
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 40, 10, 10),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: TabBarView(
           controller: tabController,
-          children: const <Widget>[FtPage(), NftPage()],
+          children: const <Widget>[FtListPage(), NftPage()],
         ),
       ),
     );
