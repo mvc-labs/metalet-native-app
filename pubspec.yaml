@@ -52,7 +52,7 @@ dependencies:
   package_info_plus: ^4.0.2
   bitcoin_flutter: ^2.0.2
   dropdown_button2: ^1.0.3
-
+  logger: ^2.0.2+1
 
 dev_dependencies:
   flutter_test:
