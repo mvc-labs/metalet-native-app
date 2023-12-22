@@ -5,16 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mvcwallet/page/SimpleDialog.dart';
 import 'package:mvcwallet/page/TokenPage.dart';
+import 'package:mvcwallet/page/btc/BtcAddressTypePage.dart';
 import 'package:mvcwallet/utils/Constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import '../data/Indo.dart';
 import '../main.dart';
 import '../utils/SimColor.dart';
 import '../utils/SimStytle.dart';
 import 'RequestPage.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  Indo mainIndo;
+
+  SettingsPage({Key? key, required this.mainIndo}) : super(key: key);
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -128,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 )
               ],
             ),
-            const SettingsContent()
+             SettingsContent(mainIndo: widget.mainIndo,)
           ],
         ),
       ),
@@ -137,7 +141,10 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 class SettingsContent extends StatefulWidget {
-  const SettingsContent({Key? key}) : super(key: key);
+
+  Indo mainIndo;
+
+  SettingsContent({Key? key, required this.mainIndo}) : super(key: key);
 
   @override
   State<SettingsContent> createState() => _SettingsContentState();
@@ -145,6 +152,7 @@ class SettingsContent extends StatefulWidget {
 
 class _SettingsContentState extends State<SettingsContent> {
   String notice = "USD";
+
 
   @override
   void initState() {
@@ -274,6 +282,26 @@ class _SettingsContentState extends State<SettingsContent> {
               ],
             ),
           ),
+          const SizedBox(height: 20),
+          InkWell(
+            onTap: () {
+              // _authenticateMe();
+              Navigator.of(context).push(CupertinoPageRoute(
+                  settings: const RouteSettings(),
+                  builder: (BuildContext context) {
+                    return BtcAddressTypePage(mainIndo: widget.mainIndo,);
+                  }));
+            },
+            child: Row(
+              children: [
+                Expanded(child: Text(
+                  "BTC Address Type",
+                  style: getDefaultTextStyle(),
+                )),
+                Image.asset("images/meta_right_icon.png", width: 20, height: 20)
+              ],
+            ),
+          ),
           const SizedBox(height: 30),
           InkWell(
             onTap: () {
@@ -345,18 +373,18 @@ class _SettingsContentState extends State<SettingsContent> {
               },
               child:
               Visibility(visible: isNoGopay,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Check Version"),
-                      SizedBox(
-                        child: Text(
-                          "v $versionName  ",
-                          style: getDefaultTextStyle(),
-                        ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Check Version"),
+                    SizedBox(
+                      child: Text(
+                        "v $versionName  ",
+                        style: getDefaultTextStyle(),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                ),
               )
 
 

@@ -1,6 +1,9 @@
 
 import 'package:event_bus/event_bus.dart';
 
+import '../bean/BtcFeeBean.dart';
+import '../bean/btc/BtcUtxoBean.dart';
+
 class EventBusUtils {
   static final EventBus instance=EventBus();
 
@@ -70,5 +73,29 @@ class SendFtDialogData{
 
 
 
+}
+
+
+class WalletBTCData{
+  String btcBalance="0.0";
+  String btcWalletBalance="\$0.0";
+
+  WalletBTCData(this.btcBalance, this.btcWalletBalance);
+}
+
+
+
+
+class WalletBTCRate{
+  BtcFeeBean? btcFeeBean;
+
+  WalletBTCRate(this.btcFeeBean);
+}
+
+
+class WalletBTCUtxo{
+  BtcUtxoBean? btcUtxoBean;
+
+  WalletBTCUtxo(this.btcUtxoBean);
 }
 

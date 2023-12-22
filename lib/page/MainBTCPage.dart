@@ -6,15 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:mvcwallet/bean/BtcBalanceResponse.dart';
 import 'package:mvcwallet/bean/MetaLetRate.dart';
 import 'package:mvcwallet/constant/SimContants.dart';
-
 import '../data/Indo.dart';
 import '../main.dart';
 import '../utils/Constants.dart';
 import '../utils/SimColor.dart';
 import 'RequestBtcPage.dart';
-import 'RequestPage.dart';
-import 'ScanResultPage.dart';
-import 'SimpleDialog.dart';
+import 'btc/SendBtcPage.dart';
 
 class MainBTCPage extends StatefulWidget {
   Indo indo;
@@ -35,7 +32,7 @@ class _MainBTCPageState extends State<MainBTCPage> {
     setState(() {
       btcBalance=myWallet.btcBalance+" BTC";
     });
-    getBTCBalance();
+    // getBTCBalance();
     super.initState();
   }
 
@@ -130,14 +127,13 @@ class _MainBTCPageState extends State<MainBTCPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (isLogin) {
-                              // Navigator.of(context).push(CupertinoPageRoute(
-                              //     builder: (BuildContext context) {
-                              //   return ScanResultPage(
-                              //     result: "",
-                              //     isScan: false,
-                              //   );
-                              // }));
-                              showToast("coming soon");
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (BuildContext context) {
+                                return SendBtcPage(
+                                  result: "",
+                                  isScan: false,
+                                );
+                              }));
                             } else {
                               hasNoLogin(widget.indo);
                             }
@@ -159,6 +155,7 @@ class _MainBTCPageState extends State<MainBTCPage> {
   }
 
 
+/*
 
   Future<void> getBTCBalance() async{
     final dio=Dio();
@@ -180,13 +177,22 @@ class _MainBTCPageState extends State<MainBTCPage> {
         num btcPrice=metaLetRate.data!.priceInfo!.btc!;
         print(metaLetRate.data!.priceInfo!.btc!.toString());
         setState(() {
-          btcBalance=btcNum.toString();
+          btcBalance=btcNum.toString()+" BTC";
           btcWalletBalance = "\$ ${(btcPrice * double.parse(btcNum)).toStringAsFixed(2)}";
+        });
+      }else{
+        setState(() {
+          btcBalance=" 0.00000000 BTC";
+          btcWalletBalance = "\$ 0.0";
         });
       }
 
     }
+
+
+
   }
+*/
 
 
 

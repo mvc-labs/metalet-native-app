@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mvcwallet/bean/CheckVersion.dart';
 import 'package:mvcwallet/bean/NftSendBack.dart';
 import 'package:mvcwallet/bean/RateResponse.dart';
+import 'package:mvcwallet/bean/btc/BtcBalanceV3Response.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/dialog/MyWalletDialog.dart';
 import 'package:mvcwallet/page/MainBTCPage.dart';
@@ -31,9 +32,15 @@ import 'package:mvcwallet/utils/SimStytle.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:bip32/bip32.dart' as bip32;
 import 'package:bitcoin_flutter/bitcoin_flutter.dart' hide Wallet;
 
+import 'bean/BtcBalanceResponse.dart';
+import 'bean/BtcFeeBean.dart';
+import 'bean/MetaLetRate.dart';
 import 'bean/Update.dart';
+import 'btc/CommonUtils.dart';
+import 'constant/SimContants.dart';
 // "Use of this wallet is at your own risk and discretion.The wallet is not liable for any losses incurred as a result of using the wallet. ",
 
 Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0, "", "", "");
@@ -198,6 +205,7 @@ class _HomePageState extends State<HomePage>
     implements Indo {
   late StreamSubscription _subscription_delete;
   late StreamSubscription _subscription_banlace;
+  late StreamSubscription _subscription_banlace_btc;
   late Indo indo;
 
   _HomePageState();
@@ -206,6 +214,10 @@ class _HomePageState extends State<HomePage>
   void initState() {
     // TODO: implement initState
     indo = this;
+
+    //brc20 icon
+    getBrc20Icon();
+
     WidgetsBinding.instance?.addObserver(this);
     _subscription_banlace =
         EventBusUtils.instance.on<WalletHomeData>().listen((event) {
@@ -217,6 +229,21 @@ class _HomePageState extends State<HomePage>
         walletBalance = event!.walletBalance;
       });
     });
+
+    _subscription_banlace_btc =
+        EventBusUtils.instance.on<WalletBTCData>().listen((event) {
+          // print(event.);
+          setState(() {
+            print("轮询获取的btc 信息 btcBalance ： "+event!.btcBalance+" btcWalletBalance:  "+ event!.btcWalletBalance);
+            // var value=double.parse(event.spaceBalance)/100000000;
+            // spaceBalance="$value Space";
+            btcBalance = event!.btcBalance;
+            btcWalletBalance = event!.btcWalletBalance;
+            // getBtcFee();
+
+          });
+        });
+
 
     _subscription_delete =
         EventBusUtils.instance.on<DeleteWallet>().listen((event) {
@@ -360,6 +387,10 @@ class _HomePageState extends State<HomePage>
             // }
             sqWallet.updateDefaultData(myWallet);
           }
+
+
+          getBtcUtxo();
+
         } else {
           // initMetaWallet
           showToast("Failed to initialize wallet Please check mnemonics");
@@ -375,6 +406,7 @@ class _HomePageState extends State<HomePage>
 
         getBalanceTimer();
         dioRate(message.message);
+        getBTCBalance();
         print("获取的余额是： " + message.message);
       })
       ..addJavaScriptChannel("metaSend", onMessageReceived: (message) {
@@ -474,11 +506,18 @@ class _HomePageState extends State<HomePage>
       index = tabController.index;
     });
 
+    // child:  InkWell(
+    //   onTap: (){
+    //     showToast("1");
+    //   },
+    //   child: ,
+    // ),
+    //
     super.initState();
   }
 
   getBalanceTimer() {
-    balanceTimer ??= Timer.periodic(const Duration(seconds: 5), (timer) {
+    balanceTimer ??= Timer.periodic(const Duration(seconds: 10), (timer) {
       // timeCount -= 1;
       if (isLogin) {
         // if (timeCount <= 0) {
@@ -495,18 +534,31 @@ class _HomePageState extends State<HomePage>
   //btc function
   void initBTCWallet(String btcPath) {
     print("初始化btc Wallet" + btcPath);
-
     var seed = bip39.mnemonicToSeed(myWallet.mnemonic);
+//    old
+/*
     var wallet = HDWallet.fromSeed(seed);
     print("btc Address hd wallet : " + wallet.address);
     HDWallet btWallet = wallet.derivePath(btcPath);
     print("btc Address: " + btWallet.address);
+*/
 
-    myWallet.btcAddress = btWallet.address;
-    myWallet.btcPath = btcPath;
-    if(myWallet.btcBalance.isEmpty){
-      myWallet.btcBalance = " \$0.00";
-    }
+    final node = bip32.BIP32.fromSeed(seed);
+
+    setState(() {
+
+      if(btcPath=="m/84'/0'/0'/0/0"){
+        myWallet.btcAddress = get84Address(node.derivePath(btcPath));
+      }else {
+        myWallet.btcAddress = get44Address(node.derivePath(btcPath));
+      }
+      myWallet.btcPath = btcPath;
+      print("btc Address: " + btcPath);
+      if(myWallet.btcBalance.isEmpty){
+        myWallet.btcBalance = "0";
+      }
+
+    });
 
     // sqWallet.updateDefaultData(myWallet);
   }
@@ -544,6 +596,7 @@ class _HomePageState extends State<HomePage>
     // EventBusUtils.instance.destroy();
     _subscription_delete.cancel();
     _subscription_banlace.cancel();
+    _subscription_banlace_btc.cancel();
   }
 
   late TabController tabController;
@@ -694,7 +747,7 @@ class _HomePageState extends State<HomePage>
                       if (isLogin) {
                         Navigator.of(context).push(
                             CupertinoPageRoute(builder: (BuildContext context) {
-                          return const SettingsPage();
+                          return  SettingsPage(mainIndo: this,);
                           // return const RequestPage();
                         }));
                       } else {
@@ -825,4 +878,48 @@ void dioRate(String message) async {
     EventBusUtils.instance
         .fire(WalletHomeData(myWalletBalanceShow, walletBalance));
   }
+
+  // 偶尔请求出错
+  getBtcFee();
+
 }
+
+
+Future<void> getBTCBalance() async{
+  final dio=Dio();
+  Map<String, dynamic> map = {};
+
+  map["address"] = myWallet.btcAddress;
+  map["chain "] = "btc";
+  Response response=await dio.get(BTC_BALANCE_V3_URL,queryParameters: map);
+  if(response.statusCode==HttpStatus.ok){
+    Map<String, dynamic> dataResponse=response.data;
+    BtcBalanceV3Response balanceResponse=BtcBalanceV3Response.fromJson(dataResponse);
+    print("获取的btc余额是：${response.data.toString()}");
+    num  btc=balanceResponse.data!.balance!;
+    // var btcNum = (btc / 100000000).toStringAsFixed(8);
+    var btcNum = btc.toStringAsFixed(8);
+    SqWallet sqWallet = SqWallet();
+    myWallet.btcBalance=btcNum;
+    sqWallet.update(myWallet);
+
+    if(num.parse(btcNum)>0){
+      Response response=await dio.get(MEYALET_RATE_URL);
+      Map<String, dynamic> dataResponse=response.data;
+      MetaLetRate metaLetRate=MetaLetRate.fromJson(dataResponse);
+      num btcPrice=metaLetRate.data!.priceInfo!.btc!;
+      print(metaLetRate.data!.priceInfo!.btc!.toString());
+
+      EventBusUtils.instance
+          .fire(WalletBTCData(btcNum.toString()+" BTC", "\$ ${(btcPrice * double.parse(btcNum)).toStringAsFixed(2)}"));
+
+    }else{
+      EventBusUtils.instance
+          .fire(WalletBTCData(btcNum.toString()+" BTC", "\$ 0.0"));
+    }
+
+  }
+}
+
+
+

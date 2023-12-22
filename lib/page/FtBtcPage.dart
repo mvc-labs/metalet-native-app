@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvcwallet/bean/Brc20ListBean.dart';
 import 'package:mvcwallet/bean/FtData.dart';
+import 'package:mvcwallet/btc/CommonUtils.dart';
 import 'package:mvcwallet/constant/SimContants.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/FtDetailPage.dart';
@@ -13,6 +14,7 @@ import 'package:mvcwallet/page/RequestPage.dart';
 import 'package:mvcwallet/page/btc/BtcFtDetailPage.dart';
 import 'package:mvcwallet/utils/MetaFunUtils.dart';
 import 'package:mvcwallet/utils/SimColor.dart';
+import 'package:mvcwallet/utils/SimStytle.dart';
 import 'package:sqflite/sqflite.dart';
 import '../utils/EventBusUtils.dart';
 import 'NftPage.dart';
@@ -114,6 +116,65 @@ class _FtBtcPageState extends State<FtBtcPage> {
     print("接收的地址是：" + url);
     // String url=ftItem.icon!.replaceAll(regex, "");
 
+    String iconPic_Base="https://www.metalet.space/wallet-api";
+    String iconPic="";
+
+    switch(ftName.toLowerCase()){
+      case "bili":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/bili.jpg";
+        break;
+      case "btcs":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/btcs.jpg";
+        break;
+      case "cats":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/cats.jpg";
+        break;
+      case "fish":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/fish.jpg";
+        break;
+      case "grum":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/grum.png";
+        break;
+      case "ibtc":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/ibtc.jpg";
+        break;
+      case "lger":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/lger.jpg";
+        break;
+      case "ordi":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/ordi.svg";
+        break;
+
+      case "orxc":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/orxc.png";
+        break;
+      case "oxbt":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/oxbt.png";
+        break;
+      case "rats":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/rats.jpg";
+        break;
+      case "rdex":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/rdex.png";
+        break;
+      case "sats":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/sats.jpg";
+        break;
+      case "sayc":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/sayc.jpg";
+        break;
+      case "trac":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/trac.png";
+        break;
+      case "vmpx":
+        iconPic="$iconPic_Base/v3/coin/brc20/icon/vmpx.jpg";
+        break;
+
+    }
+
+
+
+
     return InkWell(
       onTap: () {
         Navigator.of(context)
@@ -136,10 +197,10 @@ class _FtBtcPageState extends State<FtBtcPage> {
               // child:  metaFunUtils.getImageContainer(image))
               child: ClipOval(
                 child: metaFunUtils
-                    .getImageContainer(Image.network(url, fit: BoxFit.cover,
+                    .getImageContainer(Image.network(iconPic, fit: BoxFit.cover,
                     errorBuilder: (BuildContext context, Object execption,
                         StackTrace? stackTrace) {
-                      return ftName=="ORXC"?Image.asset("images/ordi_icon.png",width: 20,height: 20,):Image.asset("images/img_token_default.png",width: 20,height: 20,);
+                      return Image.asset("images/img_token_default.png",width: 20,height: 20,);
                       // return Image.asset('assets/img_token_default.png');
                     })),
               ),
@@ -150,75 +211,108 @@ class _FtBtcPageState extends State<FtBtcPage> {
                 width: 20,
               ),
             ),
-
-            Expanded(
-              flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        ftName,
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: Color(SimColor.deaful_txt_color),
-                            fontWeight: FontWeight.bold),
-                      )),
-                  /* Row(
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      ftName,
+                      style: const TextStyle(
+                          fontSize: 16,
+                          color: Color(SimColor.deaful_txt_color),
+                          fontWeight: FontWeight.bold),
+                    )),
+                /* Row(
                 children: [
                   // Align(alignment: Alignment.centerLeft,child: Text(ftName,)),
                   Text(ftName,)
                 ],
 
               ),*/
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child:  Container(
-                          padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-                          decoration: const BoxDecoration(
-                              color: Color(0xff33F7931A),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(2))),
-                          child:
-                          Text(
-                            ftSymbolName,
-                            style: const TextStyle(
-                              color: Color(0xffFF981C),
-                                fontWeight: FontWeight.normal, fontSize: 12),
-                          )
+                const SizedBox(
+                  height: 10,
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child:  Container(
+                      padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                      decoration: const BoxDecoration(
+                          color: Color(0xff33F7931A),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(2))),
+                      child:
+                      Text(
+                        ftSymbolName,
+                        style: const TextStyle(
+                            color: Color(0xffFF981C),
+                            fontWeight: FontWeight.normal,
+                            fontSize: 10),
+                      )
 
-                      ),),
+                  ),),
 
 
 
-                  /* Row(
+                /* Row(
                 children: [
                   // Align(alignment: Alignment.centerLeft,child: Text(ftSymbolName,))
                   Text(ftSymbolName,)
                 ],
               )*/
-                ],
-              ),
+              ],
+            ),
+
+            Expanded(
+              flex: 1,
+              child:   SizedBox(
+                  child:Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Text(
+                          ftNum,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(height: 3,),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Text("- - - - - - - - - - - ",style: TextStyle(
+                            color:Color( SimColor.gray_txt_color)
+                        ),),
+                      ),
+
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Text("Transferable:",style: getDefaultGraySmallTextStyle(),),
+                      ),
+                      SizedBox(height: 3,),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Text(ftItem.transferBalance!,style: getDefaultTextStyle(),),
+                      ),
+                      SizedBox(height: 3,),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Text("Available:",style: getDefaultGraySmallTextStyle(),),
+                      ),
+                      SizedBox(height: 3,),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Text(ftItem.availableBalance!,style: getDefaultTextStyle(),),
+                      ),
+
+                    ],
+                  )),
             ),
             // const Expanded(
             //     flex: 1,
             //     child: Text("")),
 
             // SizedBox(width: 100,),
-            SizedBox(
-                width: 110,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    ftNum,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                ))
+
           ],
         ),
       ),

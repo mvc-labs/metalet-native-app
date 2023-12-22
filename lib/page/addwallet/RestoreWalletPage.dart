@@ -26,8 +26,8 @@ class _RestoreWalletPageState extends State<RestoreWalletPage> {
   final List<String> btcPaths = [
     "m/44'/0'/0'/0/0",
     "m/84'/0'/0'/0/0",
-    "m/49'/0'/0'/0/0",
-    "m/86'/0'/0'/0/0"
+    // "m/49'/0'/0'/0/0",
+    // "m/86'/0'/0'/0/0"
   ];
   bool isSameMvcPath = true;
 
