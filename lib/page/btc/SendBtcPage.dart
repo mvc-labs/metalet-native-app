@@ -93,8 +93,8 @@ class ScanResultContent extends StatefulWidget {
   String lastResult;
   bool isOK = false;
   double amount = 0;
-  int colors = 0x80171AFF;
-
+  // int colors = 0x80171AFF;
+  int colors = 0xffCBCDD6;
   //Fee
   int fee_colors_w = 0xffffffff;
   int fee_colors_text = 0xff303133;
@@ -138,12 +138,12 @@ class _ScanResultContentState extends State<ScanResultContent> {
           } else {
             // showToast("22222222222222222222");
             widget.isOK = false;
-            widget.colors = 0x80171AFF;
+            widget.colors = 0xffCBCDD6;
           }
         } else {
           // showToast("333333");
           widget.isOK = false;
-          widget.colors = 0x80171AFF;
+          widget.colors = 0xffCBCDD6;
         }
       });
     });
@@ -157,7 +157,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
           widget.colors = 0xff171AFF;
         } else {
           widget.isOK = false;
-          widget.colors = 0x80171AFF;
+          widget.colors = 0xffCBCDD6;
         }
       });
     });
@@ -626,7 +626,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
               ),
             ),
             const SizedBox(
-              height: 44,
+              height: 20,
             ),
             Container(
               height: 44,
@@ -664,7 +664,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
   void send(String address, String amount) {
     if (address.isNotEmpty && amount.isNotEmpty) {
       // if(Address.validateAddress(address)){
-      if (Address.validateAddress(address)) {
+      // if (Address.validateAddress(address)) {
         switch (widget.chooseNum) {
           case 0:
             feedRate = btcFeeBean!.result!.list![0].feeRate;
@@ -714,10 +714,10 @@ class _ScanResultContentState extends State<ScanResultContent> {
         } else {
           showToast("Insufficient transfer balance");
         }
-      } else {
-        print("地址错误");
-        showToast("Send failed Please check the address");
-      }
+      // } else {
+      //   print("地址错误");
+      //   showToast("Send failed Please check the address");
+      // }
     }
   }
 

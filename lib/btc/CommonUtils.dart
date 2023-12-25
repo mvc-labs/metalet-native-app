@@ -1,7 +1,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:bitcoin_flutter/bitcoin_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,13 +10,10 @@ import 'package:mvcwallet/bean/btc/BrcIconList.dart';
 import 'package:mvcwallet/bean/btc/BtcUtxoBean.dart';
 import 'package:mvcwallet/constant/SimContants.dart';
 import 'package:mvcwallet/utils/Constants.dart';
-
 import '../bean/btc/BtcBroadcastData.dart';
 import '../main.dart';
 import '../page/SimpleDialog.dart';
 import '../utils/EventBusUtils.dart';
-
-
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bip32/bip32.dart' as bip32;
 
@@ -85,8 +81,6 @@ Future<void> getBrc20Icon() async{
       getBrc20Icon();
     });
   }
-
-
 }
 
 

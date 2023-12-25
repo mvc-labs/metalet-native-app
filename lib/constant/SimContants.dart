@@ -2,7 +2,7 @@ final String mvc_url = "https://metalet.space/";
 final String mvc_url1 = "https://www.metalet.space/";
 final String mvc_api = "${mvc_url}mvc-api";
 final String mvc_metalet = "${mvc_url}aggregation";
-
+final String iconPic_Base="https://www.metalet.space/wallet-api";
 
 
 final String BTC_BALANCE_URL = "${mvc_url}wallet-api/v2/address/balance";

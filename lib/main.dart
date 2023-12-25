@@ -544,8 +544,16 @@ class _HomePageState extends State<HomePage>
 */
 
     final node = bip32.BIP32.fromSeed(seed);
-
     setState(() {
+
+
+
+      if(btcPath.isEmpty){
+        print("mvc Path: " + myWallet.path);
+
+        btcPath="m/44'/${myWallet.path}'/0'/0/0";
+      }
+      // flutter build apk --no-sound-null-safety
 
       if(btcPath=="m/84'/0'/0'/0/0"){
         myWallet.btcAddress = get84Address(node.derivePath(btcPath));

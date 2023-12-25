@@ -117,7 +117,8 @@ class ScanResultContent extends StatefulWidget {
   String lastResult;
   bool isOK = false;
   double amount = 0;
-  int colors = 0x80171AFF;
+  // int colors = 0x80171AFF;
+  int colors = 0xffCBCDD6;
 
   TextEditingController amountController = TextEditingController();
   TextEditingController addressController = TextEditingController();
@@ -155,7 +156,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
         } else {
           // showToast("333333");
           widget.isOK = false;
-          widget.colors = 0x80171AFF;
+          widget.colors = 0xffCBCDD6;
         }
       });
     });
@@ -169,7 +170,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
           widget.colors = 0xff171AFF;
         } else {
           widget.isOK = false;
-          widget.colors = 0x80171AFF;
+          widget.colors = 0xffCBCDD6;
         }
       });
     });

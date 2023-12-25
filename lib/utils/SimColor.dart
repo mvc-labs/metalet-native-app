@@ -12,5 +12,10 @@ class SimColor {
   static const int color_button_red=0xffFF1717;
   static const int color_button_half_red=0xff80FF1717;
   static const int deaful_gray_txt_color=0xff909399;
+
+  static const int color_btc_yellow=0xffF7931A;
+  static const int color_btc_yellow_text=0xffFF981C;
+  static const int color_btc_yellow_80=0xff33F7931A;
+
 }
 

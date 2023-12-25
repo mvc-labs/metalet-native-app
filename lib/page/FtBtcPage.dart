@@ -116,7 +116,6 @@ class _FtBtcPageState extends State<FtBtcPage> {
     print("接收的地址是：" + url);
     // String url=ftItem.icon!.replaceAll(regex, "");
 
-    String iconPic_Base="https://www.metalet.space/wallet-api";
     String iconPic="";
 
     switch(ftName.toLowerCase()){
@@ -238,14 +237,14 @@ class _FtBtcPageState extends State<FtBtcPage> {
                   child:  Container(
                       padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
                       decoration: const BoxDecoration(
-                          color: Color(0xff33F7931A),
+                          color: Color(SimColor.color_btc_yellow_80),
                           borderRadius:
                           BorderRadius.all(Radius.circular(2))),
                       child:
                       Text(
                         ftSymbolName,
                         style: const TextStyle(
-                            color: Color(0xffFF981C),
+                            color: Color(SimColor.color_btc_yellow_text),
                             fontWeight: FontWeight.normal,
                             fontSize: 10),
                       )

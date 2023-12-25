@@ -21,7 +21,6 @@ import '../../utils/MetaFunUtils.dart';
 import '../../utils/SimColor.dart';
 import '../RequestBtcPage.dart';
 
-
 class BtcFtDetailPage extends StatefulWidget {
   TickList ftItem;
 
@@ -29,25 +28,78 @@ class BtcFtDetailPage extends StatefulWidget {
 
   @override
   State<BtcFtDetailPage> createState() => _BtcFtDetailPageState();
-
 }
 
 class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
   String flag = "";
   List<InscriptionsList> recordList = [];
-  int  page=1;
+  int page = 1;
+
+  String iconPic = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getFtRecordData();
+
+    switch (widget.ftItem.token!.toLowerCase()) {
+      case "bili":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/bili.jpg";
+        break;
+      case "btcs":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/btcs.jpg";
+        break;
+      case "cats":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/cats.jpg";
+        break;
+      case "fish":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/fish.jpg";
+        break;
+      case "grum":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/grum.png";
+        break;
+      case "ibtc":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/ibtc.jpg";
+        break;
+      case "lger":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/lger.jpg";
+        break;
+      case "ordi":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/ordi.svg";
+        break;
+
+      case "orxc":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/orxc.png";
+        break;
+      case "oxbt":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/oxbt.png";
+        break;
+      case "rats":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/rats.jpg";
+        break;
+      case "rdex":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/rdex.png";
+        break;
+      case "sats":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/sats.jpg";
+        break;
+      case "sayc":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/sayc.jpg";
+        break;
+      case "trac":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/trac.png";
+        break;
+      case "vmpx":
+        iconPic = "$iconPic_Base/v3/coin/brc20/icon/vmpx.jpg";
+        break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     MetaFunUtils metaFunUtils = MetaFunUtils();
-    String url ="";
+    String url = "";
 
     return Scaffold(
       body: Container(
@@ -84,11 +136,52 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
 
                     ClipOval(
                       child: metaFunUtils.getImageContainerSize(
-                          Image.network(url, fit: BoxFit.cover, errorBuilder: (BuildContext context, Object execption,
-                              StackTrace? stackTrace) {
-                            return widget.ftItem.token=="ORXC"?Image.asset("images/ordi_icon.png",width: 20,height: 20,):Image.asset("images/img_token_default.png",width: 20,height: 20,);
+                          Image.network(iconPic, fit: BoxFit.cover,
+                              errorBuilder: (BuildContext context,
+                                  Object execption, StackTrace? stackTrace) {
+                            return Image.asset(
+                              "images/img_token_default.png",
+                              width: 20,
+                              height: 20,
+                            );
+                            // widget.ftItem.token=="ORXC"?Image.asset("images/ordi_icon.png",width: 20,height: 20,):
                             // return Image.asset('assets/img_token_default.png');
-                          }), 80, 80),
+                          }),
+                          80,
+                          80),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                            decoration: const BoxDecoration(
+                                color: Color(SimColor.color_btc_yellow),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(2))),
+                            child: const Text(
+                              "BTC",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 10),
+                            )),
+                        const SizedBox(width: 5),
+                        Container(
+                            padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                            decoration: const BoxDecoration(
+                                color: Color(SimColor.color_btc_yellow_80),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(2))),
+                            child: const Text(
+                              "BRC-20",
+                              style: TextStyle(
+                                  color: Color(SimColor.color_btc_yellow_text),
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 10),
+                            ))
+                      ],
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -167,7 +260,7 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
                                   style: TextStyle(fontSize: 16))),
                         )),
                     const SizedBox(width: 20),
-                  /*  Expanded(
+                    /*  Expanded(
                         flex: 1,
                         child: SizedBox(
                             height: 44,
@@ -243,8 +336,7 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
 
     // var value = double.parse(recordMoney.toString()) / jindu;
     if (record.toAddress!.contains(myWallet.btcAddress)) {
-      showMoney =
-          "+ ${record.amount} ${record.token}";
+      showMoney = "+ ${record.amount} ${record.token}";
       // showMoney =value.toString().replaceAll(RegExp(r"([.]*0+)(?!.*\d)"), "");
       // showMoney = "+${Decimal.parse(value.toString()).toStringAsFixed(8)} ${widget.ftItem.symbol!}";
 
@@ -253,8 +345,7 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
     } else {
       // var valueRe = Decimal.parse(value.toString()).toStringAsFixed(8);
       // showMoney = "${value.toStringAsFixed(8)} Space";
-      showMoney =
-          "-${record!.amount} ${record.token}";
+      showMoney = "-${record!.amount} ${record.token}";
       isInCome = false;
       // showMoney="-$valueRe Space";
     }
@@ -346,11 +437,12 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
     map["page"] = page;
 
     Dio dio = Dio();
-    Response response = await dio.get(METALET_BTC_FT_DETAIL_URL, queryParameters: map);
+    Response response =
+        await dio.get(METALET_BTC_FT_DETAIL_URL, queryParameters: map);
 
     if (response.statusCode == HttpStatus.ok) {
       List<InscriptionsList> items = [];
-      BtcFtDetailBean btcFtDetailBean=BtcFtDetailBean.fromJson( response.data);
+      BtcFtDetailBean btcFtDetailBean = BtcFtDetailBean.fromJson(response.data);
       items = btcFtDetailBean.data!.inscriptionsList!;
       setState(() {
         recordList.clear();
