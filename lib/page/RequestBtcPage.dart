@@ -190,3 +190,53 @@ class _TitleBackState2 extends State<TitleBack2> {
     );
   }
 }
+
+
+class TitleBack3 extends StatefulWidget {
+
+  final String title;
+
+  const TitleBack3(this.title, {Key? key}) : super(key: key);
+
+  @override
+  State<TitleBack3> createState() => _TitleBackState3();
+
+
+}
+
+class _TitleBackState3 extends State<TitleBack3> {
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 15),
+                Image.asset("images/mvc_back_icon.png",
+                    width: 22, height: 22),
+                const SizedBox(width: 5),
+                const Text(
+                  "Back",
+                  style: TextStyle(
+                      fontSize: 15, color: Color(SimColor.deaful_txt_color)),
+                ),
+              ],
+            ));
+        // Expanded(
+        //   flex: 1,
+        //   child:   Text(
+        //     widget.title,
+        //     textAlign: TextAlign.center,
+        //     style: const TextStyle(
+        //       fontSize: 16,
+        //       color: Color(SimColor.deaful_txt_color),
+        //
+        //     )
+        //     ,
+        //   ),),
+  }
+}

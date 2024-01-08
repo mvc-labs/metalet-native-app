@@ -177,7 +177,7 @@ class _DefaultWidgetState extends State<DefaultWidget> {
         width: double.infinity,
         decoration: const BoxDecoration(
 // color: Colors.red,
-            image: DecorationImage(
+        image: DecorationImage(
           image: AssetImage("images/bg_img_space.png"),
         )
 // image: AssetImage("images/icon.png"),)
@@ -206,6 +206,8 @@ class _HomePageState extends State<HomePage>
   late StreamSubscription _subscription_delete;
   late StreamSubscription _subscription_banlace;
   late StreamSubscription _subscription_banlace_btc;
+  late StreamSubscription _subscription_btc_utxo;
+
   late Indo indo;
 
   _HomePageState();
@@ -282,6 +284,20 @@ class _HomePageState extends State<HomePage>
         });
       });
     });
+
+
+    _subscription_btc_utxo =
+        EventBusUtils.instance.on<WalletBTCUtxo>().listen((event) {
+          setState(() {
+            print("重新获取一次UTXO："+jsonEncode(event!.btcUtxoBean!.toJson()));
+
+            btcUtxoBean = event!.btcUtxoBean;
+          });
+        });
+
+
+
+
 
     setState(() {
       // initLocalWallet();
@@ -605,6 +621,7 @@ class _HomePageState extends State<HomePage>
     _subscription_delete.cancel();
     _subscription_banlace.cancel();
     _subscription_banlace_btc.cancel();
+    _subscription_btc_utxo.cancel();
   }
 
   late TabController tabController;
@@ -846,7 +863,7 @@ class _HomePageState extends State<HomePage>
 }
 
 void dioRate(String message) async {
-  final dio = Dio();
+  final dio = getHttpDio();
   final response = await dio
       .get("https://api.microvisionchain.com/metaid-base/v1/exchange/rates");
   var myWalletBalance = (double.parse(message) / 100000000).toStringAsFixed(8);
@@ -894,7 +911,8 @@ void dioRate(String message) async {
 
 
 Future<void> getBTCBalance() async{
-  final dio=Dio();
+  // final dio=Dio();
+  final dio=getHttpDio();
   Map<String, dynamic> map = {};
 
   map["address"] = myWallet.btcAddress;

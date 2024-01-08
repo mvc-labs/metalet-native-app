@@ -11,7 +11,7 @@ import 'package:mvcwallet/constant/SimContants.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/FtDetailPage.dart';
 import 'package:mvcwallet/page/RequestPage.dart';
-import 'package:mvcwallet/page/btc/BtcFtDetailPage.dart';
+import 'package:mvcwallet/page/btc/brc20/BtcFtDetailPage.dart';
 import 'package:mvcwallet/utils/MetaFunUtils.dart';
 import 'package:mvcwallet/utils/SimColor.dart';
 import 'package:mvcwallet/utils/SimStytle.dart';

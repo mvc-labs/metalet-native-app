@@ -17,6 +17,13 @@ TextStyle getDefaultTextStyle1() {
 }
 
 
+TextStyle getDefaultTextStyle18() {
+  return const TextStyle(
+      fontSize: 18,
+      color: Color(SimColor.deaful_txt_color),
+      decoration: TextDecoration.none);
+}
+
 TextStyle getDefaultTextStyleTitle() {
   return const TextStyle(
       fontSize: 15,
@@ -26,6 +33,24 @@ TextStyle getDefaultTextStyleTitle() {
   );
 
 }
+
+TextStyle getDefaultGrayTextStyle16() {
+  return const TextStyle(
+      fontSize: 16,
+      color: Color(SimColor.deaful_gray_txt_color),
+      decoration: TextDecoration.none);
+}
+
+TextStyle getDefaultGrayTextStyle18() {
+  return const TextStyle(
+      fontSize: 18,
+      color: Color(SimColor.deaful_gray_txt_color),
+      decoration: TextDecoration.none);
+}
+
+
+
+
 
 TextStyle getDefaultGrayTextStyle() {
   return const TextStyle(
