@@ -57,7 +57,8 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
     String feedRate=widget.brc20preDataBean.data!.networkFeeRate!.toString();
     needAmount1 = (widget.brc20preDataBean.data!.needAmount! / 100000000).toStringAsFixed(8);
     // var netWorkFee = (widget.brc20preDataBean.data!.needAmount! / 100000000).toStringAsFixed(8);
-    brc20commitRequest =Brc20CommitRequest(widget.brc20jsonBean.tick!,widget.brc20jsonBean.amt!,widget.brc20preDataBean.data!.orderId!,jsonEncode(widget.brc20jsonBean.toJson()));
+    Brc20JsonBean brc20jsonBeanShow=Brc20JsonBean(p: widget.brc20jsonBean.p, op: widget.brc20jsonBean.op, tick: widget.brc20jsonBean.tick, amt: "546");
+    brc20commitRequest =Brc20CommitRequest(widget.brc20jsonBean.tick!,widget.brc20jsonBean.amt!,widget.brc20preDataBean.data!.orderId!,jsonEncode(brc20jsonBeanShow.toJson()));
 
 
     // sendBtcTransaction(payAddress,int.parse(widget.brc20preDataBean.data!.needAmount!.toString()),int.parse(feedRate),this);

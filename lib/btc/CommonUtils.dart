@@ -21,7 +21,7 @@ import 'package:bip32/bip32.dart' as bip32;
 
 BtcFeeBean? btcFeeBean;
 
-Future<void> getBtcFee() async {
+/*Future<void> getBtcFee() async {
   final dio = getHttpDio();
   Response response = await dio.get(BTC_FEE_URL);
   print("费率s ： "+response.data.toString());
@@ -33,10 +33,10 @@ Future<void> getBtcFee() async {
     btcFeeBean = BtcFeeBean.fromJson(jsonDecode(response.data));
     EventBusUtils.instance.fire(WalletBTCRate(btcFeeBean));
   }
-}
+}*/
 
 
-/*Future<void> getBtcFee() async {
+Future<void> getBtcFee() async {
   final dio = getHttpDio();
   Response response = await dio.get(BTC_FEE_RATE_URL);
   print("费率s ： "+response.data.toString());
@@ -44,24 +44,24 @@ Future<void> getBtcFee() async {
     // print(response.data.toString());
     // Map<String,dynamic> dataResponse=response.data;
 
-    BtcFeeBean btcFeeBean=BtcFeeBean.fromJson(response.data);
-    BtcFeeRateBean btcFeeRateBean = BtcFeeRateBean.fromJson(jsonDecode(response.data));
+    // BtcFeeBean btcFeeBean=BtcFeeBean.fromJson(response.data);
+    BtcFeeRateBean btcFeeRateBean = BtcFeeRateBean.fromJson(response.data);
+    List<FeeBean> list=[];
     for(int i=0;i<btcFeeRateBean.data!.list!.length;i++){
       FeeRateBean feeRateBean=btcFeeRateBean.data!.list![i];
-      List<FeeBean> list=[];
       FeeBean feeBean=FeeBean();
       feeBean.title=feeRateBean.title;
       feeBean.feeRate=feeRateBean.feeRate;
       feeBean.desc=feeRateBean.desc;
       list.add(feeBean);
-      Result result=Result(list: list);
-      btcFeeBean=BtcFeeBean(status: "0",message: "ok",result: result);
     }
-
+    Result result=Result(list: list);
+    btcFeeBean=BtcFeeBean(status: "0",message: "ok",result: result);
+    print("转换完的结果："+btcFeeBean.toString());
     EventBusUtils.instance.fire(WalletBTCRate(btcFeeBean));
 
   }
-}*/
+}
 
 
 
@@ -149,7 +149,7 @@ void doBroadcastTransaction(BuildContext context, String rawTx,
           context: context,
           builder: (BuildContext context) {
             return ShowFtSuccessDialog(
-              nftName: "BTC",
+              nftName: "",
               receiveAddress: receiverAddress,
               ftAmount: sendAmount,
               transactionID: broadcastData.data!,

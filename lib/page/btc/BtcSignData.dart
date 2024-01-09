@@ -14,6 +14,9 @@ class BtcSignData {
   List<String>? outputUtxos = [];
 
 
+  //brc20
+  String? brc20Amt="";
+
 
   @override
   String toString() {

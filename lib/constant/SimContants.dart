@@ -20,6 +20,8 @@ final String BTC_BRC20_ICON_URL="${mvc_url1}wallet-api/v3/coin/icons";
 final String BTC_BRC20_ABLE_URL="${mvc_url1}wallet-api/v2/brc20/token-summary";
 final String BTC_BRC20_PRE_URL="${mvc_url1}wallet-api/v3/inscribe/pre";
 final String BTC_BRC20_COMMIT_URL="${mvc_url1}wallet-api/v3/inscribe/commit";
+final String BTC_BRC20_INFO_URL="${mvc_url1}wallet-api/v3/inscribe/info";
+final String BTC_BRC20_INSCRIPT_UTXO_URL="${mvc_url1}wallet-api/v2/inscription/utxo";
 
 
 

@@ -214,7 +214,7 @@ class _SignBtcTransactionPageState extends State<SignBtcTransactionPage> {
                             builder: (context) {
                               return ProgressDialog(isShow: true);
                             });
-                        doBroadcastTransaction(context,widget.btcSignData.rawTx!,sendAmount.toString(),widget.btcSignData.sendtoAddress!);
+                        doBroadcastTransaction(context,widget.btcSignData.rawTx!,"$sendAmount BTC",widget.btcSignData.sendtoAddress!);
                       },
                       child: Container(
                         decoration: const BoxDecoration(

@@ -70,14 +70,16 @@ class _ShowNftDetailPageState extends State<ShowNftDetailPage> {
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Text(
-                              "${widget.nftData.nftName!} - #${widget.nftData.nftTokenIndex!}",
-                              style: const TextStyle(
-                                  color: Color(SimColor.deaful_txt_color),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            ConstrainedBox(constraints: BoxConstraints(maxWidth: 150),
+                              child: Text(
+                                "${widget.nftData.nftName!} - #${widget.nftData.nftTokenIndex!}",
+                                style: const TextStyle(
+                                    color: Color(SimColor.deaful_txt_color),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                         ),

@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvcwallet/page/RequestBtcPage.dart';
 import 'package:mvcwallet/utils/SimStytle.dart';
 
 import '../../../bean/btc/Brc20CommitRequest.dart';
+import '../../../btc/CommonUtils.dart';
+import '../../../constant/SimContants.dart';
 import '../../../utils/SimColor.dart';
 import 'BrcTransSendSuccessTwoPage.dart';
 
@@ -19,6 +24,38 @@ class BrcTransSendSuccessPage extends StatefulWidget {
 }
 
 class _BrcTransSendSuccessPageState extends State<BrcTransSendSuccessPage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+    getBrcAvaiableData();
+
+
+
+
+  }
+
+  Future<void> getBrcAvaiableData() async{
+    //
+    Map<String,dynamic> map={};
+    map["orderId"]=widget.brc20commitRequest.orderID!;
+
+    Dio dio = getHttpDio();
+
+    Response response=await dio.get(BTC_BRC20_INFO_URL,queryParameters: map);
+
+    if(response.statusCode==HttpStatus.ok){
+      print("brc info ："+response.data.toString());
+
+    }
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

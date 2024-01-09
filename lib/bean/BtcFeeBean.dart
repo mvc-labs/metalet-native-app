@@ -33,6 +33,10 @@ BtcFeeBean copyWith({  String? status,
     return map;
   }
 
+  @override
+  String toString() {
+    return 'BtcFeeBean{status: $status, message: $message, result: $result}';
+  }
 }
 
 /// list : [{"title":"Slow","desc":"About 1 hours","feeRate":48},{"title":"Avg","desc":"About 30 minutes","feeRate":52},{"title":"Fast","desc":"About 10 minutes","feeRate":58}]
@@ -99,6 +103,10 @@ class FeeBean {
     return map;
   }
 
+  @override
+  String toString() {
+    return 'FeeBean{title: $title, desc: $desc, feeRate: $feeRate}';
+  }
 }
 
 
