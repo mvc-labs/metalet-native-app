@@ -12,6 +12,7 @@ final String BTC_FEE_RATE_URL="${mvc_url1}wallet-api/v3/btc/fee/summary";
 
 final String MEYALET_RATE_URL = "${mvc_url}wallet-api/v1/coin/price";
 final String MEYALET_BTC_BRC20_LIST_URL = "${mvc_url}wallet-api/v1/address/brc20/asset";
+final String MEYALET_BTC_BRC20_LIST_V2_URL = "${mvc_url}wallet-api/v2/brc20/tokens";
 final String METALET_BTC_ROCORD_URL="${mvc_url}wallet-api/v1/address/activities";
 final String METALET_BTC_FT_DETAIL_URL="${mvc_url}wallet-api/v1/address/brc20/activities";
 final String METALET_BTC_UTXO_URL="${mvc_url}wallet-api/v3/address/btc-utxo";
@@ -22,6 +23,7 @@ final String BTC_BRC20_PRE_URL="${mvc_url1}wallet-api/v3/inscribe/pre";
 final String BTC_BRC20_COMMIT_URL="${mvc_url1}wallet-api/v3/inscribe/commit";
 final String BTC_BRC20_INFO_URL="${mvc_url1}wallet-api/v3/inscribe/info";
 final String BTC_BRC20_INSCRIPT_UTXO_URL="${mvc_url1}wallet-api/v2/inscription/utxo";
+final String BTC_BRC20_NFT_URL="${mvc_url1}wallet-api/v2/address/inscriptions";
 
 
 

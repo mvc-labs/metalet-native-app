@@ -582,7 +582,11 @@ class _HomePageState extends State<HomePage>
         myWallet.btcBalance = "0";
       }
 
+      // getNftData();
+
     });
+
+
 
     // sqWallet.updateDefaultData(myWallet);
   }

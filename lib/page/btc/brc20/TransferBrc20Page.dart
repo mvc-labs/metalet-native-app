@@ -119,11 +119,42 @@ class _TransferBrc20PageState extends State<TransferBrc20Page> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        // num.parse(tokenBalance!.availableBalanceUnSafe!)>0?"Available ${tokenBalance!.availableBalance} + ${tokenBalance!.availableBalanceUnSafe} ${tokenBalance!.ticker!.toUpperCase()}":"Available ${tokenBalance!.availableBalance} ${tokenBalance!.ticker!.toUpperCase()}",
-                        "Available ${tokenBalance!.availableBalance} ${tokenBalance!.ticker!.toUpperCase()}",
-                        style: getDefaultGrayTextStyle16(),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:  [
+
+                          Text(
+                            "Available ",
+                            // "Available 2000",
+                            style: getDefaultGrayTextStyle16(),
+                          ),
+
+                          Text(
+                            "${tokenBalance!.availableBalanceSafe}",
+                            // "Available 2000",
+                            style: getDefaultTextStyle(),
+                          ),
+                         Visibility(
+                           visible:num.parse(tokenBalance!.availableBalanceUnSafe!)>0?true:false ,
+                           // visible:true ,
+                           child:  Text(
+                           " + ${tokenBalance!.availableBalanceUnSafe} ",
+                           // "+ 1000 ",
+                           style: getDefaultGrayTextStyle16(),
+                         ),),
+                          Text(
+                            " ${tokenBalance!.ticker!.toUpperCase()}",
+                            style: getDefaultTextStyle(),
+                          )
+                        ],
                       ),
+
+                      // Text(
+                      //   num.parse(tokenBalance!.availableBalanceUnSafe!)>0?"Available ${tokenBalance!.availableBalance} + ${tokenBalance!.availableBalanceUnSafe} ${tokenBalance!.ticker!.toUpperCase()}":"Available ${tokenBalance!.availableBalance} ${tokenBalance!.ticker!.toUpperCase()}",
+                      //   // "Available ${tokenBalance!.availableBalance} ${tokenBalance!.ticker!.toUpperCase()}",
+                      //   style: getDefaultGrayTextStyle16(),
+                      // ),
                     ],
                   ),
                 ),

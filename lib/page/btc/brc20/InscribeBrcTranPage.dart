@@ -237,7 +237,18 @@ class _InscribeBrcTranPageState extends State<InscribeBrcTranPrePage>
                         Expanded(child: Text("")),
                         InkWell(onTap: (){
 
-                          sendCommitInscribe();
+                          if(isFingerCan){
+                            authenticateMe().then((value) {
+                              if(value){
+                                //正确
+                                sendCommitInscribe();
+                              }
+                            });
+                          }else{
+                            //  TODO 继续
+                            sendCommitInscribe();
+                          }
+
                         },
                         child:  Container(
                           width: 100,

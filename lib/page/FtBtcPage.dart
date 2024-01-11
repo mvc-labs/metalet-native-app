@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvcwallet/bean/Brc20ListBean.dart';
+import 'package:mvcwallet/bean/Brc20ListV2Bean.dart';
 import 'package:mvcwallet/bean/FtData.dart';
 import 'package:mvcwallet/btc/CommonUtils.dart';
 import 'package:mvcwallet/constant/SimContants.dart';
@@ -31,7 +32,7 @@ class FtBtcPage extends StatefulWidget {
 class _FtBtcPageState extends State<FtBtcPage> {
   //刷新
   final ScrollController _scrollController = ScrollController();
-  List<TickList> ftList = [];
+  List<Brc20List> ftList = [];
   int page = 1;
   int pageSize = 30;
   String chain = "btc";
@@ -42,38 +43,37 @@ class _FtBtcPageState extends State<FtBtcPage> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: getFtData,
-        child: Column(
-          children: [
-            Visibility(
-                visible: showFt,
-                child: Container(
-                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: ftList.length,
-                      itemBuilder: getListViewItemLayout),
-                )),
-            Visibility(
-                visible: showFt == true ? false : true,
-                child: Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "images/default_img_nodata.png", width: 100,
-                            height: 100,),
-                          const Text("NO DATA", style: TextStyle(
-                              color: Color(SimColor.deaful_gray_txt_color),
-                              fontSize: 18),)
-                        ],
-                      ),
-                    )))
-          ],
-        ));
+    return
+      RefreshIndicator(child:   Column(
+        children: [
+          Expanded(child:  Visibility(
+              visible: showFt,
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: ftList.length,
+                    itemBuilder: getListViewItemLayout),
+              )),),
+          Visibility(
+              visible: showFt == true ? false : true,
+              child: Expanded(
+                  flex: 1,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "images/default_img_nodata.png", width: 100,
+                          height: 100,),
+                        const Text("NO DATA", style: TextStyle(
+                            color: Color(SimColor.deaful_gray_txt_color),
+                            fontSize: 18),)
+                      ],
+                    ),
+                  )))
+        ],
+      ), onRefresh: getFtData);
   }
 
   @override
@@ -102,13 +102,13 @@ class _FtBtcPageState extends State<FtBtcPage> {
   }
 
   Widget getListViewItemLayout(BuildContext context, int index) {
-    TickList ftItem = ftList[index];
+    Brc20List ftItem = ftList[index];
     MetaFunUtils metaFunUtils = MetaFunUtils();
     // String url = metaFunUtils.getShowImageUrl(ftItem.icon!);
     String url = "";
-    String ftName = ftItem.token!;
-    String ftSymbolName = ftItem.tokenType!;
-    String ftNum = Decimal.parse(ftItem.balance!).toString();
+    String ftName = ftItem.ticker!;
+    String ftSymbolName = "BRC20";//ftItem.tokenType!;
+    String ftNum = Decimal.parse(ftItem.availableBalance!).toString();
 
     // bool isShow = url == "https://api.show3.space/metafile/" ? false : true;
     bool isShow = true;
@@ -170,7 +170,6 @@ class _FtBtcPageState extends State<FtBtcPage> {
         break;
 
     }
-
 
 
 
@@ -251,8 +250,6 @@ class _FtBtcPageState extends State<FtBtcPage> {
 
                   ),),
 
-
-
                 /* Row(
                 children: [
                   // Align(alignment: Alignment.centerLeft,child: Text(ftSymbolName,))
@@ -270,7 +267,7 @@ class _FtBtcPageState extends State<FtBtcPage> {
                       Align(
                         alignment: Alignment.topRight,
                         child: Text(
-                          ftNum,
+                          ftItem.overallBalance!,
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
@@ -290,7 +287,7 @@ class _FtBtcPageState extends State<FtBtcPage> {
                       SizedBox(height: 3,),
                       Align(
                         alignment: Alignment.topRight,
-                        child: Text(ftItem.transferBalance!,style: getDefaultTextStyle(),),
+                        child: Text(ftItem.transferableBalance!,style: getDefaultTextStyle(),),
                       ),
                       SizedBox(height: 3,),
                       Align(
@@ -302,6 +299,22 @@ class _FtBtcPageState extends State<FtBtcPage> {
                         alignment: Alignment.topRight,
                         child: Text(ftItem.availableBalance!,style: getDefaultTextStyle(),),
                       ),
+
+                      SizedBox(height: 3,),
+
+                      Visibility(
+                        visible: num.parse(ftItem!.availableBalanceUnSafe!)>0?true:false ,
+                        child:   Align(
+                        alignment: Alignment.topRight,
+                        child: Text("Available(pending):",style: getDefaultGraySmallTextStyle(),),
+                      ),),
+                      SizedBox(height: 3,),
+                      Visibility(
+                        visible: num.parse(ftItem!.availableBalanceUnSafe!)>0?true:false ,
+                        child:  Align(
+                        alignment: Alignment.topRight,
+                        child: Text(ftItem.availableBalanceUnSafe!,style: getDefaultTextStyle(),),
+                      ),)
 
                     ],
                   )),
@@ -322,15 +335,16 @@ class _FtBtcPageState extends State<FtBtcPage> {
     // https://api.show3.io/aggregation/v2/app/show/ft/1C2XjqoXHRegJNnmJqGDMt3rbAcrYLX4L9/summaries?chain=mvc&page=1&pageSize=30
     Map<String, dynamic> map = {};
     map["address"] = myWallet.btcAddress;
-    map["chain"] = chain;
+    map["cursor"] = 0;
+    map["size"] = 100000;
 
     Dio dio = Dio();
     Response response = await dio.get(
-        MEYALET_BTC_BRC20_LIST_URL, queryParameters: map);
+        MEYALET_BTC_BRC20_LIST_V2_URL, queryParameters: map);
 
     Map<String, dynamic> data = response.data;
-    Brc20ListBean ftData = Brc20ListBean.fromJson(data);
-    List<TickList> ftListData = ftData.data!.tickList!;
+    Brc20ListV2Bean ftData = Brc20ListV2Bean.fromJson(data);
+    List<Brc20List> ftListData = ftData.data!.brc20List!;
     print(ftListData.toString());
     if (!mounted) {
       return;

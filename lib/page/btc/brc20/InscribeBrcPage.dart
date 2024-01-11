@@ -10,6 +10,7 @@ import 'package:mvcwallet/btc/Crypt.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/btc/brc20/Brc20JsonBean.dart';
 import 'package:mvcwallet/page/btc/brc20/InscribeBrcPrePage.dart';
+import 'package:mvcwallet/utils/Constants.dart';
 import 'package:mvcwallet/utils/SimStytle.dart';
 import '../../../bean/btc/Brc20Able.dart';
 import '../../../bean/btc/SendBrc20DataBean.dart';
@@ -17,7 +18,9 @@ import '../../../btc/CommonUtils.dart';
 import '../../../constant/SimContants.dart';
 import '../../../utils/SimColor.dart';
 import '../../RequestBtcPage.dart';
+import '../../SimpleDialog.dart';
 
+// 铭刻数据个数页面
 class InscribeBrcPage extends StatefulWidget {
 
   int chooseNum = 1;
@@ -66,14 +69,38 @@ class _InscribeBrcPageState extends State<InscribeBrcPage> {
               Row(
                 children: [
                   Text(
-                    "Amount",
+                    "Available",
                     style: getDefaultTextStyle1(),
                   ),
                   Expanded(flex: 1, child: SizedBox()),
+
                   Text(
-                    "Balance ${widget.tokenBalance.availableBalanceSafe} ${widget.tokenBalance.ticker!.toUpperCase()}",
-                    style: getDefaultTextStyle1(),
+                    "${widget.tokenBalance!.availableBalanceSafe}",
+                    // "Balance 2000",
+                    style: getDefaultTextStyle(),
                   ),
+                  const SizedBox(width: 10,),
+                  Visibility(
+                    visible:num.parse(widget.tokenBalance!.availableBalanceUnSafe!)>0?true:false ,
+                    child:  Text(
+                      " + ${widget.tokenBalance!.availableBalanceUnSafe} ",
+                      // "+ 1000 ",
+                      style: getDefaultGrayTextStyle16(),
+                    ),),
+
+                  Visibility(
+                    // visible:num.parse(widget.tokenBalance!.availableBalanceUnSafe!)>0?true:false ,
+                    visible:true ,
+                    child:  Text(
+                      "${widget.tokenBalance!.ticker!.toUpperCase()}",
+                      style: getDefaultTextStyle(),
+                    ),),
+
+
+                  // Text(
+                  //   "Balance ${widget.tokenBalance.availableBalanceSafe} ${widget.tokenBalance.ticker!.toUpperCase()}",
+                  //   style: getDefaultTextStyle1(),
+                  // ),
                 ],
               ),
               const SizedBox(height: 10),
@@ -113,7 +140,7 @@ class _InscribeBrcPageState extends State<InscribeBrcPage> {
                               if(value.toString().isNotEmpty){
                                 num inputnum=num.parse(value.toString());
                                 if(inputnum>num.parse(widget.tokenBalance.availableBalanceSafe!)){
-                                  widget.inScribeNumController.clear();
+                                  // widget.inScribeNumController.clear();
                                 }
                               }
                             });
@@ -423,6 +450,19 @@ class _InscribeBrcPageState extends State<InscribeBrcPage> {
                         send(widget.addressController.text,
                             widget.amountController.text);
                       }*/
+
+                        num inputnum=num.parse(widget.inScribeNumController.text.toString());
+                        if(inputnum>num.parse(widget.tokenBalance.availableBalanceSafe!)){
+                          // widget.inScribeNumController.clear();
+                          showToast("Insufficient balance");
+                          return;
+                        }
+
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return ProgressDialog(isShow: true);
+                          });
                       nextInscribeBrc();
                     },
                     style: ButtonStyle(
@@ -485,7 +525,12 @@ class _InscribeBrcPageState extends State<InscribeBrcPage> {
     Response response = await  dio.post(BTC_BRC20_PRE_URL,data: jsonString);
     var data = response.data.toString();
     print("inscir "+data);
+    Navigator.of(context).pop();
     if(response.statusCode==HttpStatus.ok){
+
+      // ignore: use_build_context_synchronously
+
+      FocusScope.of(context).requestFocus(FocusNode());
       Brc20PreDataBean brc20preDataBean=Brc20PreDataBean.fromJson(response.data);
       Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext builder){
         return InscribeBrcPrePage(brc20preDataBean: brc20preDataBean, brc20jsonBean: brc20jsonBean);

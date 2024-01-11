@@ -6,6 +6,7 @@ import 'package:mvcwallet/btc/CommonUtils.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/utils/SimStytle.dart';
 
+import '../../../utils/Constants.dart';
 import '../../../utils/SimColor.dart';
 import '../../RequestBtcPage.dart';
 import '../../SimpleDialog.dart';
@@ -176,12 +177,32 @@ class _TransactionBrc20PageState extends State<TransactionBrc20Page> {
                     flex: 1,
                     child: InkWell(
                       onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return ProgressDialog(isShow: true);
-                            });
-                        doBroadcastTransaction(context,widget.btcSignData.rawTx!,sendAmount.toString(),widget.btcSignData.sendtoAddress!);
+
+                        if(isFingerCan){
+                          authenticateMe().then((value) {
+                            if(value){
+                              //正确
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return ProgressDialog(isShow: true);
+                                  });
+                              doBroadcastTransaction(context,widget.btcSignData.rawTx!,sendAmount.toString(),widget.btcSignData.sendtoAddress!);
+                            }
+                          });
+                        }else{
+                          //  TODO 继续
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return ProgressDialog(isShow: true);
+                              });
+                          doBroadcastTransaction(context,widget.btcSignData.rawTx!,sendAmount.toString(),widget.btcSignData.sendtoAddress!);
+                        }
+
+
+
+
                       },
                       child: Container(
                         decoration: const BoxDecoration(

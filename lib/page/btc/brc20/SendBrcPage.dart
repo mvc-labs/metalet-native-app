@@ -20,12 +20,11 @@ import '../../RequestBtcPage.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bip32/bip32.dart' as bip32;
 
+import '../../SimpleDialog.dart';
 import '../BtcSignData.dart';
 import '../SignBtcTransactionPage.dart';
 
-
 class SendBrcPage extends StatefulWidget {
-
   int chooseNum = 1;
   int fee_bg_color = 0xff171AFF;
   int fee_colors_w = 0xffffffff;
@@ -33,18 +32,16 @@ class SendBrcPage extends StatefulWidget {
   TextEditingController addressController = TextEditingController();
 
   int colors = 0xffCBCDD6;
-  bool isOK=false;
+  bool isOK = false;
   TransferableList transferable;
 
-  SendBrcPage({Key? key,required this.transferable}) : super(key: key);
+  SendBrcPage({Key? key, required this.transferable}) : super(key: key);
 
   @override
   State<SendBrcPage> createState() => _SendBrcPageState();
 }
 
 class _SendBrcPageState extends State<SendBrcPage> {
-
-
   InscriptUtxoBean? inscriptUtxoBean;
   BtcSignData? btcSignDatap;
   String? netWorkFee;
@@ -55,29 +52,22 @@ class _SendBrcPageState extends State<SendBrcPage> {
     super.initState();
     widget.addressController.addListener(() {
       setState(() {
-        if(isNoEmpty(widget.addressController.text)){
-          widget.isOK=true;
-          widget. colors=0xff171AFF;
-        }else{
-          widget.isOK=false;
-          widget. colors=0xffCBCDD6;
+        if (isNoEmpty(widget.addressController.text)) {
+          widget.isOK = true;
+          widget.colors = 0xff171AFF;
+        } else {
+          widget.isOK = false;
+          widget.colors = 0xffCBCDD6;
         }
       });
     });
 
     getBtcUtxo();
     getInscriptUtxo();
-
-
-
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
@@ -104,7 +94,8 @@ class _SendBrcPageState extends State<SendBrcPage> {
                 height: 50,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("images/input.png"), fit: BoxFit.fill)),
+                        image: AssetImage("images/input.png"),
+                        fit: BoxFit.fill)),
                 child: Row(
                   children: [
                     const SizedBox(
@@ -113,19 +104,20 @@ class _SendBrcPageState extends State<SendBrcPage> {
                     Expanded(
                       flex: 1,
                       child: Center(
-                        child:Align(
-                          child: Text(
-                            "${widget.transferable.amount} ${widget.transferable.ticker!.toUpperCase()}",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          alignment: Alignment.centerLeft,
-                        )
-                      ),
+                          child: Align(
+                        child: Text(
+                          "${widget.transferable.amount} ${widget.transferable.ticker!.toUpperCase()}",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        alignment: Alignment.centerLeft,
+                      )),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Row(
                 children: [
                   Text(
@@ -140,7 +132,8 @@ class _SendBrcPageState extends State<SendBrcPage> {
                 height: 50,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("images/input.png"), fit: BoxFit.fill)),
+                        image: AssetImage("images/input.png"),
+                        fit: BoxFit.fill)),
                 child: Row(
                   children: [
                     const SizedBox(
@@ -160,18 +153,21 @@ class _SendBrcPageState extends State<SendBrcPage> {
                   ],
                 ),
               ),
-
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 children: [
                   Expanded(
                       child: Text(
-                        "Fee Rate",
-                        style: getDefaultTextStyle(),
-                      ))
+                    "Fee Rate",
+                    style: getDefaultTextStyle(),
+                  ))
                 ],
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Row(
                 children: [
                   Expanded(
@@ -432,16 +428,15 @@ class _SendBrcPageState extends State<SendBrcPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                     onPressed: () {
-
                       // Navigator.of(context).push(CupertinoPageRoute(builder:(BuildContext context){
                       //   return TransactionBrc20Page();
                       // }));
 
+                      if(!preventDoubleTap()){
+                        return;
+                      }
+
                       nextInscribeBrc();
-
-
-
-
                     },
                     style: ButtonStyle(
                       backgroundColor:
@@ -457,9 +452,9 @@ class _SendBrcPageState extends State<SendBrcPage> {
         ));
   }
 
-
   num? feedRate = 0;
-  void nextInscribeBrc(){
+
+  void nextInscribeBrc() {
     switch (widget.chooseNum) {
       case 0:
         feedRate = btcFeeBean!.result!.list![0].feeRate;
@@ -475,27 +470,25 @@ class _SendBrcPageState extends State<SendBrcPage> {
         break;
     }
 
+    if (inscriptUtxoBean != null) {
+      Utxo utxo = Utxo();
+      utxo.txId = inscriptUtxoBean!.data!.txId;
+      utxo.satoshi = inscriptUtxoBean!.data!.satoshis;
+      utxo.vout = inscriptUtxoBean!.data!.outputIndex;
+      utxo.confirmed = true;
 
-    if(inscriptUtxoBean!=null){
-      Utxo utxo=Utxo();
-      utxo.txId=inscriptUtxoBean!.data!.txId;
-      utxo.satoshi=inscriptUtxoBean!.data!.satoshis;
-      utxo.vout=inscriptUtxoBean!.data!.outputIndex;
-      utxo.confirmed=true;
-
-      sendBtcTransaction(widget.addressController.text,546,int.parse(feedRate.toString()),utxo);
-
-
+      showLoading(context);
+      sendBtcTransaction(widget.addressController.text, 546,
+          int.parse(feedRate.toString()), utxo);
     }
   }
 
-
-
-
-
   int needAmount = 0;
 
-  void sendBtcTransaction(String sendAddress, int sendAmount, int feeVb,Utxo insUtxo) {
+  void sendBtcTransaction(
+      String sendAddress, int sendAmount, int feeVb, Utxo insUtxo) {
+
+
     List<Utxo> utxoList = [];
     List<Utxo> utxoNeedList = [];
 
@@ -512,32 +505,37 @@ class _SendBrcPageState extends State<SendBrcPage> {
         }
       }
     } else {
-      showToast("钱包初始化中");
+      showToast("Insufficient balance 1");
+      dismissLoading(context);
       return;
     }
 
     // 没有进入break
     if (needAmount <= sendAmount) {
       showToast("Insufficient balance");
+      dismissLoading(context);
       return;
     }
 
-    utxoNeedList = getNeedUtxoList(sendAmount, utxoList, feeVb, sendAddress, changeAddress,insUtxo);
+    utxoNeedList = getNeedUtxoList(
+        sendAmount, utxoList, feeVb, sendAddress, changeAddress, insUtxo);
 
     if (utxoNeedList.isEmpty) {
       showToast("Insufficient balance");
+      dismissLoading(context);
       return;
     }
 
     //indo
 
+    print("needUtxo: " + utxoNeedList.toString());
 
     // if(myWallet.btcPath=="m/84'/0'/0'/0/0"){
 
     // }else{
     final seed = bip39.mnemonicToSeed(myWallet.mnemonic);
     final node = bip32.BIP32.fromSeed(seed);
-    String wif=node.derivePath(myWallet.btcPath).toWIF();
+    String wif = node.derivePath(myWallet.btcPath).toWIF();
 
     //1.设置input 和 out put
     // var alice = ECPair.fromWIF(node.toWIF());
@@ -545,13 +543,13 @@ class _SendBrcPageState extends State<SendBrcPage> {
 
     var calTxb = TransactionBuilder();
 
-    if(myWallet.btcAddress.startsWith("bc1q")){
+    if (myWallet.btcAddress.startsWith("bc1q")) {
       final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
 
       for (int i = 0; i < utxoNeedList.length; i++) {
         Utxo o = utxoNeedList[i];
         String inputVout = o!.vout!.toString();
-        calTxb.addInput(o.txId, int.parse(inputVout),null,p2wpkh.output);
+        calTxb.addInput(o.txId, int.parse(inputVout), null, p2wpkh.output);
       }
 
       calTxb.addOutput(sendAddress, sendAmount);
@@ -560,9 +558,9 @@ class _SendBrcPageState extends State<SendBrcPage> {
       for (int i = 0; i < utxoNeedList.length; i++) {
         Utxo o = utxoNeedList[i];
         String satoshi = o!.satoshi!.toString();
-        calTxb.sign(vin: i, keyPair: alice,witnessValue: int.parse(satoshi));
+        calTxb.sign(vin: i, keyPair: alice, witnessValue: int.parse(satoshi));
       }
-    }else{
+    } else {
       for (int i = 0; i < utxoNeedList.length; i++) {
         Utxo o = utxoNeedList[i];
         String inputVout = o!.vout!.toString();
@@ -577,7 +575,6 @@ class _SendBrcPageState extends State<SendBrcPage> {
       }
     }
 
-
     //计算体积
     Transaction transactionCal = calTxb.buildIncomplete();
     int vbSize = transactionCal.virtualSize();
@@ -590,29 +587,29 @@ class _SendBrcPageState extends State<SendBrcPage> {
     changeSize = needAmount - sendAmount - feed;
     print("计算找零金额 : ${changeSize}");
 
-    if (changeSize<0) {
+    if (changeSize < 0) {
       showToast("Insufficient balance");
+      dismissLoading(context);
       return;
     }
 
-
     //build transaction
-    TransactionBuilder linkTranBuild=TransactionBuilder();
+    TransactionBuilder linkTranBuild = TransactionBuilder();
     linkTranBuild.setVersion(1);
-    BtcSignData signData=BtcSignData();
+    BtcSignData signData = BtcSignData();
 
-
-    if(myWallet.btcAddress.startsWith("bc1q")){
+    if (myWallet.btcAddress.startsWith("bc1q")) {
       print("最总上链加入bc1q");
       final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
       for (int i = 0; i < utxoNeedList.length; i++) {
         Utxo o = utxoNeedList[i];
         String inputVout = o!.vout!.toString();
         signData.inputUtxos!.add(o.satoshi.toString());
-        print("utxoTxID: "+o.txId!);
-        print("inputVout: "+inputVout);
+        print("utxoTxID: " + o.txId!);
+        print("inputVout: " + inputVout);
 
-        linkTranBuild.addInput(o.txId!, int.parse(inputVout),null,p2wpkh.output);
+        linkTranBuild.addInput(
+            o.txId!, int.parse(inputVout), null, p2wpkh.output);
       }
 
       // linkTranBuild.addOutput(sendAddress, sendAmount);
@@ -623,8 +620,7 @@ class _SendBrcPageState extends State<SendBrcPage> {
       //   String satoshi = o!.satoshi!.toString();
       //   linkTranBuild.sign(vin: i, keyPair: alice,witnessValue: int.parse(satoshi));
       // }
-
-    }else{
+    } else {
       print("最总上链加入");
       for (int i = 0; i < utxoNeedList.length; i++) {
         Utxo o = utxoNeedList[i];
@@ -642,79 +638,92 @@ class _SendBrcPageState extends State<SendBrcPage> {
       // }
     }
 
-
     linkTranBuild.addOutput(sendAddress, sendAmount);
     linkTranBuild.addOutput(changeAddress, changeSize);
 
     signData.outputUtxos!.add(sendAmount.toString());
-    signData.changeAmount=changeSize.toString();
+    signData.changeAmount = changeSize.toString();
 
     for (int i = 0; i < utxoNeedList.length; i++) {
       Utxo o = utxoNeedList[i];
       String satoshi = o!.satoshi!.toString();
-      print("这个Utxo大小是："+satoshi);
-      linkTranBuild.sign(vin: i, keyPair: alice,witnessValue: int.parse(satoshi));
+      print("这个Utxo大小是：" + satoshi);
+      linkTranBuild.sign(
+          vin: i, keyPair: alice, witnessValue: int.parse(satoshi));
     }
 
-
-    Transaction transaction=linkTranBuild.buildIncomplete();
+    Transaction transaction = linkTranBuild.buildIncomplete();
     int vbSize3 = transaction.virtualSize();
     print("真实上链体积 ：$vbSize3 vb");
 
-    String rawTx=linkTranBuild.build().toHex();
+    String rawTx = linkTranBuild.build().toHex();
 
-    print("上链rawTx: "+rawTx);
+    print("上链rawTx: " + rawTx);
 
     //brocast
 
-    signData.utxoNeedList=utxoNeedList;
-    signData.netWorkFee=feed;
-    signData.netWorkFeeRate=feeVb;
-    signData.sendtoAddress=sendAddress;
-    signData.sendAmount=sendAmount;
-    signData.rawTx=rawTx;
-    signData.brc20Amt="${widget.transferable.amount!} ${widget.transferable.ticker!.toUpperCase()}";
+    signData.utxoNeedList = utxoNeedList;
+    signData.netWorkFee = feed;
+    signData.netWorkFeeRate = feeVb;
+    signData.sendtoAddress = sendAddress;
+    signData.sendAmount = sendAmount;
+    signData.rawTx = rawTx;
+    signData.brc20Amt =
+        "${widget.transferable.amount!} ${widget.transferable.ticker!.toUpperCase()}";
 
     setState(() {
-      btcSignDatap=signData;
-      netWorkFee="${(signData.netWorkFee! / 100000000).toStringAsFixed(8)} BTC";
-      int fee=signData.netWorkFee!;
-      int needAmount=signData.sendAmount!;
-      int allAmount=fee+needAmount;
+      btcSignDatap = signData;
+      netWorkFee =
+          "${(signData.netWorkFee! / 100000000).toStringAsFixed(8)} BTC";
+      int fee = signData.netWorkFee!;
+      int needAmount = signData.sendAmount!;
+      int allAmount = fee + needAmount;
       // total="${(allAmount/ 100000000).toStringAsFixed(8)} BTC";
-
-
-
     });
 
 
-    Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext builder){
-      return TransactionBrc20Page(btcSignData: signData,);
-    }));
 
-
+    delayedDoSomeThing((){
+      dismissLoading(context);
+      Navigator.of(context)
+          .push(CupertinoPageRoute(builder: (BuildContext builder) {
+        return TransactionBrc20Page(
+          btcSignData: signData,
+        );
+      }));
+    });
 
 
 
     // }
-
   }
 
   List<Utxo> getNeedUtxoList(int sendAmount, List<Utxo> allUtxoList, int feeVb,
-      String sendAddress, String changeAddress,Utxo inUtxo) {
+      String sendAddress, String changeAddress, Utxo inUtxo) {
     List<Utxo> utxoNeedList = [];
     needAmount = 0;
+    bool isContain = false;
+
+    for (var o in utxoNeedList) {
+      if (o.txId == inUtxo.txId) {
+        isContain = true;
+      }
+    }
+
+    if (isContain == false) {
+      print("加入inUtxo");
+      utxoNeedList.add(inUtxo);
+    }
 
     if (allUtxoList!.isNotEmpty) {
       for (var utxo in allUtxoList) {
-        if(utxo.confirmed==true){
+        // if (utxo.confirmed == true) {
           needAmount = needAmount + utxo.satoshi!.toInt();
           utxoNeedList.add(utxo);
           if (needAmount > sendAmount) {
             break;
           }
-        }
-
+        // }
       }
     }
 
@@ -731,31 +740,16 @@ class _SendBrcPageState extends State<SendBrcPage> {
 
     var calTxb = TransactionBuilder();
 
-    bool isContain=false;
-
-    for (var o in utxoNeedList) {
-      if(o.txId==inUtxo.txId){
-        isContain=true;
-      }
-    }
-
-    if(isContain==false){
-      print("加入inUtxo");
-      utxoNeedList.add(inUtxo);
-    }
-
-
-    if(myWallet.btcAddress.startsWith("bc1q")){
+    if (myWallet.btcAddress.startsWith("bc1q")) {
       final p2wpkh = P2WPKH(data: PaymentData(pubkey: alice.publicKey)).data;
 
       for (int i = 0; i < utxoNeedList.length; i++) {
         Utxo o = utxoNeedList[i];
-        if(o.confirmed==true){
-          print("加入的utxo: "+o.txId!);
+        // if (o.confirmed == true) {
+          print("加入的utxo: " + o.txId!);
           String inputVout = o!.vout!.toString();
-          calTxb.addInput(o.txId, int.parse(inputVout),null,p2wpkh.output);
-        }
-
+          calTxb.addInput(o.txId, int.parse(inputVout), null, p2wpkh.output);
+        // }
       }
 
       calTxb.addOutput(sendAddress, 1000);
@@ -764,18 +758,16 @@ class _SendBrcPageState extends State<SendBrcPage> {
       for (int i = 0; i < utxoNeedList.length; i++) {
         Utxo o = utxoNeedList[i];
         String satoshi = o!.satoshi!.toString();
-        calTxb.sign(vin: i, keyPair: alice,witnessValue: int.parse(satoshi));
+        calTxb.sign(vin: i, keyPair: alice, witnessValue: int.parse(satoshi));
       }
-
-    }else{
-
+    } else {
       print("进入p2pKh");
       for (int i = 0; i < utxoNeedList.length; i++) {
         Utxo o = utxoNeedList[i];
-        if(o.confirmed==true){
+        // if (o.confirmed == true) {
           String inputVout = o!.vout!.toString();
           calTxb.addInput(o.txId, int.parse(inputVout));
-        }
+        // }
       }
 
       calTxb.addOutput(sendAddress, 1000);
@@ -786,8 +778,6 @@ class _SendBrcPageState extends State<SendBrcPage> {
       }
     }
 
-
-
     //计算体积
     Transaction transactionCal = calTxb.buildIncomplete();
     int vbSize = transactionCal.virtualSize();
@@ -797,24 +787,21 @@ class _SendBrcPageState extends State<SendBrcPage> {
     int feed = vbSize * feeVb;
     print("一次计算手续费: ${feed}");
 
-
-
-    if(feed>10000000){
+    if (feed > 10000000) {
       utxoNeedList = [];
       // showToast("Insufficient balance");
       return utxoNeedList;
     }
 
-
     sendAmount = sendAmount + feed;
 
-    print("needAmount: "+needAmount.toString());
-    print("sendAmount: "+sendAmount.toString());
+    print("needAmount: " + needAmount.toString());
+    print("sendAmount: " + sendAmount.toString());
 
     if (needAmount < sendAmount) {
       print("进入二次计算1111111111111");
       utxoNeedList = getNeedUtxoList(
-          sendAmount, allUtxoList, feeVb, sendAddress, changeAddress,inUtxo);
+          sendAmount, allUtxoList, feeVb, sendAddress, changeAddress, inUtxo);
     }
 
     // int changeSize=allAmount-sendAmount-feed;
@@ -823,25 +810,20 @@ class _SendBrcPageState extends State<SendBrcPage> {
     return utxoNeedList;
   }
 
-
-
-
-
   Future<void> getInscriptUtxo() async {
     final dio = getHttpDio();
     Map<String, dynamic> map = {};
     map["inscriptionId"] = widget.transferable.inscriptionId;
     try {
       Response response =
-      await dio.get(BTC_BRC20_INSCRIPT_UTXO_URL, queryParameters: map);
+          await dio.get(BTC_BRC20_INSCRIPT_UTXO_URL, queryParameters: map);
       if (response.statusCode == HttpStatus.ok) {
         print(response.data.toString());
         // btcUtxoBean=BtcUtxoBean.fromJson(jsonDecode(response.data));
         InscriptUtxoBean getUtxoBean = InscriptUtxoBean.fromJson(response.data);
         setState(() {
-          inscriptUtxoBean=getUtxoBean;
+          inscriptUtxoBean = getUtxoBean;
         });
-
       }
     } catch (e) {
       print("获取一次重新获取utxo");
@@ -850,9 +832,4 @@ class _SendBrcPageState extends State<SendBrcPage> {
       });
     }
   }
-
-
-
-
-
 }

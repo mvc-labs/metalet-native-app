@@ -12,6 +12,7 @@ import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/utils/Constants.dart';
 import '../bean/btc/BtcBroadcastData.dart';
 import '../bean/btc/BtcFeeRateBean.dart';
+import '../bean/btc/BtcNftBean.dart';
 import '../main.dart';
 import '../page/SimpleDialog.dart';
 import '../page/btc/BtcSignData.dart';
@@ -55,7 +56,11 @@ Future<void> getBtcFee() async {
       feeBean.desc=feeRateBean.desc;
       list.add(feeBean);
     }
-    Result result=Result(list: list);
+
+    List<FeeBean> reverseList=list.reversed.toList();
+
+
+    Result result=Result(list: reverseList);
     btcFeeBean=BtcFeeBean(status: "0",message: "ok",result: result);
     print("转换完的结果："+btcFeeBean.toString());
     EventBusUtils.instance.fire(WalletBTCRate(btcFeeBean));
@@ -79,8 +84,20 @@ Future<void> getBtcUtxo() async {
         await dio.get(METALET_BTC_UTXO_URL, queryParameters: map);
     if (response.statusCode == HttpStatus.ok) {
       print(response.data.toString());
-      // btcUtxoBean=BtcUtxoBean.fromJson(jsonDecode(response.data));
+
       btcUtxoBean = BtcUtxoBean.fromJson(response.data);
+
+      // BtcUtxoBean  btcUtxoBeanResult = BtcUtxoBean.fromJson(response.data);
+      // btcUtxoBean=BtcUtxoBean();
+      // List<Utxo> utxoList=[];
+      // for (var o in btcUtxoBeanResult.data!) {
+      //   if(o.confirmed!){
+      //     utxoList.add(o);
+      //   }
+      // }
+      // btcUtxoBean!.data=utxoList;
+
+
       print("获取的utxo :"+btcUtxoBean.toString());
 
 
@@ -119,6 +136,37 @@ Future<void> getBrc20Icon() async {
 
 
 
+
+List<BtcNftBeanList> btcNftResult =[];
+
+//get Data
+Future<void> getNftData() async {
+  print("初始化NFT");
+  btcNftResult.clear();
+  Map<String, dynamic> map = {};
+  map["address"] = myWallet.btcAddress;
+  map["size"] = 12;
+  map["cursor"] = 0;
+  Dio dio = getHttpDio();
+  Response response = await dio.get(BTC_BRC20_NFT_URL, queryParameters: map);
+
+  Map<String, dynamic> data = response.data;
+  BtcNftBean nftData = BtcNftBean.fromJson(data);
+  List<BtcNftBeanList> myNftList = nftData.data!.btcNftBeanList!;
+  print("大小："+myNftList.length.toString());
+
+  for(int i=0;i<myNftList.length;i++){
+    BtcNftBeanList bean=myNftList[i];
+    Dio dio = getHttpDio();
+    Response response = await dio.get(bean.content!, queryParameters: map);
+    bean.nftShowContent=response.data.toString();
+    btcNftResult.add(bean);
+  }
+
+}
+
+
+
 void goAndClosePage(BuildContext context,Widget widget){
   Navigator.pushAndRemoveUntil(
       context,
@@ -127,8 +175,55 @@ void goAndClosePage(BuildContext context,Widget widget){
 }
 
 
+void showDefaultLoading(BuildContext context,int second){
+  showDialog(
+      context: context,
+      builder: (context) {
+        return ProgressDialog(isShow: true);
+      });
+
+  Future.delayed( Duration(seconds: second),(){
+    Navigator.of(context).pop();
+  });
+}
 
 
+void showLoading(BuildContext context){
+  showDialog(
+      context: context,
+      builder: (context) {
+        return ProgressDialog(isShow: true);
+      });
+}
+
+void dismissLoading(BuildContext context){
+  // Future.delayed( Duration(seconds: second),(){
+  //
+  // });
+
+  Navigator.of(context).pop();
+}
+
+
+void delayedDoSomeThing(Function function){
+  Future.delayed( Duration(seconds: 2),(){
+    function();
+  });
+}
+
+
+
+DateTime? _lastTime;
+preventDoubleTap({int? interval}){
+  DateTime _nowTime = DateTime.now();
+  if(_lastTime != null || _nowTime.difference(_lastTime!) > Duration(milliseconds: interval??300)){
+    _lastTime = _nowTime;
+    return true;
+  }else {
+    _lastTime = _nowTime;
+    return false;
+  }
+}
 
 
 
@@ -221,7 +316,7 @@ void sendBtcTransaction(String sendAddress, int sendAmount, int feeVb,SendBtcTra
       }
     }
   } else {
-    showToast("钱包初始化中");
+    showToast("Insufficient balance 1");
     return;
   }
 

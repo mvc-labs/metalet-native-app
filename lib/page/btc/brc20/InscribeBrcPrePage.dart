@@ -87,7 +87,7 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
         }
       }
     } else {
-      showToast("钱包初始化中");
+      showToast("Insufficient balance 1");
       return;
     }
 
@@ -460,9 +460,6 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
                             CupertinoPageRoute(builder: (context)=> InscribeBrcTranPrePage(brc20commitRequest: brc20commitRequest!,btcSignData: btcSignDatap!,))
                         );
 
-                        // Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext builder){
-                        //   return InscribeBrcTranPrePage(brc20commitRequest: brc20commitRequest!,btcSignData: btcSignDatap!,);
-                        // }));
                       }
                     },child: const Text("Next", style: TextStyle(fontSize: 16))),
               ),

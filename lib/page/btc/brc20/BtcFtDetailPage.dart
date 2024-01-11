@@ -15,6 +15,7 @@ import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/SendFtPage.dart';
 import 'package:mvcwallet/utils/SimStytle.dart';
 import '../../../bean/Brc20ListBean.dart';
+import '../../../bean/Brc20ListV2Bean.dart';
 import '../../../bean/BtcFtDetailBean.dart';
 import '../../../bean/FtData.dart';
 import '../../../btc/CommonUtils.dart';
@@ -26,7 +27,7 @@ import 'TransferBrc20Page.dart';
 
 class BtcFtDetailPage extends StatefulWidget {
 
-  TickList ftItem;
+  Brc20List ftItem;
 
   BtcFtDetailPage({Key? key, required this.ftItem}) : super(key: key);
 
@@ -48,7 +49,7 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
     super.initState();
     getFtRecordData();
     getBrcAvaiableData();
-    switch (widget.ftItem.token!.toLowerCase()) {
+    switch (widget.ftItem.ticker!.toLowerCase()) {
       case "bili":
         iconPic = "$iconPic_Base/v3/coin/brc20/icon/bili.jpg";
         break;
@@ -213,7 +214,7 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
                               // const SizedBox(width: 10),
                               Text(
                                 // "21347.32 Spacessss",
-                                "${widget.ftItem.balance!}  ${widget.ftItem.token}",
+                                "${widget.ftItem.overallBalance!}  ${widget.ftItem.ticker}",
                                 style: const TextStyle(fontSize: 26,fontWeight: FontWeight.bold),
                               )
                             ],
@@ -315,7 +316,7 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Transferable",style: getDefaultTextStyle(),),
-                        Text("${widget.ftItem.transferBalance!} ${widget.ftItem.token!}",style: getDefaultTextStyle1(),)
+                        Text("${widget.ftItem.transferableBalance!} ${widget.ftItem.ticker!}",style: getDefaultTextStyle1(),)
                       ],
                     ),
                     const SizedBox(height: 10,),
@@ -323,7 +324,25 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Available",style: getDefaultTextStyle(),),
-                        Text("${widget.ftItem.availableBalance!} ${widget.ftItem.token!}",style: getDefaultTextStyle1(),)
+                        Expanded(child: Text("")),
+                        Text(
+                          " ${widget.ftItem!.availableBalanceSafe} ",
+                          // "Available 2000",
+                          style: getDefaultTextStyle(),
+                        ),
+                        Visibility(
+                          visible:num.parse(widget.ftItem!.availableBalanceUnSafe!)>0?true:false ,
+                          // visible:true ,
+                          child:  Text(
+                            " + ${widget.ftItem!.availableBalanceUnSafe} ",
+                            // "+ 1000 ",
+                            style: getDefaultGrayTextStyle16(),
+                          ),),
+                        Text(
+                          " ${widget.ftItem!.ticker!.toUpperCase()}",
+                          style: getDefaultTextStyle(),
+                        )
+                        // Text("${widget.ftItem.availableBalance!} ${widget.ftItem.ticker!}",style: getDefaultTextStyle1(),)
                       ],
                     ),
                     const SizedBox(
@@ -468,13 +487,10 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
     // https://api.show3.io/aggregation/v2/app/show/ft/1C2XjqoXHRegJNnmJqGDMt3rbAcrYLX4L9/summaries?chain=mvc&page=1&pageSize=30
     Map<String, dynamic> map = {};
     map["chain"] = "btc";
-    map["tick"] = widget.ftItem.token;
+    map["tick"] = widget.ftItem.ticker;
     map["address"] = myWallet.btcAddress;
     // map["page"] = page;
 
-    print("请求记录接口： "+METALET_BTC_FT_DETAIL_URL);
-    print("请求记录接口tick： "+widget.ftItem.token!);
-    print("请求记录接口address： "+myWallet.btcAddress);
 
     Dio dio = getHttpDio();
 
@@ -501,7 +517,7 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
     //
     Map<String,dynamic> map={};
     map["address"]=myWallet.btcAddress;
-    map["ticker"]=widget.ftItem.token!;
+    map["ticker"]=widget.ftItem.ticker!;
 
     map["address"]="bc1p4tx96s09yzqtv4m4rl69jywmect2t6qh5nyak5gmd7tpn4vkur6q3fj5j6";
     map["ticker"]="oxbt";
@@ -512,7 +528,7 @@ class _BtcFtDetailPageState extends State<BtcFtDetailPage> {
 
 
     // Response response=await dio.get(BTC_BRC20_ABLE_URL,queryParameters: map);
-    Response response=await dio.get("$BTC_BRC20_ABLE_URL?address=${myWallet.btcAddress}&ticker=${widget.ftItem.token!}");
+    Response response=await dio.get("$BTC_BRC20_ABLE_URL?address=${myWallet.btcAddress}&ticker=${widget.ftItem.ticker!}");
     // Response response=await dio.get("https://www.metalet.space/wallet-api/v2/brc20/token-summary?address=bc1p4tx96s09yzqtv4m4rl69jywmect2t6qh5nyak5gmd7tpn4vkur6q3fj5j6&ticker=oxbt");
 
     if(response.statusCode==HttpStatus.ok){

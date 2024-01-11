@@ -12,6 +12,7 @@ import 'package:mvcwallet/utils/MetaFunUtils.dart';
 import 'package:mvcwallet/utils/SimColor.dart';
 import 'package:sqflite/sqflite.dart';
 import 'FtPage.dart';
+import 'NFTListPage.dart';
 import 'NftPage.dart';
 
 class TokePage extends StatefulWidget {

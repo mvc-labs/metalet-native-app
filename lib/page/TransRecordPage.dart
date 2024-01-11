@@ -400,9 +400,14 @@ class _TransRecordContentState extends State<TransRecordContent> {
   }
 
   Future<void> getRecordList() async {
+    print("获取交易记录");
+    String mvc_api="https://mainnet.mvcapi.com";
+    print("请求连接 111 "+"$mvc_api/address/${myWallet.address}/tx");
     final dio = Dio();
     final response =
-        await dio.get("$mvc_api/address/${myWallet.address}/tx?flag=");
+        await dio.get("$mvc_api/address/${myWallet.address}/tx");
+    print("获取交易记录 111 "+response.data.toString());
+
     if (response.statusCode == HttpStatus.ok) {
       // String stationsJson = jsonDecode(response.data);
       List<TransRecordResponse> items = [];

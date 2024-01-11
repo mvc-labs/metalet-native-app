@@ -183,10 +183,9 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
                                     height: 44,
                                     child: TextButton(
                                       onPressed: () {
-
-                                        if(isFingerCan){
+                                        if (isFingerCan) {
                                           authenticateMe().then((value) {
-                                            if(value){
+                                            if (value) {
                                               //正确
                                               if (isOK) {
                                                 Navigator.of(context)
@@ -195,12 +194,14 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
                                                 showToast("Delete Success");
                                                 setState(() {
                                                   isLogin = false;
-                                                  SqWallet sqWallet = SqWallet();
+                                                  SqWallet sqWallet =
+                                                      SqWallet();
                                                   sqWallet.delete(myWallet);
                                                   // deleteWallet();
                                                   balanceTimer!.cancel();
                                                   Future.delayed(
-                                                      const Duration(seconds: 1), () {
+                                                      const Duration(
+                                                          seconds: 1), () {
                                                     EventBusUtils.instance
                                                         .fire(DeleteWallet());
                                                   });
@@ -208,7 +209,7 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
                                               }
                                             }
                                           });
-                                        }else{
+                                        } else {
                                           //  TODO 继续
                                           if (isOK) {
                                             Navigator.of(context)
@@ -222,15 +223,14 @@ class _DeleteWalletDialogState extends State<DeleteWalletDialog> {
                                               // deleteWallet();
                                               balanceTimer!.cancel();
                                               Future.delayed(
-                                                  const Duration(seconds: 1), () {
+                                                  const Duration(seconds: 1),
+                                                  () {
                                                 EventBusUtils.instance
                                                     .fire(DeleteWallet());
                                               });
                                             });
                                           }
                                         }
-
-
                                       },
                                       child: handleText(),
                                     )))
@@ -682,7 +682,8 @@ class ShowNftPayDialog extends StatefulWidget {
       required this.nftName,
       required this.nftIconUrl,
       required this.nftTokenIndex,
-      required this.receiveAddress,required this.sendNftIndo})
+      required this.receiveAddress,
+      required this.sendNftIndo})
       : super(key: key);
 
   @override
@@ -724,17 +725,14 @@ class _ShowNftPayDialogState extends State<ShowNftPayDialog> {
                       const SizedBox(
                         height: 30,
                       ),
-
-                       Container(
-                        decoration:  BoxDecoration(
+                      Container(
+                        decoration: BoxDecoration(
                           // color:Color(0xff26D2D7DE),
                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                            border: Border.all(
-                                width: 1,
-                                color: Color(0xff80D2D7DE)
-                            ),
+                          border:
+                              Border.all(width: 1, color: Color(0xff80D2D7DE)),
                         ),
-                        child:   Padding(
+                        child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -742,9 +740,9 @@ class _ShowNftPayDialogState extends State<ShowNftPayDialog> {
                               Visibility(
                                 visible: true,
                                 // child:  metaFunUtils.getImageContainer(image))
-                                child: metaFunUtils.getImageContainer(Image.network(
-                                    widget.nftIconUrl,
-                                    fit: BoxFit.cover)),
+                                child: metaFunUtils.getImageContainer(
+                                    Image.network(widget.nftIconUrl,
+                                        fit: BoxFit.cover)),
                               ),
                               const Visibility(
                                 visible: true,
@@ -763,8 +761,8 @@ class _ShowNftPayDialogState extends State<ShowNftPayDialog> {
                                           widget.nftName,
                                           style: const TextStyle(
                                               fontSize: 14,
-                                              color:
-                                              Color(SimColor.deaful_txt_color),
+                                              color: Color(
+                                                  SimColor.deaful_txt_color),
                                               fontWeight: FontWeight.bold),
                                         )),
                                     const SizedBox(
@@ -818,64 +816,59 @@ class _ShowNftPayDialogState extends State<ShowNftPayDialog> {
                         children: [
                           Expanded(
                               flex: 1,
-                              child:
-                                  InkWell(
-                                    onTap: (){
-                                      widget.sendNftIndo.sendCancel();
-                                    },
-                                    child:   Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(5)),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: const Color(
-                                                SimColor.color_button_blue),
-                                          )),
-                                      child: const Padding(
-                                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                        child: Text(
-                                          "Cancel",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Color(
-                                                SimColor.color_button_blue,
-                                              ),
-                                              fontSize: 15),
-                                        ),
-                                      ),
+                              child: InkWell(
+                                onTap: () {
+                                  widget.sendNftIndo.sendCancel();
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(5)),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: const Color(
+                                            SimColor.color_button_blue),
+                                      )),
+                                  child: const Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                    child: Text(
+                                      "Cancel",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Color(
+                                            SimColor.color_button_blue,
+                                          ),
+                                          fontSize: 15),
                                     ),
-                                  )
-
-
-                            )
-                            ,
+                                  ),
+                                ),
+                              )),
                           const SizedBox(
                             width: 30,
                           ),
                           Expanded(
                               flex: 1,
-                              child:
-
-                              InkWell(
-                                onTap: (){
-                                  widget.sendNftIndo.sendConfirm(widget.receiveAddress);
+                              child: InkWell(
+                                onTap: () {
+                                  widget.sendNftIndo
+                                      .sendConfirm(widget.receiveAddress);
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
+                                          BorderRadius.all(Radius.circular(5)),
                                       color: Color(SimColor.color_button_blue)),
                                   child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 11, 20, 11),
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 11, 20, 11),
                                     child: Text("Confirm",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 15)),
                                   ),
                                 ),
-                              )
-                              ),
+                              )),
                         ],
                       ),
                     ],
@@ -891,8 +884,6 @@ class _ShowNftPayDialogState extends State<ShowNftPayDialog> {
   }
 }
 
-
-
 // nft send success
 class ShowNftSuccessDialog extends StatefulWidget {
   String nftName;
@@ -903,10 +894,11 @@ class ShowNftSuccessDialog extends StatefulWidget {
 
   ShowNftSuccessDialog(
       {Key? key,
-        required this.nftName,
-        required this.nftIconUrl,
-        required this.nftTokenIndex,
-        required this.receiveAddress,required this.transactionID})
+      required this.nftName,
+      required this.nftIconUrl,
+      required this.nftTokenIndex,
+      required this.receiveAddress,
+      required this.transactionID})
       : super(key: key);
 
   @override
@@ -938,7 +930,11 @@ class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
                   child: Column(
                     children: [
-                      Image.asset("images/mvc_select_checkbox.png",width: 54,height: 54,),
+                      Image.asset(
+                        "images/mvc_select_checkbox.png",
+                        width: 54,
+                        height: 54,
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -961,7 +957,7 @@ class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
                         //       color: Color(0xff80D2D7DE)
                         //   ),
                         // ),
-                        child:   Padding(
+                        child: Padding(
                           padding: const EdgeInsets.all(0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -977,8 +973,8 @@ class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
                                           widget.nftName,
                                           style: const TextStyle(
                                               fontSize: 14,
-                                              color:
-                                              Color(SimColor.deaful_txt_color),
+                                              color: Color(
+                                                  SimColor.deaful_txt_color),
                                               fontWeight: FontWeight.bold),
                                         )),
                                     const SizedBox(
@@ -1001,15 +997,15 @@ class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
                                   width: 20,
                                 ),
                               ),
-
                               Visibility(
                                 visible: true,
                                 // child:  metaFunUtils.getImageContainer(image))
-                                child: metaFunUtils.getImageContainerSize(Image.network(
-                                    widget.nftIconUrl,
-                                    fit: BoxFit.cover),40,40),
+                                child: metaFunUtils.getImageContainerSize(
+                                    Image.network(widget.nftIconUrl,
+                                        fit: BoxFit.cover),
+                                    40,
+                                    40),
                               ),
-
                             ],
                           ),
                         ),
@@ -1057,14 +1053,14 @@ class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
                         height: 5,
                       ),
                       InkWell(
-                        onTap: (){
-                          ClipboardData data =   ClipboardData(text: widget.transactionID!);
+                        onTap: () {
+                          ClipboardData data =
+                              ClipboardData(text: widget.transactionID!);
                           Clipboard.setData(data);
                           showToast("Copy Success");
                         },
-                        child:    Row(
+                        child: Row(
                           children: [
-
                             ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 220),
                               child: Text(
@@ -1072,14 +1068,12 @@ class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
                                 style: const TextStyle(
                                   color: Color(SimColor.deaful_txt_color),
                                   fontSize: 12,
-
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-
-                            Image.asset("images/add_icon_copy.png", width: 16, height: 16),
-
+                            Image.asset("images/add_icon_copy.png",
+                                width: 16, height: 16),
                           ],
                         ),
                       ),
@@ -1127,27 +1121,25 @@ class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
                           // ),
                           Expanded(
                               flex: 1,
-                              child:
-
-                              InkWell(
-                                onTap: (){
+                              child: InkWell(
+                                onTap: () {
                                   Navigator.of(context).pop();
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
+                                          BorderRadius.all(Radius.circular(5)),
                                       color: Color(SimColor.color_button_blue)),
                                   child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 11, 20, 11),
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 11, 20, 11),
                                     child: Text("OK",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 15)),
                                   ),
                                 ),
-                              )
-                          ),
+                              )),
                         ],
                       ),
                     ],
@@ -1163,7 +1155,6 @@ class _ShowNftSuccessDialogState extends State<ShowNftSuccessDialog> {
   }
 }
 
-
 //nft sure
 class ShowFtPayDialog extends StatefulWidget {
   String nftName;
@@ -1173,9 +1164,10 @@ class ShowFtPayDialog extends StatefulWidget {
 
   ShowFtPayDialog(
       {Key? key,
-        required this.nftName,
-        required this.amount,
-        required this.receiveAddress,required this.sendFtIndo})
+      required this.nftName,
+      required this.amount,
+      required this.receiveAddress,
+      required this.sendFtIndo})
       : super(key: key);
 
   @override
@@ -1233,7 +1225,7 @@ class _ShowFtPayDialogState extends State<ShowFtPayDialog> {
                       Row(
                         children: [
                           Text(
-                           "${ widget.amount!} ${widget.nftName}",
+                            "${widget.amount!} ${widget.nftName}",
                             style: const TextStyle(
                                 color: Color(SimColor.deaful_txt_color),
                                 fontSize: 14),
@@ -1249,7 +1241,8 @@ class _ShowFtPayDialogState extends State<ShowFtPayDialog> {
                             "Recipient Address",
                             style: TextStyle(
                                 color: Color(SimColor.gray_txt_color),
-                                fontSize: 15),
+                                fontSize: 15,
+                                ),
                           )
                         ],
                       ),
@@ -1258,11 +1251,14 @@ class _ShowFtPayDialogState extends State<ShowFtPayDialog> {
                       ),
                       Row(
                         children: [
-                          Text(
-                            widget.receiveAddress!,
-                            style: const TextStyle(
-                                color: Color(SimColor.deaful_txt_color),
-                                fontSize: 14),
+                          ConstrainedBox(constraints:BoxConstraints(maxWidth: 250),
+                            child:  Text(
+                              widget.receiveAddress!,
+                              style: const TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: Color(SimColor.deaful_txt_color),
+                                  fontSize: 14),
+                            ),
                           )
                         ],
                       ),
@@ -1273,12 +1269,11 @@ class _ShowFtPayDialogState extends State<ShowFtPayDialog> {
                         children: [
                           Expanded(
                               flex: 1,
-                              child:
-                              InkWell(
-                                onTap: (){
+                              child: InkWell(
+                                onTap: () {
                                   widget.sendFtIndo.sendCancel();
                                 },
-                                child:   Container(
+                                child: Container(
                                   decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(5)),
@@ -1288,7 +1283,8 @@ class _ShowFtPayDialogState extends State<ShowFtPayDialog> {
                                             SimColor.color_button_blue),
                                       )),
                                   child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 10, 20, 10),
                                     child: Text(
                                       "Cancel",
                                       textAlign: TextAlign.center,
@@ -1300,37 +1296,32 @@ class _ShowFtPayDialogState extends State<ShowFtPayDialog> {
                                     ),
                                   ),
                                 ),
-                              )
-
-
-                          )
-                          ,
+                              )),
                           const SizedBox(
                             width: 30,
                           ),
                           Expanded(
                               flex: 1,
-                              child:
-
-                              InkWell(
-                                onTap: (){
-                                  widget.sendFtIndo.sendConfirm(widget.receiveAddress,widget.amount);
+                              child: InkWell(
+                                onTap: () {
+                                  widget.sendFtIndo.sendConfirm(
+                                      widget.receiveAddress, widget.amount);
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
+                                          BorderRadius.all(Radius.circular(5)),
                                       color: Color(SimColor.color_button_blue)),
                                   child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 11, 20, 11),
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 11, 20, 11),
                                     child: Text("Confirm",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 15)),
                                   ),
                                 ),
-                              )
-                          ),
+                              )),
                         ],
                       ),
                     ],
@@ -1346,10 +1337,6 @@ class _ShowFtPayDialogState extends State<ShowFtPayDialog> {
   }
 }
 
-
-
-
-
 // nft send success
 class ShowFtSuccessDialog extends StatefulWidget {
   String nftName;
@@ -1357,13 +1344,12 @@ class ShowFtSuccessDialog extends StatefulWidget {
   String transactionID;
   String ftAmount;
 
-
-
   ShowFtSuccessDialog(
       {Key? key,
-        required this.nftName,
-        required this.ftAmount,
-        required this.receiveAddress,required this.transactionID})
+      required this.nftName,
+      required this.ftAmount,
+      required this.receiveAddress,
+      required this.transactionID})
       : super(key: key);
 
   @override
@@ -1395,7 +1381,11 @@ class _ShowFtSuccessDialogState extends State<ShowFtSuccessDialog> {
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
                   child: Column(
                     children: [
-                      Image.asset("images/mvc_select_checkbox.png",width: 54,height: 54,),
+                      Image.asset(
+                        "images/mvc_select_checkbox.png",
+                        width: 54,
+                        height: 54,
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -1475,14 +1465,14 @@ class _ShowFtSuccessDialogState extends State<ShowFtSuccessDialog> {
                         height: 5,
                       ),
                       InkWell(
-                        onTap: (){
-                          ClipboardData data =   ClipboardData(text: widget.transactionID!);
+                        onTap: () {
+                          ClipboardData data =
+                              ClipboardData(text: widget.transactionID!);
                           Clipboard.setData(data);
                           showToast("Copy Success");
                         },
-                        child:    Row(
+                        child: Row(
                           children: [
-
                             ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 220),
                               child: Text(
@@ -1490,14 +1480,12 @@ class _ShowFtSuccessDialogState extends State<ShowFtSuccessDialog> {
                                 style: const TextStyle(
                                   color: Color(SimColor.deaful_txt_color),
                                   fontSize: 15,
-
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-
-                            Image.asset("images/add_icon_copy.png", width: 16, height: 16),
-
+                            Image.asset("images/add_icon_copy.png",
+                                width: 16, height: 16),
                           ],
                         ),
                       ),
@@ -1506,30 +1494,27 @@ class _ShowFtSuccessDialogState extends State<ShowFtSuccessDialog> {
                       ),
                       Row(
                         children: [
-
                           Expanded(
                               flex: 1,
-                              child:
-
-                              InkWell(
-                                onTap: (){
+                              child: InkWell(
+                                onTap: () {
                                   Navigator.of(context).pop();
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
+                                          BorderRadius.all(Radius.circular(5)),
                                       color: Color(SimColor.color_button_blue)),
                                   child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 11, 20, 11),
+                                    padding:
+                                        EdgeInsets.fromLTRB(20, 11, 20, 11),
                                     child: Text("OK",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 15)),
                                   ),
                                 ),
-                              )
-                          ),
+                              )),
                         ],
                       ),
                     ],
@@ -1544,7 +1529,6 @@ class _ShowFtSuccessDialogState extends State<ShowFtSuccessDialog> {
     );
   }
 }
-
 
 //编辑
 class EditWalletDialog extends StatefulWidget {
@@ -1762,9 +1746,10 @@ class _CheckVersionDialogState extends State<CheckVersionDialog> {
                               Navigator.pop(context);
                               //Update
                               // doCheckVersion();
-                              if (Platform.isIOS){
-                                launchUrl("https://apps.apple.com/us/app/metalet/id6450825531?platform=iphone");
-                              }else{
+                              if (Platform.isIOS) {
+                                launchUrl(
+                                    "https://apps.apple.com/us/app/metalet/id6450825531?platform=iphone");
+                              } else {
                                 // launchUrl("https://www.metalet.space/");
                                 launchUrl(widget.url);
                               }

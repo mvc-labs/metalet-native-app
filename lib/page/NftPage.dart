@@ -169,7 +169,7 @@ class _NftPageState extends State<NftPage> {
                   crossAxisCount: 3,
                   //设置横向间距
                   crossAxisSpacing: 3,
-                  childAspectRatio: 75/100,
+                  childAspectRatio: 70/100,
                 ),
                 itemCount: nftItemList.length,
                 shrinkWrap: true,

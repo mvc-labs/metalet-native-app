@@ -151,7 +151,8 @@ class _ScanResultContentState extends State<ScanResultContent> {
           } else {
             // showToast("22222222222222222222");
             widget.isOK = false;
-            widget.colors = 0x80171AFF;
+            // widget.colors = 0x80171AFF;
+            widget.colors = 0xffCBCDD6;
           }
         } else {
           // showToast("333333");
@@ -203,7 +204,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
                               Row(
                                 children: const [
                                   Text(
-                                    "Balances",
+                                    "Balance",
                                     style: TextStyle(
                                         color: Color(
                                             SimColor.deaful_txt_half_color),

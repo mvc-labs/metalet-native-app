@@ -214,7 +214,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
                               Row(
                                 children: const [
                                   Text(
-                                    "Balances",
+                                    "Balance",
                                     style: TextStyle(
                                         color: Color(
                                             SimColor.deaful_txt_half_color),
@@ -633,19 +633,25 @@ class _ScanResultContentState extends State<ScanResultContent> {
               width: double.infinity,
               child: ElevatedButton(
                   onPressed: () {
-                    if (isFingerCan) {
-                      authenticateMe().then((value) {
-                        if (value) {
-                          //正确
-                          send(widget.addressController.text,
-                              widget.amountController.text);
-                        }
-                      });
-                    } else {
-                      //  TODO 继续
-                      send(widget.addressController.text,
-                          widget.amountController.text);
+                    if(!preventDoubleTap()){
+                      return;
                     }
+
+                    send(widget.addressController.text,
+                        widget.amountController.text);
+                    // if (isFingerCan) {
+                    //   authenticateMe().then((value) {
+                    //     if (value) {
+                    //       //正确
+                    //       send(widget.addressController.text,
+                    //           widget.amountController.text);
+                    //     }
+                    //   });
+                    // } else {
+                    //   //  TODO 继续
+                    //   send(widget.addressController.text,
+                    //       widget.amountController.text);
+                    // }
                   },
                   style: ButtonStyle(
                     backgroundColor:
@@ -665,6 +671,8 @@ class _ScanResultContentState extends State<ScanResultContent> {
     if (address.isNotEmpty && amount.isNotEmpty) {
       // if(Address.validateAddress(address)){
       // if (Address.validateAddress(address)) {
+
+      showLoading(context);
         switch (widget.chooseNum) {
           case 0:
             feedRate = btcFeeBean!.result!.list![0].feeRate;
@@ -689,6 +697,8 @@ class _ScanResultContentState extends State<ScanResultContent> {
             "sendAmount ${Decimal.parse(sendAmount.toString()).toStringAsFixed(0)}");
         print("balance:  ${double.parse(myWallet.btcBalance) * 100000000}");
         // if(sendAmount<double.parse(myWallet.btcBalance)){
+
+
         if (sendAmount < double.parse(myWallet.btcBalance) * 100000000) {
           FocusScope.of(context).unfocus();
           var valueRe = Decimal.parse(sendAmount.toString()).toStringAsFixed(0);
@@ -712,6 +722,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
           //   isSendFinish=true;
           // });
         } else {
+          dismissLoading(context);
           showToast("Insufficient transfer balance");
         }
       // } else {
@@ -725,6 +736,9 @@ class _ScanResultContentState extends State<ScanResultContent> {
   int needAmount = 0;
 
   void sendBtcTransaction(String sendAddress, int sendAmount, int feeVb) {
+
+
+
     List<Utxo> utxoList = [];
     List<Utxo> utxoNeedList = [];
 
@@ -741,13 +755,15 @@ class _ScanResultContentState extends State<ScanResultContent> {
         }
       }
     } else {
-      showToast("钱包初始化中");
+      showToast("Insufficient balance 1");
+      dismissLoading(context);
       return;
     }
 
     // 没有进入break
     if (needAmount <= sendAmount) {
       showToast("Insufficient balance");
+      dismissLoading(context);
       return;
     }
 
@@ -755,6 +771,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
 
     if (utxoNeedList.isEmpty) {
       showToast("Insufficient balance");
+      dismissLoading(context);
       return;
     }
 
@@ -818,6 +835,7 @@ class _ScanResultContentState extends State<ScanResultContent> {
 
     if (changeSize<0) {
       showToast("Insufficient balance");
+      dismissLoading(context);
       return;
     }
 
@@ -896,11 +914,13 @@ class _ScanResultContentState extends State<ScanResultContent> {
     signData.sendAmount=sendAmount;
     signData.rawTx=rawTx;
 
-    Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext builder){
-      return SignBtcTransactionPage(btcSignData: signData,);
-    }));
-
-
+    // dismissLoading(context);
+    Future.delayed( Duration(seconds: 2),(){
+      dismissLoading(context);
+      Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext builder){
+        return SignBtcTransactionPage(btcSignData: signData,);
+      }));
+    });
 
 
 
