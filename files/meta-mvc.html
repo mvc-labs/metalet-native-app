@@ -141,7 +141,6 @@ async function transferNft(genesis,codehash,tokenIndex,receiverAddress){
 async function transferFt(codehash, genesis,address,amount) {
 
 try{
-  // console.log("打印私钥："+wif);
 
 var transferRes = await wallet.merge().then(async (res) => {
       const transferRes = await ftManager.transfer({

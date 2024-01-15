@@ -216,7 +216,7 @@ void delayedDoSomeThing(Function function){
 DateTime? _lastTime;
 preventDoubleTap({int? interval}){
   DateTime _nowTime = DateTime.now();
-  if(_lastTime != null || _nowTime.difference(_lastTime!) > Duration(milliseconds: interval??300)){
+  if(_lastTime == null || _nowTime.difference(_lastTime!) > Duration(milliseconds: interval??300)){
     _lastTime = _nowTime;
     return true;
   }else {

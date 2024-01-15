@@ -49,6 +49,9 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
   BtcSignData? btcSignDatap;
   Brc20CommitRequest? brc20commitRequest;
 
+  bool Insufficient=false;
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -87,20 +90,23 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
         }
       }
     } else {
-      showToast("Insufficient balance 1");
+      Insufficient=true;
+      // showToast("Insufficient balance 1");
       return;
     }
 
     // 没有进入break
     if (needAmount <= sendAmount) {
-      showToast("Insufficient balance");
+      Insufficient=true;
+      // showToast("Insufficient balance");
       return;
     }
 
     utxoNeedList = getNeedUtxoList(sendAmount, utxoList, feeVb, sendAddress, changeAddress);
 
     if (utxoNeedList.isEmpty) {
-      showToast("Insufficient balance");
+      Insufficient=true;
+      // showToast("Insufficient balance");
       return;
     }
 
@@ -163,7 +169,8 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
     print("计算找零金额 : ${changeSize}");
 
     if (changeSize<0) {
-      showToast("Insufficient balance");
+      Insufficient=true;
+      // showToast("Insufficient balance");
       return;
     }
 
@@ -349,6 +356,7 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
 
     if(feed>10000000){
       utxoNeedList = [];
+      Insufficient=true;
       // showToast("Insufficient balance");
       return utxoNeedList;
     }
@@ -459,7 +467,10 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
                         Navigator.of(context).pushReplacement(
                             CupertinoPageRoute(builder: (context)=> InscribeBrcTranPrePage(brc20commitRequest: brc20commitRequest!,btcSignData: btcSignDatap!,))
                         );
-
+                      }else{
+                        if( Insufficient==true){
+                          showToast("Insufficient balance");
+                        }
                       }
                     },child: const Text("Next", style: TextStyle(fontSize: 16))),
               ),

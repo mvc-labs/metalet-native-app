@@ -503,12 +503,15 @@ class _HomePageState extends State<HomePage>
       ..setNavigationDelegate(NavigationDelegate(
           onWebResourceError: (error) {}, onPageStarted: (url) {}));
 
-    //check Version
-    SharedPreferencesUtils.getBool("ask_key", true).then((value) {
-      if (value) {
-        doCheckVersion(context);
-      }
-    });
+    if(isNoGopay){
+      //check Version
+      SharedPreferencesUtils.getBool("ask_key", true).then((value) {
+        if (value) {
+          doCheckVersion(context);
+        }
+      });
+    }
+
 
     // showDialog(
     //     context: context,

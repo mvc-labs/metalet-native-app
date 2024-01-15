@@ -480,6 +480,8 @@ class _SendBrcPageState extends State<SendBrcPage> {
       showLoading(context);
       sendBtcTransaction(widget.addressController.text, 546,
           int.parse(feedRate.toString()), utxo);
+    }else{
+      getInscriptUtxo();
     }
   }
 
