@@ -429,10 +429,30 @@ void p(String msg) {
 
 class TimeUtils {
   static String formatDateTime(int timestamp) {
+    String showTime=timestamp.toString();
+    if(showTime.length==10){
+      timestamp=int.parse("${showTime}000");
+    }
+
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp);
     // String time=formatDate(date,  [HH,'\\h',nn]);
     String time=formatDate(date,  [yyyy,'-',mm,"-",dd," ",HH,":",nn]);
     // var formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     return time;
   }
+
+
+  static String formatDateTimeDetail(int timestamp) {
+    String showTime=timestamp.toString();
+    if(showTime.length==10){
+      timestamp=int.parse("${showTime}000");
+    }
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    // String time=formatDate(date,  [HH,'\\h',nn]);
+
+    String time=formatDate(date,  [yyyy,'-',mm,"-",dd," ",HH,":",nn,":",ss]);
+    // var formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    return time;
+  }
+
 }

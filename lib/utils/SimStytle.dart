@@ -108,3 +108,10 @@ TextStyle getSelectFeeTextStyle() {
       decoration: TextDecoration.none);
 }
 
+TextStyle getDefaultBlueTextStyle() {
+  return const TextStyle(
+      fontSize: 15,
+      color: Color(SimColor.color_button_blue),
+      decoration: TextDecoration.none);
+}
+

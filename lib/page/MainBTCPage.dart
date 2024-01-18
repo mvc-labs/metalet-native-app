@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,7 @@ import 'package:mvcwallet/constant/SimContants.dart';
 import '../data/Indo.dart';
 import '../main.dart';
 import '../utils/Constants.dart';
+import '../utils/EventBusUtils.dart';
 import '../utils/SimColor.dart';
 import 'RequestBtcPage.dart';
 import 'btc/SendBtcPage.dart';
@@ -23,19 +24,34 @@ class MainBTCPage extends StatefulWidget {
 }
 
 class _MainBTCPageState extends State<MainBTCPage> {
-
-
+  late StreamSubscription _subscription_banlace_btc;
 
   @override
   void initState() {
     // TODO: implement initState
-    setState(() {
-      btcBalance=myWallet.btcBalance+" BTC";
+    // setState(() {
+    //   btcBalance=myWallet.btcBalance+" BTC";
+    // });
+
+    _subscription_banlace_btc =
+        EventBusUtils.instance.on<WalletBTCData>().listen((event) {
+      // print(event.);
+      setState(() {
+        print("轮询获取的btc 信息11111111111111111 btcBalance ： " +
+            event!.btcBalance +
+            " btcWalletBalance:  " +
+            event!.btcWalletBalance);
+        // var value=double.parse(event.spaceBalance)/100000000;
+        // spaceBalance="$value Space";
+        btcBalance = event!.btcBalance;
+        btcWalletBalance = event!.btcWalletBalance;
+        // getBtcFee();
+      });
     });
+
     // getBTCBalance();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +153,6 @@ class _MainBTCPageState extends State<MainBTCPage> {
                             } else {
                               hasNoLogin(widget.indo);
                             }
-
                           },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
@@ -154,6 +169,13 @@ class _MainBTCPageState extends State<MainBTCPage> {
     );
   }
 
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _subscription_banlace_btc.cancel();
+  }
 
 /*
 
@@ -193,8 +215,4 @@ class _MainBTCPageState extends State<MainBTCPage> {
 
   }
 */
-
-
-
-
 }

@@ -8,6 +8,7 @@ class SimColor {
   // static const String deaful_txt_color_str="#303133".toColor();
   static const int deaful_txt_half_color=0x80303133;
   static const int color_button_blue=0xff171AFF;
+  static const int color_button_half_blue=0x80ff171AFF;
 
 
   static const int color_button_red=0xffFF1717;

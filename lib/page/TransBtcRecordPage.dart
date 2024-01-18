@@ -165,7 +165,19 @@ class _TransRecordContentState extends State<TransRecordContent> {
     // recordMoney = record.income! - record.outcome!;
     bool isInCome = true;
     // var value = double.parse(recordMoney.toString()) / 100000000;
-    if (record.to!.contains(myWallet.btcAddress)) {
+    // if (record.to!.contains(myWallet.btcAddress)) {
+
+
+
+      if (record.amount!.startsWith("-")) {
+        showMoney = "${record.amount} BTC";
+        isInCome = false;
+    } else {
+      showMoney = "+${record.amount} BTC";
+      isInCome = true;
+    }
+
+  /*  if (record.to!.contains(myWallet.btcAddress)) {
       // var valueRe = Decimal.parse(value.toString()).toStringAsFixed(8);
       showMoney = "+${record.amount} BTC";
       // showMoney="+$valueRe Space";
@@ -176,7 +188,7 @@ class _TransRecordContentState extends State<TransRecordContent> {
       isInCome = false;
       // showMoney="-$valueRe Space";
     }
-
+*/
     return Column(
       children: [
         InkWell(
@@ -246,7 +258,7 @@ class _TransRecordContentState extends State<TransRecordContent> {
     final dio = Dio();
     final response = await dio.get(
         "${METALET_BTC_ROCORD_URL}?chain=btc&address=${myWallet.btcAddress}");
-
+    print("recordList" + response.data.toString());
     if (response.statusCode == HttpStatus.ok) {
       BtcRecordBean data=BtcRecordBean.fromJson(response.data);
       List<TransactionList> dataList=data.data!.transactionList!;
@@ -255,7 +267,7 @@ class _TransRecordContentState extends State<TransRecordContent> {
         recordList.clear();
         recordList.addAll(dataList);
       });
-      print("recordList" + recordList.toString());
+
     }
   }
 }

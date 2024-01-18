@@ -9,6 +9,7 @@ import 'package:mvcwallet/btc/CommonUtils.dart';
 import 'package:mvcwallet/main.dart';
 import 'package:mvcwallet/page/NftDetailListPage.dart';
 import 'package:mvcwallet/page/RequestPage.dart';
+import 'package:mvcwallet/page/btc/NftBTCDetailPage.dart';
 import 'package:mvcwallet/utils/Constants.dart';
 import 'package:mvcwallet/utils/MetaFunUtils.dart';
 import 'package:mvcwallet/utils/SimColor.dart';
@@ -136,62 +137,97 @@ class _NftBTCPageState extends State<NftBTCPage> {
     final double itemHeight = (size.height) / 2;
     final double itemWidth = size.width / 3 - 20;
 
-    return Column(
-      children: [
-        Container(
-          height: itemWidth,
-          margin: EdgeInsets.fromLTRB(5, 10, 10, 10),
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            border: Border.all(
-                color: Color(SimColor.color_button_blue), width: 0.7),
-          ),
-          // child: Align(
-          //   child: Text(nftDetailItemList.nftShowContent!,style: TextStyle(
-          //     fontSize: 13,
-          //
-          //   ),) ,
-          // ),
-          child:ConstrainedBox(constraints: BoxConstraints(maxHeight: itemWidth),
-          child:  Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Text(""),
-              ),
-              Container(
-                child: Text(
-                  nftDetailItemList.nftShowContent!,
-                  style: TextStyle(
-                    fontSize: 13,
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext builder){
+          return NftBTCDetailPage(nftDetailItemList: nftDetailItemList,);
+        }));
+      },
+      child: Column(
+        children: [
+          Container(
+            height: itemWidth,
+            margin: EdgeInsets.fromLTRB(5, 10, 10, 10),
+            padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+            decoration: BoxDecoration(
+              color: Color(SimColor.color_button_blue),
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              border: Border.all(
+                  color: Color(SimColor.color_button_blue), width: 0.7),
+              // color: Color(0x1E2BFF), width: 0.7),
+            ),
+            // child: Align(
+            //   child: Text(nftDetailItemList.nftShowContent!,style: TextStyle(
+            //     fontSize: 13,
+            //
+            //   ),) ,
+            // ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: itemWidth),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(""),
                   ),
-                ),
-              ),
-              Expanded(
-                child: Text(""),
-              ),
-              Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "546 sat",
-                    style: TextStyle(
-                      fontSize: 13,
+                  Container(
+                    child: Text(
+                      nftDetailItemList.nftShowContent!,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 4,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                      ),
                     ),
-                  ))
-            ],
+                  ),
+                  // Text(
+                  //   nftDetailItemList.nftShowContent!,
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: TextStyle(
+                  //     fontSize: 13,
+                  //   ),
+                  // ),
+                  // ConstrainedBox(constraints: BoxConstraints(maxHeight: itemWidth),
+                  //     child: Text(
+                  //       nftDetailItemList.nftShowContent!,
+                  //       overflow: TextOverflow.ellipsis,
+                  //       maxLines: 10,
+                  //       style: TextStyle(
+                  //         fontSize: 13,
+                  //       ),
+                  //   ),
+                  // ),
+                  Expanded(
+                    child: Text(""),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(3)),
+                            // color: Color(SimColor.color_button_half_blue)),
+                            color: Color(0xff767EFF)),
+                        child: Text(
+                          "546 sat",
+                          style: TextStyle(fontSize: 10, color: Colors.white),
+                        )),
+                  ),
+                ],
+              ),
+            ),
           ),
+          Text(
+            "#${nftDetailItemList.inscriptionNumber}",
+            style: getDefaultGraySmallTextStyle(),
           ),
-        ),
-        Text(
-          "#${nftDetailItemList.inscriptionNumber}",
-          style: getDefaultGraySmallTextStyle(),
-        ),
-        Text(
-          showTime,
-          style: getDefaultGraySmallTextStyle(),
-        ),
-      ],
+          Text(
+            showTime,
+            style: getDefaultGraySmallTextStyle(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -223,6 +259,9 @@ class _NftBTCPageState extends State<NftBTCPage> {
       btcNftResult.add(bean);
     }
 
+    if (!mounted) {
+      return;
+    }
     setState(() {
       nftList.clear();
       nftList.addAll(btcNftResult);

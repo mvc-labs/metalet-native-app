@@ -4,6 +4,7 @@ import 'package:bitcoin_flutter/bitcoin_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mvcwallet/bean/BtcFeeBean.dart';
 import 'package:mvcwallet/bean/btc/BrcIconList.dart';
 import 'package:mvcwallet/bean/btc/BtcUtxoBean.dart';
@@ -205,8 +206,15 @@ void dismissLoading(BuildContext context){
 }
 
 
-void delayedDoSomeThing(Function function){
-  Future.delayed( Duration(seconds: 2),(){
+
+void copyText(String content){
+  ClipboardData data = ClipboardData(text: content);
+  Clipboard.setData(data);
+  showToast("Copy Success");
+}
+
+void delayedDoSomeThing(Function function,int time){
+  Future.delayed( Duration(seconds: time),(){
     function();
   });
 }

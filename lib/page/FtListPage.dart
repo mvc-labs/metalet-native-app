@@ -26,22 +26,8 @@ class _FtListPageState extends State<FtListPage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   late int index;
-  static  final List<Tab> _homeTopTabList = <Tab>[
-    Tab(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset("images/icon.png", width: 24, height: 24),
-          const SizedBox(
-            width: 5,
-          ),
-          Text(
-            "SPACE",
-            style: getDefaultTextStyle(),
-          )
-        ],
-      ),
-    ),
+     List<Tab> _homeTopTabList = <Tab>[
+
     Tab(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -57,16 +43,83 @@ class _FtListPageState extends State<FtListPage>
         ],
       ),
     ),
+
+    Tab(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("images/icon.png", width: 24, height: 24),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            "SPACE",
+            style: getDefaultTextStyle(),
+          )
+        ],
+      ),
+    ),
   ];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+
+    _homeTopTabList = <Tab>[
+
+      Tab(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset("images/btc_icon.png", width: 20, height: 20),
+            const SizedBox(
+              width: 5,
+            ),
+            Text(
+              "BTC",
+              style: getDefaultTextStyle(),
+            )
+          ],
+        ),
+      ),
+
+      Tab(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset("images/icon.png", width: 24, height: 24),
+            const SizedBox(
+              width: 5,
+            ),
+            Text(
+              "SPACE",
+              style: getDefaultTextStyle(),
+            )
+          ],
+        ),
+      ),
+    ];
+
+    setState(() {
+      if (walletMode == 0) {
+        walletMode = 0;
+      } else if (walletMode == 1) {
+        walletMode = 1;
+        _homeTopTabList.removeAt(1);
+      } else if (walletMode == 2) {
+        walletMode = 2;
+        _homeTopTabList.removeAt(0);
+      }
+    });
+
+    tabController = TabController(length: _homeTopTabList.length, vsync: this);
     tabController.addListener(() {
       index = tabController.index;
     });
+
+
+
   }
 
   @override
@@ -108,10 +161,31 @@ class _FtListPageState extends State<FtListPage>
         padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
         child: TabBarView(
           controller: tabController,
-          children: const <Widget>[FtPage(), FtBtcPage()],
+          // children: const <Widget>[FtPage(), FtBtcPage()],
+          children: getWalletPageList(),
         ),
       ),
     );
+  }
+
+
+  List<Widget> walletPageList = [];
+
+  List<Widget> getWalletPageList() {
+    if (_homeTopTabList.length == 1) {
+      walletPageList.clear();
+      if (walletMode == 1) {
+        walletPageList.add(FtBtcPage());
+      } else if (walletMode == 2) {
+        walletPageList.add(FtPage());
+      }
+      return walletPageList;
+    } else {
+      walletPageList.clear();
+      walletPageList.add(FtBtcPage());
+      walletPageList.add(FtPage());
+      return walletPageList;
+    }
   }
 
   @override

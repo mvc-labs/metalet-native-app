@@ -71,7 +71,7 @@ class _TokePageState extends State<TokePage>
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: TabBarView(
           controller: tabController,
-          children: const <Widget>[FtListPage(), NftPage()],
+          children: const <Widget>[FtListPage(), NFTListPage()],
         ),
       ),
     );

@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../data/Indo.dart';
 import '../main.dart';
 import '../utils/Constants.dart';
+import '../utils/EventBusUtils.dart';
 import '../utils/SimColor.dart';
 import 'RequestPage.dart';
 import 'ScanResultPage.dart';
@@ -23,6 +26,24 @@ class MainSpacePage extends StatefulWidget {
 }
 
 class _MainSpacePageState extends State<MainSpacePage> {
+
+  late StreamSubscription _subscription_banlace;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _subscription_banlace =
+        EventBusUtils.instance.on<WalletHomeData>().listen((event) {
+          // print(event.);
+          setState(() {
+            // var value=double.parse(event.spaceBalance)/100000000;
+            // spaceBalance="$value Space";
+            spaceBalance = event!.spaceBalance;
+            walletBalance = event!.walletBalance;
+          });
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,4 +166,12 @@ class _MainSpacePageState extends State<MainSpacePage> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _subscription_banlace.cancel();
+  }
+
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,8 +53,8 @@ String spaceBalance = "0.0 Space";
 String walletBalance = "\$ 0.0";
 String btcBalance = "0.00 BTC";
 String btcWalletBalance = "\$ 0.0";
-String btype="space";
-int index=0;
+String btype = "space";
+int index = 0;
 
 List myWalletList = [];
 bool isUst = true;
@@ -81,6 +82,18 @@ SendNftDialogData sendNftDialogData = SendNftDialogData();
 SendFtDialogData sendFtDialogData = SendFtDialogData();
 
 WebViewController webViewController = WebViewController();
+
+int walletMode = 0; //space && btc  1/btc 2/space
+bool isHomePage = true;
+
+String selectWalletName = "BTC/SPACE";
+final List<String> modeNameList = [
+  "BTC/SPACE",
+  "BTC",
+  "SPACE"
+  // "m/49'/0'/0'/0/0",
+  // "m/86'/0'/0'/0/0"
+];
 
 // by now main
 void main() {
@@ -129,13 +142,42 @@ class _DefaultWidgetState extends State<DefaultWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SharedPreferencesUtils.getBool("key_finger", false).then((value) {
-      setState(() {
-        isFingerCan = value;
-        print("change $isFingerCan");
-        if (isFingerCan) {
-          authenticateMe().then((value) {
-            if (value) {
+
+      SharedPreferencesUtils.getInt("walletMode_key", 0).then((value) {
+       walletMode=value;
+       setState(() {
+        if (walletMode == 0) {
+          walletMode = 0;
+          selectWalletName="BTC/SPACE";
+        } else if (walletMode == 1) {
+          walletMode = 1;
+          selectWalletName="BTC";
+        } else if (walletMode == 2) {
+          walletMode = 2;
+          selectWalletName="SPACE";
+        }
+
+
+        SharedPreferencesUtils.getBool("key_finger", false).then((value) {
+          setState(() {
+            isFingerCan = value;
+            print("change $isFingerCan");
+            if (isFingerCan) {
+              authenticateMe().then((value) {
+                if (value) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          settings: const RouteSettings(name: "home"),
+                          builder: (BuildContext context) {
+                            return HomePage(mContext: context);
+                            // return HomeTabPage();
+                          }),
+                          (route) => false);
+                } else {
+                  exit(0);
+                }
+              });
+            } else {
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                       settings: const RouteSettings(name: "home"),
@@ -143,23 +185,16 @@ class _DefaultWidgetState extends State<DefaultWidget> {
                         return HomePage(mContext: context);
                         // return HomeTabPage();
                       }),
-                  (route) => false);
-            } else {
-              exit(0);
+                      (route) => false);
             }
           });
-        } else {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                  settings: const RouteSettings(name: "home"),
-                  builder: (BuildContext context) {
-                    return HomePage(mContext: context);
-                    // return HomeTabPage();
-                  }),
-              (route) => false);
-        }
+        });
+
+
       });
     });
+
+
   }
 
   @override
@@ -177,7 +212,7 @@ class _DefaultWidgetState extends State<DefaultWidget> {
         width: double.infinity,
         decoration: const BoxDecoration(
 // color: Colors.red,
-        image: DecorationImage(
+            image: DecorationImage(
           image: AssetImage("images/bg_img_space.png"),
         )
 // image: AssetImage("images/icon.png"),)
@@ -212,10 +247,87 @@ class _HomePageState extends State<HomePage>
 
   _HomePageState();
 
+  final GlobalKey<_HomePageState> _globalKey = GlobalKey();
+
   @override
   void initState() {
     // TODO: implement initState
     indo = this;
+
+
+    setState(() {
+      if (walletMode == 0) {
+        walletMode = 0;
+        selectWalletName="BTC/SPACE";
+
+        _homeTopTabList.clear();
+        _homeTopTabList.add(Tab(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset("images/btc_icon.png", width: 20, height: 20),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(
+                "BTC",
+                style: getDefaultTextStyle(),
+              )
+            ],
+          ),
+        ),);
+        _homeTopTabList.add( Tab(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset("images/icon.png", width: 24, height: 24),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(
+                "SPACE",
+                style: getDefaultTextStyle(),
+              )
+            ],
+          ),
+        ),);
+        tabController = TabController(length: 2, vsync: this);
+      } else if (walletMode == 1) {
+        walletMode = 1;
+        selectWalletName="BTC";
+        if(_homeTopTabList.length>1){
+          _homeTopTabList.removeAt(1);
+        }
+
+        tabController = TabController(length: 1, vsync: this);
+
+      } else if (walletMode == 2) {
+        walletMode = 2;
+        selectWalletName="SPACE";
+        if(_homeTopTabList.length>1){
+          _homeTopTabList.removeAt(0);
+        }
+        tabController = TabController(length: 1, vsync: this);
+      }
+    });
+  /*  SharedPreferencesUtils.getInt("walletMode_key", 0).then((value) {
+       walletMode=value;
+       setState(() {
+        if (walletMode == 0) {
+          walletMode = 0;
+          selectWalletName="BTC/SPACE";
+        } else if (walletMode == 1) {
+          walletMode = 1;
+          selectWalletName="BTC";
+          _homeTopTabList.removeAt(1);
+        } else if (walletMode == 2) {
+          walletMode = 2;
+          selectWalletName="SPACE";
+          _homeTopTabList.removeAt(0);
+        }
+      });
+    });
+*/
 
     //brc20 icon
     getBrc20Icon();
@@ -234,18 +346,19 @@ class _HomePageState extends State<HomePage>
 
     _subscription_banlace_btc =
         EventBusUtils.instance.on<WalletBTCData>().listen((event) {
-          // print(event.);
-          setState(() {
-            print("轮询获取的btc 信息 btcBalance ： "+event!.btcBalance+" btcWalletBalance:  "+ event!.btcWalletBalance);
-            // var value=double.parse(event.spaceBalance)/100000000;
-            // spaceBalance="$value Space";
-            btcBalance = event!.btcBalance;
-            btcWalletBalance = event!.btcWalletBalance;
-            // getBtcFee();
-
-          });
-        });
-
+      // print(event.);
+      setState(() {
+        print("轮询获取的btc 信息 btcBalance ： " +
+            event!.btcBalance +
+            " btcWalletBalance:  " +
+            event!.btcWalletBalance);
+        // var value=double.parse(event.spaceBalance)/100000000;
+        // spaceBalance="$value Space";
+        btcBalance = event!.btcBalance;
+        btcWalletBalance = event!.btcWalletBalance;
+        // getBtcFee();
+      });
+    });
 
     _subscription_delete =
         EventBusUtils.instance.on<DeleteWallet>().listen((event) {
@@ -285,19 +398,14 @@ class _HomePageState extends State<HomePage>
       });
     });
 
-
     _subscription_btc_utxo =
         EventBusUtils.instance.on<WalletBTCUtxo>().listen((event) {
-          setState(() {
-            print("重新获取一次UTXO："+jsonEncode(event!.btcUtxoBean!.toJson()));
+      setState(() {
+        print("重新获取一次UTXO：" + jsonEncode(event!.btcUtxoBean!.toJson()));
 
-            btcUtxoBean = event!.btcUtxoBean;
-          });
-        });
-
-
-
-
+        btcUtxoBean = event!.btcUtxoBean;
+      });
+    });
 
     setState(() {
       // initLocalWallet();
@@ -404,9 +512,7 @@ class _HomePageState extends State<HomePage>
             sqWallet.updateDefaultData(myWallet);
           }
 
-
           getBtcUtxo();
-
         } else {
           // initMetaWallet
           showToast("Failed to initialize wallet Please check mnemonics");
@@ -503,7 +609,7 @@ class _HomePageState extends State<HomePage>
       ..setNavigationDelegate(NavigationDelegate(
           onWebResourceError: (error) {}, onPageStarted: (url) {}));
 
-    if(isNoGopay){
+    if (isNoGopay) {
       //check Version
       SharedPreferencesUtils.getBool("ask_key", true).then((value) {
         if (value) {
@@ -512,7 +618,6 @@ class _HomePageState extends State<HomePage>
       });
     }
 
-
     // showDialog(
     //     context: context,
     //     builder: (context) {
@@ -520,7 +625,9 @@ class _HomePageState extends State<HomePage>
     //     });
 
     initVersion();
-    tabController = TabController(length: 2, vsync: this);
+    print("_homeTopTabList.length ："+_homeTopTabList.length.toString());
+    // tabController = TabController(length: _homeTopTabList.length, vsync: this);
+
     tabController.addListener(() {
       index = tabController.index;
     });
@@ -564,32 +671,26 @@ class _HomePageState extends State<HomePage>
 
     final node = bip32.BIP32.fromSeed(seed);
     setState(() {
-
-
-
-      if(btcPath.isEmpty){
+      if (btcPath.isEmpty) {
         print("mvc Path: " + myWallet.path);
 
-        btcPath="m/44'/${myWallet.path}'/0'/0/0";
+        btcPath = "m/44'/${myWallet.path}'/0'/0/0";
       }
       // flutter build apk --no-sound-null-safety
 
-      if(btcPath=="m/84'/0'/0'/0/0"){
+      if (btcPath == "m/84'/0'/0'/0/0") {
         myWallet.btcAddress = get84Address(node.derivePath(btcPath));
-      }else {
+      } else {
         myWallet.btcAddress = get44Address(node.derivePath(btcPath));
       }
       myWallet.btcPath = btcPath;
       print("btc Address: " + btcPath);
-      if(myWallet.btcBalance.isEmpty){
+      if (myWallet.btcBalance.isEmpty) {
         myWallet.btcBalance = "0";
       }
 
-      // getNftData();
-
+      getNftData();
     });
-
-
 
     // sqWallet.updateDefaultData(myWallet);
   }
@@ -633,22 +734,7 @@ class _HomePageState extends State<HomePage>
 
   late TabController tabController;
 
-  static final List<Tab> _homeTopTabList = <Tab>[
-    Tab(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset("images/icon.png", width: 24, height: 24),
-          const SizedBox(
-            width: 5,
-          ),
-          Text(
-            "SPACE",
-            style: getDefaultTextStyle(),
-          )
-        ],
-      ),
-    ),
+  List<Tab> _homeTopTabList = <Tab>[
     Tab(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -664,6 +750,21 @@ class _HomePageState extends State<HomePage>
         ],
       ),
     ),
+    Tab(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("images/icon.png", width: 24, height: 24),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            "SPACE",
+            style: getDefaultTextStyle(),
+          )
+        ],
+      ),
+    ),
   ];
 
   @override
@@ -672,6 +773,9 @@ class _HomePageState extends State<HomePage>
     //   bool auth=value;
     //
     // });
+
+    print("渲染的tab 长度： "+_homeTopTabList.length.toString());
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -749,22 +853,33 @@ class _HomePageState extends State<HomePage>
                   child: TextButton(
                       onPressed: () {
                         if (isLogin) {
-                          Future.delayed(const Duration(milliseconds: 500),(){
-                            if(index==0){
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (BuildContext context) {
-                                    return const TransRecordPage();
-                                  }));
-                            }else if(index==1){
+                          Future.delayed(const Duration(milliseconds: 500), () {
+
+                            if(walletMode==0){
+                              if (index == 0) {
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (BuildContext context) {
+                                      return const TransBtcRecordPage();
+                                    }));
+                              } else if (index == 1) {
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (BuildContext context) {
+                                      return const TransRecordPage();
+                                    }));
+                              }
+                            }else if(walletMode==1){
                               Navigator.of(context).push(CupertinoPageRoute(
                                   builder: (BuildContext context) {
                                     return const TransBtcRecordPage();
                                   }));
+                            }else if(walletMode==2){
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (BuildContext context) {
+                                    return const TransRecordPage();
+                                  }));
                             }
+
                           });
-
-
-
                         } else {
                           hasNoLogin(this);
                         }
@@ -779,7 +894,9 @@ class _HomePageState extends State<HomePage>
                       if (isLogin) {
                         Navigator.of(context).push(
                             CupertinoPageRoute(builder: (BuildContext context) {
-                          return  SettingsPage(mainIndo: this,);
+                          return SettingsPage(
+                            mainIndo: this,
+                          );
                           // return const RequestPage();
                         }));
                       } else {
@@ -807,20 +924,168 @@ class _HomePageState extends State<HomePage>
                     indicatorSize: TabBarIndicatorSize.label,
                     isScrollable: true,
                   ),
-                  const Expanded(flex: 1, child: Text(""))
+                  const Expanded(flex: 1, child: Text("")),
+                  Row(
+                    children: [
+                      // InkWell(
+                      //   onTap: () {
+                      //
+                      //     if(isHomePage){
+                      //       walletMode=0;
+                      //       isHomePage=false;
+                      //       Navigator.of(context).pushAndRemoveUntil(
+                      //           MaterialPageRoute(
+                      //               settings: const RouteSettings(name: "home"),
+                      //               builder: (BuildContext context) {
+                      //                 return HomePage(mContext: context);
+                      //                 // return HomeTabPage();
+                      //               }),
+                      //               (route) => false);
+                      //     }else{
+                      //       isHomePage=true;
+                      //       walletMode=2;
+                      //       Navigator.of(context).pushAndRemoveUntil(
+                      //           MaterialPageRoute(
+                      //               settings: const RouteSettings(name: "home"),
+                      //               builder: (BuildContext context) {
+                      //                 return HomePage(mContext: context);
+                      //                 // return HomeTabPage();
+                      //               }),
+                      //               (route) => false);
+                      //     }
+                      //
+                      //   },
+                      //   child: Text(
+                      //     "MODE",
+                      //     style: getDefaultTextStyle(),
+                      //   ),
+                      // ),
+
+                      Container(
+                        width: 110,
+                        child: DropdownButton2<String>(
+                            iconSize: 0,
+                            isExpanded: true,
+                            value: selectWalletName,
+                            items: modeNameList.map((e) {
+                              return DropdownMenuItem<String>(
+                                value: e,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(e,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13),),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectWalletName = value!;
+                                changeWalletMode(selectWalletName);
+
+                              });
+                            }),
+                      ),
+
+                      Image.asset("images/mvc_wallet_more_icon.png",
+                          width: 10, height: 10),
+                      SizedBox(
+                        width: 15,
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
           ),
         ),
         body: TabBarView(
-          controller: tabController,
-          children: <Widget>[
-            MainSpacePage(indo: indo),
-            MainBTCPage(indo: indo)
-          ],
-        ));
+            controller: tabController,
+            // children: _homeTopTabList.map((e) => MainBTCPage(indo: this)).toList()
+            children: getWalletPageList()
+
+            /*_homeTopTabList.map((Tab tab){
+            if(_homeTopTabList.length>1){
+
+            }else{
+              if(walletMode==0){
+
+              }
+            }
+            return MainBTCPage(indo: this);
+          }).toList()*/
+            ));
   }
+
+  List<Widget> walletPageList = [];
+
+  List<Widget> getWalletPageList() {
+    walletPageList.clear();
+    if (walletMode==1&&_homeTopTabList.length == 1) {
+        walletPageList.add(MainBTCPage(indo: this));
+    }else if(walletMode==2&&_homeTopTabList.length == 1){
+      walletPageList.add(MainSpacePage(indo: this));
+    } else {
+      walletPageList.add(MainBTCPage(indo: this));
+      walletPageList.add(MainSpacePage(indo: this));
+    }
+
+    print("返回的 walletPageList 长度是："+walletPageList.length.toString());
+
+    return walletPageList;
+  /*  if (_homeTopTabList.length == 1) {
+      walletPageList.clear();
+      if (walletMode == 1) {
+        walletPageList.add(MainBTCPage(indo: this));
+      } else if (walletMode == 2) {
+        walletPageList.add(MainSpacePage(indo: this));
+      }
+      return walletPageList;
+    } else {
+      walletPageList.clear();
+      walletPageList.add(MainBTCPage(indo: this));
+      walletPageList.add(MainSpacePage(indo: this));
+
+      return walletPageList;
+    }*/
+
+  }
+
+
+  void changeWalletMode(String modeWalletName){
+    if(modeWalletName=="BTC/SPACE"){
+      walletMode=0;
+    }else if(modeWalletName=="BTC"){
+      walletMode=1;
+    }else if(modeWalletName=="SPACE"){
+      walletMode=2;
+      ///
+    }
+
+    // SharedPreferencesUtils
+    SharedPreferencesUtils.setInt("walletMode_key", walletMode);
+
+    showLoading(context);
+    delayedDoSomeThing((){
+      dismissLoading(context);
+
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) {
+                return DefaultWidget();
+              }),
+              (route) => false);
+      // Navigator.of(context).pushAndRemoveUntil(
+      //     MaterialPageRoute(
+      //         settings: const RouteSettings(name: "home"),
+      //         builder: (BuildContext context) {
+      //           return HomePage(mContext: context);
+      //           // return HomeTabPage();
+      //         }),
+      //         (route) => false);
+    },1);
+
+
+  }
+
 
   @override
   void addWallet(
@@ -913,46 +1178,42 @@ void dioRate(String message) async {
 
   // 偶尔请求出错
   getBtcFee();
-
 }
 
-
-Future<void> getBTCBalance() async{
+Future<void> getBTCBalance() async {
   // final dio=Dio();
-  final dio=getHttpDio();
+  final dio = getHttpDio();
   Map<String, dynamic> map = {};
 
   map["address"] = myWallet.btcAddress;
   map["chain "] = "btc";
-  Response response=await dio.get(BTC_BALANCE_V3_URL,queryParameters: map);
-  if(response.statusCode==HttpStatus.ok){
-    Map<String, dynamic> dataResponse=response.data;
-    BtcBalanceV3Response balanceResponse=BtcBalanceV3Response.fromJson(dataResponse);
+  Response response = await dio.get(BTC_BALANCE_V3_URL, queryParameters: map);
+  if (response.statusCode == HttpStatus.ok) {
+    Map<String, dynamic> dataResponse = response.data;
+    BtcBalanceV3Response balanceResponse =
+        BtcBalanceV3Response.fromJson(dataResponse);
     print("获取的btc余额是：${response.data.toString()}");
-    num  btc=balanceResponse.data!.balance!;
+    num btc = balanceResponse.data!.balance!;
     // var btcNum = (btc / 100000000).toStringAsFixed(8);
     var btcNum = btc.toStringAsFixed(8);
     SqWallet sqWallet = SqWallet();
-    myWallet.btcBalance=btcNum;
+    myWallet.btcBalance = btcNum;
     sqWallet.update(myWallet);
 
-    if(num.parse(btcNum)>0){
-      Response response=await dio.get(MEYALET_RATE_URL);
-      Map<String, dynamic> dataResponse=response.data;
-      MetaLetRate metaLetRate=MetaLetRate.fromJson(dataResponse);
-      num btcPrice=metaLetRate.data!.priceInfo!.btc!;
+    if (num.parse(btcNum) > 0) {
+      Response response = await dio.get(MEYALET_RATE_URL);
+      Map<String, dynamic> dataResponse = response.data;
+      MetaLetRate metaLetRate = MetaLetRate.fromJson(dataResponse);
+      num btcPrice = metaLetRate.data!.priceInfo!.btc!;
       print(metaLetRate.data!.priceInfo!.btc!.toString());
 
+      EventBusUtils.instance.fire(WalletBTCData(btcNum.toString() + " BTC",
+          "\$ ${(btcPrice * double.parse(btcNum)).toStringAsFixed(2)}"));
+    } else {
       EventBusUtils.instance
-          .fire(WalletBTCData(btcNum.toString()+" BTC", "\$ ${(btcPrice * double.parse(btcNum)).toStringAsFixed(2)}"));
-
-    }else{
-      EventBusUtils.instance
-          .fire(WalletBTCData(btcNum.toString()+" BTC", "\$ 0.0"));
+          .fire(WalletBTCData(btcNum.toString() + " BTC", "\$ 0.0"));
     }
-
   }
 }
-
 
 

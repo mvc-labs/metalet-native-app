@@ -56,9 +56,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     onPressed: () {
                       Navigator.of(context).pop(
                           CupertinoPageRoute(builder: (BuildContext context) {
-                            // return const SettingsPage();
-                            return const HomePage();
-                          }));
+                        // return const SettingsPage();
+                        return const HomePage();
+                      }));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     style: TextStyle(
                                         fontSize: 15,
                                         color:
-                                        Color(SimColor.deaful_txt_color)),
+                                            Color(SimColor.deaful_txt_color)),
                                   ),
                                 ],
                               ),
@@ -132,7 +132,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 )
               ],
             ),
-             SettingsContent(mainIndo: widget.mainIndo,)
+            SettingsContent(
+              mainIndo: widget.mainIndo,
+            )
           ],
         ),
       ),
@@ -141,7 +143,6 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 class SettingsContent extends StatefulWidget {
-
   Indo mainIndo;
 
   SettingsContent({Key? key, required this.mainIndo}) : super(key: key);
@@ -152,7 +153,6 @@ class SettingsContent extends StatefulWidget {
 
 class _SettingsContentState extends State<SettingsContent> {
   String notice = "USD";
-
 
   @override
   void initState() {
@@ -283,23 +283,30 @@ class _SettingsContentState extends State<SettingsContent> {
             ),
           ),
           const SizedBox(height: 20),
-          InkWell(
-            onTap: () {
-              // _authenticateMe();
-              Navigator.of(context).push(CupertinoPageRoute(
-                  settings: const RouteSettings(),
-                  builder: (BuildContext context) {
-                    return BtcAddressTypePage(mainIndo: widget.mainIndo,);
-                  }));
-            },
-            child: Row(
-              children: [
-                Expanded(child: Text(
-                  "BTC Address Type",
-                  style: getDefaultTextStyle(),
-                )),
-                Image.asset("images/meta_right_icon.png", width: 20, height: 20)
-              ],
+          Visibility(
+            visible: walletMode == 2 ? false : true,
+            child: InkWell(
+              onTap: () {
+                // _authenticateMe();
+                Navigator.of(context).push(CupertinoPageRoute(
+                    settings: const RouteSettings(),
+                    builder: (BuildContext context) {
+                      return BtcAddressTypePage(
+                        mainIndo: widget.mainIndo,
+                      );
+                    }));
+              },
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Text(
+                    "BTC Address Type",
+                    style: getDefaultTextStyle(),
+                  )),
+                  Image.asset("images/meta_right_icon.png",
+                      width: 20, height: 20)
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 30),
@@ -326,8 +333,7 @@ class _SettingsContentState extends State<SettingsContent> {
                   Text(
                     Platform.isAndroid
                         ? "Payment Verification"
-                        : "Enable FaceID"
-                    ,
+                        : "Enable FaceID",
                     style: getDefaultTextStyle(),
                   ),
                   Image.asset(
@@ -371,8 +377,8 @@ class _SettingsContentState extends State<SettingsContent> {
                   doCheckVersion(context);
                 }
               },
-              child:
-              Visibility(visible: isNoGopay,
+              child: Visibility(
+                visible: isNoGopay,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -385,10 +391,7 @@ class _SettingsContentState extends State<SettingsContent> {
                     ),
                   ],
                 ),
-              )
-
-
-          ),
+              )),
         ],
       ),
     );
