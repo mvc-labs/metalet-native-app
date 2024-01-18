@@ -1062,6 +1062,7 @@ class _HomePageState extends State<HomePage>
 
     // SharedPreferencesUtils
     SharedPreferencesUtils.setInt("walletMode_key", walletMode);
+    webViewController = WebViewController();
 
     showLoading(context);
     delayedDoSomeThing((){
