@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../data/Indo.dart';
 import '../main.dart';
@@ -115,6 +116,7 @@ class _ShowBackUpMnePageState extends State<ShowBackUpMnePage> {
             ),
             Expanded(flex: 1, child: Text("")),
             getThemeButton(context, "I've backed up", function: () {
+              webViewController=WebViewController();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (BuildContext context) {
                 return DefaultWidget();
