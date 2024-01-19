@@ -698,8 +698,8 @@ class _ScanResultContentState extends State<ScanResultContent> {
         print("balance:  ${double.parse(myWallet.btcBalance) * 100000000}");
         // if(sendAmount<double.parse(myWallet.btcBalance)){
 
-
-        if (sendAmount < double.parse(myWallet.btcBalance) * 100000000) {
+         double sendAmountAddGas=sendAmount+3000;
+        if (sendAmountAddGas < double.parse(myWallet.btcBalance) * 100000000) {
           FocusScope.of(context).unfocus();
           var valueRe = Decimal.parse(sendAmount.toString()).toStringAsFixed(0);
           // showToast("SendAmount: $valueRe feedRate: $feedRate sat/vb");

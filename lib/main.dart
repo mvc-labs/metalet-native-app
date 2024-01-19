@@ -14,6 +14,7 @@ import 'package:mvcwallet/bean/RateResponse.dart';
 import 'package:mvcwallet/bean/btc/BtcBalanceV3Response.dart';
 import 'package:mvcwallet/data/Indo.dart';
 import 'package:mvcwallet/dialog/MyWalletDialog.dart';
+import 'package:mvcwallet/page/FirstSelectNetworkPage.dart';
 import 'package:mvcwallet/page/MainBTCPage.dart';
 import 'package:mvcwallet/page/MainSpacePage.dart';
 import 'package:mvcwallet/page/NftPage.dart';
@@ -21,6 +22,7 @@ import 'package:mvcwallet/page/RequestPage.dart';
 import 'package:mvcwallet/page/ScanPage.dart';
 import 'package:mvcwallet/page/ScanResultPage.dart';
 import 'package:mvcwallet/page/SettingsPage.dart';
+import 'package:mvcwallet/page/ShowBackUpMnePage.dart';
 import 'package:mvcwallet/page/SimpleDialog.dart';
 import 'package:mvcwallet/page/TokenPage.dart';
 import 'package:mvcwallet/page/TransBtcRecordPage.dart';
@@ -43,7 +45,7 @@ import 'bean/Update.dart';
 import 'btc/CommonUtils.dart';
 import 'constant/SimContants.dart';
 // "Use of this wallet is at your own risk and discretion.The wallet is not liable for any losses incurred as a result of using the wallet. ",
-
+//wallet data
 Wallet myWallet = Wallet("", "", "", "0.0", "0", "Wallet", 0, "", "", "");
 int selectIndex = 0;
 int id = 0;
@@ -83,8 +85,12 @@ SendFtDialogData sendFtDialogData = SendFtDialogData();
 
 WebViewController webViewController = WebViewController();
 
+
+//wallet settings
 int walletMode = 0; //space && btc  1/btc 2/space
 bool isHomePage = true;
+bool isFirstUse=true;
+
 
 String selectWalletName = "BTC/SPACE";
 final List<String> modeNameList = [
@@ -413,8 +419,11 @@ class _HomePageState extends State<HomePage>
 
       SqWallet sqWallet = SqWallet();
       Future<List<Wallet>> list = sqWallet.getAllWallet();
+
+
       list.then((value) {
         if (value.isNotEmpty) {
+          isFirstUse=false;
           for (var wallet in value) {
             // ignore: unrelated_type_equality_checks
             if (wallet.isChoose == 1) {
@@ -426,7 +435,13 @@ class _HomePageState extends State<HomePage>
             }
           }
         } else {
+          isFirstUse=true;
           print("Wallet Null");
+          Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext builder){
+            return FirstSelectNetworkPage(indo: indo,);
+          }));
+
+
         }
       });
       SharedPreferencesUtils.getBool("isUst_key", true)
@@ -460,6 +475,13 @@ class _HomePageState extends State<HomePage>
 
           print("：${myWallet.mnemonic}");
           if (isAddWallet) {
+            //back up
+            if(isFirstUse){
+              Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext builder){
+                return ShowBackUpMnePage(phraseString: myWallet.mnemonic,);
+              }));
+            }
+
             id = int.parse(myWallet.id);
             SharedPreferencesUtils.setValue("id_key", id);
             myWalletList.add(myWallet);

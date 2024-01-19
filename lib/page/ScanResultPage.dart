@@ -385,7 +385,9 @@ class _ScanResultContentState extends State<ScanResultContent> {
       print("address $address");
       print("sendAmount ${Decimal.parse(sendAmount.toString()).toStringAsFixed(0)}");
       print("balance:  ${double.parse(myWallet.balance)}");
-      if(sendAmount<double.parse(myWallet.balance)){
+
+      double sendAmountAddGas=sendAmount+10000;
+      if(sendAmountAddGas<double.parse(myWallet.balance)){
         FocusScope.of(context).unfocus();
         var valueRe = Decimal.parse(sendAmount.toString()).toStringAsFixed(0);
 

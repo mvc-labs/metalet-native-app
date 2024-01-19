@@ -296,6 +296,10 @@ class _InscribeBrcTranPageState extends State<InscribeBrcTranPrePage>
         Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (BuildContext builder){
           return BrcTransSendSuccessPage(brc20commitRequest: widget.brc20commitRequest,);
         }));
+      }else{
+
+        showToast(response.data.toString());
+
       }
     }
   }
