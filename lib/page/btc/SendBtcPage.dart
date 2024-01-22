@@ -886,7 +886,9 @@ class _ScanResultContentState extends State<ScanResultContent> {
 
 
     linkTranBuild.addOutput(sendAddress, sendAmount);
-    linkTranBuild.addOutput(changeAddress, changeSize);
+    if(changeSize>=546){
+      linkTranBuild.addOutput(changeAddress, changeSize);
+    }
 
     for (int i = 0; i < utxoNeedList.length; i++) {
       Utxo o = utxoNeedList[i];

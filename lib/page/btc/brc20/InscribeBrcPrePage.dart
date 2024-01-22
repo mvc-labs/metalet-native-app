@@ -223,7 +223,9 @@ class _InscribeBrcPrePageState extends State<InscribeBrcPrePage> implements Send
 
 
     linkTranBuild.addOutput(sendAddress, sendAmount);
-    linkTranBuild.addOutput(changeAddress, changeSize);
+    if(changeSize>=546){
+      linkTranBuild.addOutput(changeAddress, changeSize);
+    }
 
     signData.outputUtxos!.add(sendAmount.toString());
     signData.changeAmount=changeSize.toString();
