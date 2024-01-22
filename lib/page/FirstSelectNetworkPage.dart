@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mvcwallet/main.dart';
+import 'package:mvcwallet/page/addwallet/RestoreWalletPage.dart';
 import 'package:mvcwallet/utils/SimColor.dart';
 import 'package:mvcwallet/utils/SimStytle.dart';
 
@@ -11,7 +13,7 @@ import 'RequestBtcPage.dart';
 
 class FirstSelectNetworkPage extends StatefulWidget {
   Indo indo;
-  int selectWalletMode=0;
+  int selectWalletMode = 3;
 
   FirstSelectNetworkPage({Key? key, required this.indo}) : super(key: key);
 
@@ -19,15 +21,12 @@ class FirstSelectNetworkPage extends StatefulWidget {
   State<FirstSelectNetworkPage> createState() => _FirstSelectNetworkPageState();
 }
 
-
 class _FirstSelectNetworkPageState extends State<FirstSelectNetworkPage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     double width = size.width;
     double height = size.height;
-
-
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -88,12 +87,12 @@ class _FirstSelectNetworkPageState extends State<FirstSelectNetworkPage> {
               height: 30,
             ),
             InkWell(
-              onTap: (){
+              onTap: () {
                 setState(() {
-                  widget.selectWalletMode=1;
+                  widget.selectWalletMode = 1;
                 });
               },
-              child:  Row(
+              child: Row(
                 children: [
                   Image.asset(
                     "images/btc_icon.png",
@@ -109,7 +108,9 @@ class _FirstSelectNetworkPageState extends State<FirstSelectNetworkPage> {
                   ),
                   const Expanded(flex: 1, child: Text("")),
                   Image.asset(
-                    widget.selectWalletMode==1?"images/mvc_select_checkbox.png":"images/mvc_normal_checkbox.png",
+                    widget.selectWalletMode == 1
+                        ? "images/mvc_select_checkbox.png"
+                        : "images/mvc_normal_checkbox.png",
                     width: 30,
                     height: 30,
                   ),
@@ -120,12 +121,12 @@ class _FirstSelectNetworkPageState extends State<FirstSelectNetworkPage> {
               height: 20,
             ),
             InkWell(
-              onTap: (){
-               setState(() {
-                 widget.selectWalletMode=2;
-               });
+              onTap: () {
+                setState(() {
+                  widget.selectWalletMode = 2;
+                });
               },
-              child:    Row(
+              child: Row(
                 children: [
                   Image.asset(
                     "images/mvc_icon.png",
@@ -141,7 +142,9 @@ class _FirstSelectNetworkPageState extends State<FirstSelectNetworkPage> {
                   ),
                   const Expanded(flex: 1, child: Text("")),
                   Image.asset(
-                    widget. selectWalletMode==2?"images/mvc_select_checkbox.png":"images/mvc_normal_checkbox.png",
+                    widget.selectWalletMode == 2
+                        ? "images/mvc_select_checkbox.png"
+                        : "images/mvc_normal_checkbox.png",
                     width: 30,
                     height: 30,
                   ),
@@ -152,12 +155,12 @@ class _FirstSelectNetworkPageState extends State<FirstSelectNetworkPage> {
               height: 20,
             ),
             InkWell(
-              onTap: (){
-              setState(() {
-                widget.selectWalletMode=0;
-              });
+              onTap: () {
+                setState(() {
+                  widget.selectWalletMode = 0;
+                });
               },
-              child:    Row(
+              child: Row(
                 children: [
                   Image.asset(
                     "images/btc_icon.png",
@@ -186,42 +189,70 @@ class _FirstSelectNetworkPageState extends State<FirstSelectNetworkPage> {
                   ),
                   const Expanded(flex: 1, child: Text("")),
                   Image.asset(
-                    widget.selectWalletMode==0?"images/mvc_select_checkbox.png":"images/mvc_normal_checkbox.png",
+                    widget.selectWalletMode == 0
+                        ? "images/mvc_select_checkbox.png"
+                        : "images/mvc_normal_checkbox.png",
                     width: 30,
                     height: 30,
                   ),
                 ],
               ),
             ),
-
             SizedBox(
               height: 20,
             ),
-
-            Expanded(
-                flex: 1,
-                child: Text("")),
-            getThemeButton(context,"Next",function: () {
-              setState(() {
-                String walletName = "Wallet01";
-                String walletPath = "10001";
-                String selectBTCPath = "m/44'/10001'/0'/0/0";
-                walletMode=widget.selectWalletMode;
-                SharedPreferencesUtils.setInt("walletMode_key", walletMode);
-                Navigator.of(context).pop();
-                widget.indo.createWallet(walletName, walletPath, selectBTCPath);
-                // Navigator.of(context).pop();
-                // delayedDoSomeThing((){
-                //   Navigator.of(context).pushAndRemoveUntil(
-                //       MaterialPageRoute(
-                //           builder: (BuildContext context) {
-                //             return DefaultWidget();
-                //           }),
-                //           (route) => false);
-                // },10);
+            Expanded(flex: 1, child: Text("")),
+            Row(
+              children: [
+                Text(
+                  "Already have mnemonic phrase？",
+                  style: getDefaultGrayTextStyle(),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        CupertinoPageRoute(builder: (BuildContext builder) {
+                      return RestoreWalletPage(indo: widget.indo);
+                    }));
+                  },
+                  child: Text(
+                    "Restore Wallet",
+                    style: getDefaultBlueTextStyle(),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            getThemeButton(context, "Next", function: () {
+              if (widget.selectWalletMode != 3) {
+                setState(() {
+                  String walletName = "Wallet01";
+                  String walletPath = "10001";
+                  String selectBTCPath = "m/44'/10001'/0'/0/0";
+                  walletMode = widget.selectWalletMode;
+                  SharedPreferencesUtils.setInt("walletMode_key", walletMode);
+                  Navigator.of(context).pop();
+                  widget.indo
+                      .createWallet(walletName, walletPath, selectBTCPath);
+                  // Navigator.of(context).pop();
+                  // delayedDoSomeThing((){
+                  //   Navigator.of(context).pushAndRemoveUntil(
+                  //       MaterialPageRoute(
+                  //           builder: (BuildContext context) {
+                  //             return DefaultWidget();
+                  //           }),
+                  //           (route) => false);
+                  // },10);
                 });
+              } else {
+                showToast("Please select Network");
+              }
             }),
-            SizedBox(height: 20,)
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),
