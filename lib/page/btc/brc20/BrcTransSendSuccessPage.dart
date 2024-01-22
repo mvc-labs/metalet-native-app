@@ -83,7 +83,7 @@ class _BrcTransSendSuccessPageState extends State<BrcTransSendSuccessPage> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                "Payment Sennt",
+                "Payment Sent",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
