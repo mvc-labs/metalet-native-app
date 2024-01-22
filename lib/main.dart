@@ -75,7 +75,7 @@ Timer? balanceTimer;
 String createWalletPath = "10001";
 String createWalletBtcPath = "m/44'/10001'/0'/0/0";
 bool isFingerCan = true;
-bool isNoGopay = false;
+bool isNoGopay = true;
 String versionName = "";
 String versionCode = "";
 bool isFore = true;
